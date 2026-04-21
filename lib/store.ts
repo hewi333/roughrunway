@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { RoughRunwayModel, StoredData } from "@/lib/types";
+import { RoughRunwayModel, StoredData } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { STORAGE_KEY, STORAGE_VERSION } from "@/lib/constants";
-import { debounce } from "@/lib/hooks";
+import { STORAGE_KEY, STORAGE_VERSION } from "./constants";
+import { debounce } from "./hooks";
 
 // Create a default model with demo data (Nexus Labs)
 const createDefaultModel = (): RoughRunwayModel => {
@@ -180,14 +180,14 @@ export const useDebouncedCryptoRunwayStore = (() => {
   let debouncedUpdate: ((updates: Partial<RoughRunwayModel>) => void) | null = null;
   
   return () => {
-    const { updateModel } = useCryptoRunwayStore();
+    const { updateModel } = useRoughRunwayStore();
     
     if (!debouncedUpdate) {
       debouncedUpdate = debounce(updateModel, 500);
     }
     
     return {
-      ...useCryptoRunwayStore(),
+      ...useRoughRunwayStore(),
       updateModel: debouncedUpdate
     };
   };

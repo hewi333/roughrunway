@@ -13,7 +13,7 @@ export default function SetupWizard() {
   const [projectName, setProjectName] = useState(model.name);
   const [stablecoinAmount, setStablecoinAmount] = useState(model.treasury.stablecoins[0]?.amount || 1000000);
   const [fiatAmount, setFiatAmount] = useState(model.treasury.fiat[0]?.amount || 500000);
-  const [monthlyBurn, setMonthlyBurn] = useState(model.burnCategories[0]?.monthlyAmount || 100000);
+  const [monthlyBurn, setMonthlyBurn] = useState(model.burnCategories[0]?.monthlyBaseline || 100000);
 
   const handleNext = () => {
     if (step < 3) {
@@ -27,7 +27,7 @@ export default function SetupWizard() {
           stablecoins: [{ ...model.treasury.stablecoins[0], amount: stablecoinAmount }],
           fiat: [{ ...model.treasury.fiat[0], amount: fiatAmount }],
         },
-        burnCategories: [{ ...model.burnCategories[0], monthlyAmount: monthlyBurn }],
+        burnCategories: [{ ...model.burnCategories[0], monthlyBaseline: monthlyBurn }],
       });
     }
   };

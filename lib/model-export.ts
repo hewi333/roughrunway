@@ -1,5 +1,5 @@
-import { RoughRunwayModel, ExportedModel } from "@/lib/types";
-import { LZString } from "lz-string";
+import { RoughRunwayModel, ExportedModel } from "./types";
+import { compressToBase64, decompressFromBase64 } from "lz-string";
 
 export function exportModel(model: RoughRunwayModel): string {
   const exportData: ExportedModel = {
@@ -10,12 +10,12 @@ export function exportModel(model: RoughRunwayModel): string {
   };
   
   const jsonString = JSON.stringify(exportData);
-  return LZString.compressToBase64(jsonString);
+  return compressToBase64(jsonString);
 }
 
 export function importModel(compressedData: string): RoughRunwayModel | null {
   try {
-    const jsonString = LZString.decompressFromBase64(compressedData);
+    const jsonString = decompressFromBase64(compressedData);
     if (!jsonString) return null;
     
     const exportData: ExportedModel = JSON.parse(jsonString);
