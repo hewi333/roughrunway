@@ -19,6 +19,15 @@ export default function MonthlyBreakdownTable() {
     inflows: projection.totalInflows,
     netBurn: projection.netBurn,
     assets: [
+      // Add stablecoin assets
+      {
+        name: "Stablecoins",
+        value: projection.stablecoinBalance,
+        type: "stablecoin" as const,
+        quantity: projection.stablecoinBalance, // Using balance as quantity for display
+        price: 1, // Stablecoins are $1 each
+      },
+      // Add volatile assets
       ...projection.volatileAssets.map(asset => ({
         name: asset.assetId,
         value: asset.valueAtHaircut,
@@ -26,7 +35,6 @@ export default function MonthlyBreakdownTable() {
         quantity: asset.quantity,
         price: asset.pricePerToken,
       })),
-      // We would need to add stablecoins and fiat here if we want to show them
     ],
     liquidityConstrained: projection.liquidityConstrained,
   }));
@@ -104,14 +112,14 @@ export default function MonthlyBreakdownTable() {
                                 </span>
                               </div>
                               <div className="mt-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                                <span>{asset.quantity.toLocaleString()} tokens</span>
-                                <span>${asset.price.toFixed(2)} each</span>
+                                <span>{asset.type === "stablecoin" ? `$${asset.quantity.toLocaleString()}` : `${asset.quantity.toLocaleString()} tokens`}</span>
+                                <span>{asset.type === "stablecoin" ? "$1.00 each" : `$${asset.price.toFixed(2)} each`}</span>
                               </div>
                               <div className="mt-1">
                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  asset.type === "stablecoin" 
-                                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" 
-                                    : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                                  asset.type === "volatile" 
+                                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                                    : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                                 }`}>
                                   {asset.type}
                                 </span>
