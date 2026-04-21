@@ -1,9 +1,9 @@
-# CryptoRunway
+# Rough Runway
 
 Self-serve treasury runway forecasting for small crypto organizations.
 
 **Live demo**: _TBD — deploy to Vercel post-hackathon_
-**Status**: Planning + engine complete. UI implementation in progress.
+**Status**: UI implementation in progress. Core features implemented.
 
 > Built for the **Accountant Quits Web3 Crypto Hackathon** (April 20-27, 2026).
 > AI inference powered by **Perplexity AI** (hackathon sponsor).
@@ -12,7 +12,7 @@ Self-serve treasury runway forecasting for small crypto organizations.
 
 ## What this is
 
-CryptoRunway answers one question for a crypto-org CFO: **"When do we run out of money?"**
+Rough Runway answers one question for a crypto-org CFO: **"When do we run out of money?"**
 
 Unlike enterprise treasury tools, there's no login, no onboarding, no sales call, no integrations. You open the page, enter your numbers, and get two runway numbers:
 
@@ -25,10 +25,22 @@ All data is client-side (localStorage). Export as JSON, share as a URL, or hand 
 
 ---
 
+## Features Implemented
+
+- **Dark Mode Support** - Toggle between light and dark themes
+- **Export/Import Functionality** - Save and share models as compressed text files or URLs
+- **Scenario Management** - Create, edit, and compare different financial scenarios
+- **Responsive Design** - Works on desktop and mobile devices
+- **Accessibility Improvements** - Enhanced usability for all users
+- **Setup Wizard** - Guided onboarding for new users
+- **Documentation** - Comprehensive user guide
+
+---
+
 ## Repository layout
 
 ```
-cryptorunway/
+roughrunway/
 ├── docs/                    # Specs — start here
 │   ├── 01-PRODUCT-SPEC.md
 │   ├── 02-DATA-MODEL.md
@@ -48,7 +60,9 @@ cryptorunway/
 ├── app/                     # Next.js 14 App Router
 │   ├── layout.tsx
 │   ├── page.tsx             # Landing page
-│   ├── dashboard/page.tsx   # Main app (placeholder — to be built)
+│   ├── dashboard/page.tsx   # Main app
+│   ├── setup/page.tsx       # Setup wizard
+│   ├── docs/page.tsx        # Documentation
 │   └── schema/              # /schema/*.json — public JSON Schema endpoints
 ├── skills/                  # Agent-facing SKILL.md files
 │   ├── create-runway-model/
@@ -58,7 +72,7 @@ cryptorunway/
 ├── public/
 │   └── .well-known/
 │       └── agent-instructions.md  # First port of call for AI agents
-└── components/              # (empty — to be built per docs/03)
+└── components/              # UI components organized by feature
 ```
 
 ---
@@ -86,7 +100,7 @@ Open http://localhost:3000.
 Copy `.env.local.example` to `.env.local` and fill in:
 
 ```
-PERPLEXITY_API_KEY=<your key>
+PERPLEXITY_API_KEY=*** key>
 ```
 
 Perplexity is the AI provider for scenario parsing, the live market banner, and the natural-language setup assistant. See `docs/06-PERPLEXITY-INTEGRATION.md`.
@@ -113,7 +127,7 @@ Run `npm test` to verify. If any fixture fails, the engine's math is wrong — d
 
 ## For AI agents
 
-CryptoRunway is designed to be agent-friendly from day one.
+Rough Runway is designed to be agent-friendly from day one.
 
 - **JSON Schema**: [`/schema/model.json`](./app/schema/model.json/route.ts), [`/schema/scenario.json`](./app/schema/scenario.json/route.ts)
 - **Agent instructions**: [`/.well-known/agent-instructions.md`](./public/.well-known/agent-instructions.md)
@@ -125,7 +139,7 @@ CryptoRunway is designed to be agent-friendly from day one.
 2. Agent reads relevant SKILL.md
 3. Agent asks the user for their treasury/burn via conversation
 4. Agent constructs JSON matching `/schema/model.json`
-5. Agent hands the user a shareable URL: `https://cryptorunway.app/dashboard#model=<lz-compressed-base64>`
+5. Agent hands the user a shareable URL: `https://roughrunway.com/dashboard#model=<lz-compressed-base64>`
 6. User clicks — model loads, projection runs, scenarios can be built
 
 No API keys, no auth, no coordination. The tool is self-describing.

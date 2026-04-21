@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { VolatileAsset, VolatileAssetTier } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
 import { defaultLiquidityProfile, defaultLiquidationPriority } from "@/lib/constants";
@@ -13,7 +13,7 @@ import VolatileAssetInput from "@/components/treasury/VolatileAssetInput";
 import TreasurySummaryCard from "@/components/treasury/TreasurySummaryCard";
 
 export default function TreasuryPanel() {
-  const { model, updateModel } = useCryptoRunwayStore();
+  const { model, updateModel } = useRoughRunwayStore();
   const { treasury } = model;
   
   const addVolatileAsset = () => {
@@ -77,27 +77,27 @@ export default function TreasuryPanel() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Treasury</h2>
-        <p className="text-gray-600">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2 dark:text-gray-100">Treasury</h2>
+        <p className="text-gray-600 dark:text-gray-400">
           Configure your treasury holdings including stablecoins, fiat, and volatile assets.
         </p>
       </div>
       
       <div className="space-y-8">
         {/* Stablecoins */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
           <StablecoinInput stablecoins={treasury.stablecoins} />
         </div>
         
         {/* Fiat Currencies */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
           <FiatInput fiatHoldings={treasury.fiat} />
         </div>
         
         {/* Volatile Assets */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">Volatile Assets</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Volatile Assets</h3>
             <Button 
               type="button" 
               variant="outline" 
@@ -110,8 +110,8 @@ export default function TreasuryPanel() {
           </div>
           
           {treasury.volatileAssets.length === 0 ? (
-            <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-              <p className="text-gray-500 mb-4">No volatile assets added yet</p>
+            <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+              <p className="text-gray-500 mb-4 dark:text-gray-400">No volatile assets added yet</p>
               <Button onClick={addVolatileAsset} variant="outline">
                 Add Your First Asset
               </Button>
@@ -135,7 +135,7 @@ export default function TreasuryPanel() {
         </div>
         
         {/* Treasury Summary */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
           <TreasurySummaryCard />
         </div>
       </div>

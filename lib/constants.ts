@@ -1,14 +1,14 @@
-// CryptoRunway Constants
+// Rough Runway Constants
 
 import type {
-  CryptoRunwayModel,
+  RoughRunwayModel,
   LiquidityProfile,
   ScenarioOverrides,
   VolatileAssetTier,
 } from "./types";
 
 export const STORAGE_VERSION = 1;
-export const STORAGE_KEY = "cryptorunway_data";
+export const STORAGE_KEY = "roughrunway_data";
 
 // ============================================================================
 // Preset Burn Categories
@@ -116,7 +116,7 @@ export interface ScenarioTemplate {
   name: string;
   description: string;
   color: string;
-  buildOverrides: (model: CryptoRunwayModel) => ScenarioOverrides;
+  buildOverrides: (model: RoughRunwayModel) => ScenarioOverrides;
 }
 
 export const SCENARIO_TEMPLATES: ScenarioTemplate[] = [

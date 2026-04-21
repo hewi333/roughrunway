@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
 import { StablecoinHolding } from "@/lib/types";
 import { COMMON_STABLECOINS } from "@/lib/constants";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
 
 interface StablecoinInputProps {
@@ -15,7 +15,7 @@ interface StablecoinInputProps {
 }
 
 export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
-  const { updateModel } = useCryptoRunwayStore();
+  const { updateModel } = useRoughRunwayStore();
   
   const addStablecoin = () => {
     const newStablecoin: StablecoinHolding = {
@@ -26,7 +26,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         stablecoins: [...stablecoins, newStablecoin],
       },
     });
@@ -39,7 +39,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         stablecoins: updatedStablecoins,
       },
     });
@@ -50,7 +50,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         stablecoins: updatedStablecoins,
       },
     });
@@ -59,7 +59,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-base font-medium">Stablecoins</Label>
+        <Label className="text-base font-medium dark:text-gray-100">Stablecoins</Label>
         <Button 
           type="button" 
           variant="outline" 
@@ -73,22 +73,22 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
       </div>
       
       {stablecoins.length === 0 ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-          <p className="text-gray-500">No stablecoins added yet</p>
+        <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+          <p className="text-gray-500 dark:text-gray-400">No stablecoins added yet</p>
         </div>
       ) : (
         <div className="space-y-3">
           {stablecoins.map((stablecoin) => (
             <div key={stablecoin.id} className="flex items-end gap-3">
               <div className="flex-1">
-                <Label htmlFor={`stablecoin-name-${stablecoin.id}`} className="text-sm">
+                <Label htmlFor={`stablecoin-name-${stablecoin.id}`} className="text-sm dark:text-gray-300">
                   Stablecoin
                 </Label>
                 <select
                   id={`stablecoin-name-${stablecoin.id}`}
                   value={stablecoin.name}
                   onChange={(e) => updateStablecoin(stablecoin.id, { name: e.target.value })}
-                  className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                 >
                   {COMMON_STABLECOINS.map((coin) => (
                     <option key={coin} value={coin}>
@@ -100,7 +100,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
               </div>
               
               <div className="flex-1">
-                <Label htmlFor={`stablecoin-amount-${stablecoin.id}`} className="text-sm">
+                <Label htmlFor={`stablecoin-amount-${stablecoin.id}`} className="text-sm dark:text-gray-300">
                   Amount (USD)
                 </Label>
                 <Input
@@ -110,7 +110,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
                   step="1000"
                   value={stablecoin.amount}
                   onChange={(e) => updateStablecoin(stablecoin.id, { amount: Number(e.target.value) })}
-                  className="w-full"
+                  className="w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                 />
               </div>
               

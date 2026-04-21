@@ -1,11 +1,11 @@
-// CryptoRunway Type Definitions
+// Rough Runway Type Definitions
 // Source of truth: docs/02-DATA-MODEL.md
 
 // ============================================================================
 // Top-Level Model
 // ============================================================================
 
-export interface CryptoRunwayModel {
+export interface RoughRunwayModel {
   id: string;
   name: string;
   createdAt: string;
@@ -238,12 +238,12 @@ export interface RunwaySummary {
 export interface StoredData {
   version: number;
   activeModelId: string;
-  models: CryptoRunwayModel[];
+  models: RoughRunwayModel[];
 }
 
 export interface ExportedModel {
-  format: "cryptorunway";
+  format: "roughrunway";
   version: number;
   exportedAt: string;
-  model: CryptoRunwayModel;
+  model: RoughRunwayModel;
 }

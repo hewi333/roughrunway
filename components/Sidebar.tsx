@@ -8,9 +8,7 @@ import {
   TrendingUp, 
   Layers,
   ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp
+  ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +41,7 @@ export default function Sidebar({
           size="sm"
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="h-8 w-8 p-0"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? (
             <ChevronRight className="h-4 w-4" />
@@ -53,7 +52,7 @@ export default function Sidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4">
+      <nav className="flex-1 px-4" aria-label="Main navigation">
         <ul className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -70,8 +69,12 @@ export default function Sidebar({
                       : "text-gray-700 hover:bg-gray-100",
                     isCollapsed ? "justify-center" : "justify-start"
                   )}
+                  aria-current={isActive ? "page" : undefined}
                 >
-                  <Icon className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")} />
+                  <Icon 
+                    className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")} 
+                    aria-hidden="true"
+                  />
                   {!isCollapsed && <span>{item.label}</span>}
                 </button>
               </li>

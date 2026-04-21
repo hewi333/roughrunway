@@ -1,6 +1,6 @@
-# CryptoRunway — Agent Instructions
+# Rough Runway — Agent Instructions
 
-You've found the agent-friendly entry point for CryptoRunway, a crypto treasury runway forecasting tool.
+You've found the agent-friendly entry point for Rough Runway, a crypto treasury runway forecasting tool.
 
 ## What this tool does
 
@@ -22,7 +22,7 @@ Users can also define "what-if" scenarios (price drops, layoffs, new grants, etc
 
 ### 1. User describes their org, wants to see runway
 
-See [`/skills/create-runway-model/SKILL.md`](https://github.com/cryptorunway/cryptorunway/blob/main/skills/create-runway-model/SKILL.md) for the step-by-step. The short version:
+See [`/skills/create-runway-model/SKILL.md`](https://github.com/hewi333/roughrunway/blob/main/skills/create-runway-model/SKILL.md) for the step-by-step. The short version:
 
 1. Ask for treasury (stables, fiat, volatile assets with quantities and prices)
 2. Ask for monthly burn (by category) and monthly inflows
@@ -31,13 +31,13 @@ See [`/skills/create-runway-model/SKILL.md`](https://github.com/cryptorunway/cry
 
 ### 2. User asks a "what if"
 
-See [`/skills/run-scenario/SKILL.md`](https://github.com/cryptorunway/cryptorunway/blob/main/skills/run-scenario/SKILL.md).
+See [`/skills/run-scenario/SKILL.md`](https://github.com/hewi333/roughrunway/blob/main/skills/run-scenario/SKILL.md).
 
 Scenarios are **diffs** against the baseline — only include the fields you want to change. Don't restate the whole model.
 
 ### 3. User has a projection, wants interpretation
 
-See [`/skills/analyze-projection/SKILL.md`](https://github.com/cryptorunway/cryptorunway/blob/main/skills/analyze-projection/SKILL.md).
+See [`/skills/analyze-projection/SKILL.md`](https://github.com/hewi333/roughrunway/blob/main/skills/analyze-projection/SKILL.md).
 
 Always mention both runway numbers (Hard + Extended), not just one. The gap between them is the product.
 
@@ -68,7 +68,7 @@ The UI includes machine-readable attributes for browser-automation agents:
 
 ## Source of truth
 
-- Repo: https://github.com/ (TBD — the organizer will publish post-hackathon)
+- Repo: https://github.com/hewi333/roughrunway
 - License: MIT
 - Built for: Accountant Quits Web3 Crypto Hackathon (April 20-27, 2026)
 - Sponsored by: Perplexity AI

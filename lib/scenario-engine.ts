@@ -1,14 +1,14 @@
 // Scenario Engine — applies overrides to a baseline, returns a new model
 // Source of truth: docs/05-PROJECTION-ENGINE.md
 
-import type { CryptoRunwayModel, ScenarioOverrides } from "./types";
+import type { RoughRunwayModel, ScenarioOverrides } from "./types";
 import { generateId } from "./utils";
 
 export function applyScenarioOverrides(
-  baseline: CryptoRunwayModel,
+  baseline: RoughRunwayModel,
   overrides: ScenarioOverrides
-): CryptoRunwayModel {
-  const model: CryptoRunwayModel = structuredClone(baseline);
+): RoughRunwayModel {
+  const model: RoughRunwayModel = structuredClone(baseline);
 
   // Price overrides
   if (overrides.priceOverrides) {

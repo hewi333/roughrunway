@@ -47,16 +47,16 @@ export default function VolatileAssetInput({
   ];
   
   return (
-    <div className="border border-gray-200 rounded-lg bg-white">
+    <div className="border border-gray-200 rounded-lg bg-white dark:border-gray-700 dark:bg-gray-800">
       <div 
-        className="flex items-center p-4 cursor-pointer hover:bg-gray-50"
+        className="flex items-center p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-2 flex-1">
           <GripVertical className="h-5 w-5 text-gray-400" />
           <div>
-            <h3 className="font-medium text-gray-900">{asset.name || "Unnamed Asset"}</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="font-medium text-gray-900 dark:text-gray-100">{asset.name || "Unnamed Asset"}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               {asset.ticker} • {asset.quantity.toLocaleString()} tokens
             </p>
           </div>
@@ -123,10 +123,10 @@ export default function VolatileAssetInput({
       </div>
       
       {isExpanded && (
-        <div className="p-4 border-t border-gray-200 space-y-4">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor={`asset-name-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-name-${asset.id}`} className="text-sm dark:text-gray-300">
                 Asset Name
               </Label>
               <Input
@@ -134,11 +134,12 @@ export default function VolatileAssetInput({
                 value={asset.name}
                 onChange={(e) => updateAsset({ name: e.target.value })}
                 placeholder="e.g., Ethereum"
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
             
             <div>
-              <Label htmlFor={`asset-ticker-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-ticker-${asset.id}`} className="text-sm dark:text-gray-300">
                 Ticker
               </Label>
               <Input
@@ -146,11 +147,12 @@ export default function VolatileAssetInput({
                 value={asset.ticker}
                 onChange={(e) => updateAsset({ ticker: e.target.value })}
                 placeholder="e.g., ETH"
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
             
             <div>
-              <Label htmlFor={`asset-tier-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-tier-${asset.id}`} className="text-sm dark:text-gray-300">
                 Asset Tier
               </Label>
               <Select
@@ -164,7 +166,7 @@ export default function VolatileAssetInput({
                   });
                 }}
               >
-                <SelectTrigger id={`asset-tier-${asset.id}`}>
+                <SelectTrigger id={`asset-tier-${asset.id}`} className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -178,7 +180,7 @@ export default function VolatileAssetInput({
             </div>
             
             <div>
-              <Label htmlFor={`asset-quantity-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-quantity-${asset.id}`} className="text-sm dark:text-gray-300">
                 Quantity
               </Label>
               <Input
@@ -188,11 +190,12 @@ export default function VolatileAssetInput({
                 step="any"
                 value={asset.quantity}
                 onChange={(e) => updateAsset({ quantity: Number(e.target.value) })}
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
             
             <div>
-              <Label htmlFor={`asset-price-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-price-${asset.id}`} className="text-sm dark:text-gray-300">
                 Current Price (USD)
               </Label>
               <Input
@@ -202,11 +205,12 @@ export default function VolatileAssetInput({
                 step="0.01"
                 value={asset.currentPrice}
                 onChange={(e) => updateAsset({ currentPrice: Number(e.target.value) })}
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
             
             <div>
-              <Label htmlFor={`asset-priority-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-priority-${asset.id}`} className="text-sm dark:text-gray-300">
                 Liquidation Priority
               </Label>
               <Input
@@ -216,8 +220,9 @@ export default function VolatileAssetInput({
                 max="100"
                 value={asset.liquidationPriority}
                 onChange={(e) => updateAsset({ liquidationPriority: Number(e.target.value) })}
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
                 Lower numbers are liquidated first (0-100 scale)
               </p>
             </div>
