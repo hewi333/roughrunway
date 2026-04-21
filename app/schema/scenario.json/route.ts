@@ -7,10 +7,10 @@ export const dynamic = "force-static";
 
 const SCHEMA = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://cryptorunway.app/schema/scenario.json",
+  $id: "https://roughrunway.com/schema/scenario.json",
   title: "ScenarioOverrides",
   description:
-    "Diff against a baseline CryptoRunwayModel. Only fields present are applied; everything else inherits from the baseline. Used for scenario analysis without mutating the baseline.",
+    "Diff against a baseline RoughRunwayModel. Only fields present are applied; everything else inherits from the baseline. Used for scenario analysis without mutating the baseline.",
   type: "object",
   properties: {
     priceOverrides: {

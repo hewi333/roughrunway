@@ -16,23 +16,17 @@ import {
   Area,
   ComposedChart
 } from "recharts";
+import { useProjection } from "@/lib/hooks/useProjection";
 
 export default function ProjectionChart() {
-  // TODO: Replace with actual projection data from the store
-  const data = [
-    { month: "May 2026", hard: 2000000, extended: 3500000 },
-    { month: "Jun 2026", hard: 1800000, extended: 3200000 },
-    { month: "Jul 2026", hard: 1600000, extended: 2900000 },
-    { month: "Aug 2026", hard: 1400000, extended: 2600000 },
-    { month: "Sep 2026", hard: 1200000, extended: 2300000 },
-    { month: "Oct 2026", hard: 1000000, extended: 2000000 },
-    { month: "Nov 2026", hard: 800000, extended: 1700000 },
-    { month: "Dec 2026", hard: 600000, extended: 1400000 },
-    { month: "Jan 2027", hard: 400000, extended: 1100000 },
-    { month: "Feb 2027", hard: 200000, extended: 800000 },
-    { month: "Mar 2027", hard: 0, extended: 500000 },
-    { month: "Apr 2027", hard: 0, extended: 200000 },
-  ];
+  const { projections } = useProjection();
+  
+  // Transform projection data for the chart
+  const chartData = projections.map(projection => ({
+    month: projection.label,
+    hard: projection.hardBalance,
+    extended: projection.extendedBalance,
+  }));
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -40,7 +34,7 @@ export default function ProjectionChart() {
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
-            data={data}
+            data={chartData}
             margin={{
               top: 5,
               right: 30,

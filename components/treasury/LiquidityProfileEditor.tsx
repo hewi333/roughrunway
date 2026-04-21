@@ -17,19 +17,19 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
   };
 
   return (
-    <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-      <h4 className="font-medium text-gray-900">Liquidity Profile</h4>
+    <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+      <h4 className="font-medium text-gray-900 dark:text-gray-100">Liquidity Profile</h4>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="maxSellUnit" className="text-sm">
+          <Label htmlFor="maxSellUnit" className="text-sm dark:text-gray-300">
             Max Sell Unit
           </Label>
           <Select
             value={profile.maxSellUnit}
             onValueChange={(value) => updateProfile({ maxSellUnit: value as MaxSellUnit })}
           >
-            <SelectTrigger id="maxSellUnit">
+            <SelectTrigger id="maxSellUnit" className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -40,7 +40,7 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
         </div>
         
         <div>
-          <Label htmlFor="maxSellPerMonth" className="text-sm">
+          <Label htmlFor="maxSellPerMonth" className="text-sm dark:text-gray-300">
             Max Sell Per Month
           </Label>
           <Input
@@ -50,13 +50,14 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
             step="any"
             value={profile.maxSellPerMonth}
             onChange={(e) => updateProfile({ maxSellPerMonth: Number(e.target.value) })}
+            className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
           />
         </div>
         
         {profile.maxSellUnit === "percent_of_volume" && (
           <>
             <div>
-              <Label htmlFor="percentOfVolume" className="text-sm">
+              <Label htmlFor="percentOfVolume" className="text-sm dark:text-gray-300">
                 Percent of Volume (%)
               </Label>
               <Input
@@ -67,11 +68,12 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
                 step="0.1"
                 value={profile.percentOfVolume || 0}
                 onChange={(e) => updateProfile({ percentOfVolume: Number(e.target.value) })}
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
             
             <div>
-              <Label htmlFor="dailyVolume" className="text-sm">
+              <Label htmlFor="dailyVolume" className="text-sm dark:text-gray-300">
                 Daily Volume (USD)
               </Label>
               <Input
@@ -81,13 +83,14 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
                 step="1000"
                 value={profile.dailyVolume || 0}
                 onChange={(e) => updateProfile({ dailyVolume: Number(e.target.value) })}
+                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
               />
             </div>
           </>
         )}
         
         <div>
-          <Label htmlFor="haircutPercent" className="text-sm">
+          <Label htmlFor="haircutPercent" className="text-sm dark:text-gray-300">
             Haircut (%)
           </Label>
           <Input
@@ -98,18 +101,19 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
             step="0.1"
             value={profile.haircutPercent}
             onChange={(e) => updateProfile({ haircutPercent: Number(e.target.value) })}
+            className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
           />
         </div>
         
         <div>
-          <Label htmlFor="priceAssumption" className="text-sm">
+          <Label htmlFor="priceAssumption" className="text-sm dark:text-gray-300">
             Price Assumption
           </Label>
           <Select
             value={profile.priceAssumption}
             onValueChange={(value) => updateProfile({ priceAssumption: value as any })}
           >
-            <SelectTrigger id="priceAssumption">
+            <SelectTrigger id="priceAssumption" className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -122,7 +126,7 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
         
         {profile.priceAssumption === "monthly_decline" && (
           <div>
-            <Label htmlFor="monthlyDeclineRate" className="text-sm">
+            <Label htmlFor="monthlyDeclineRate" className="text-sm dark:text-gray-300">
               Monthly Decline Rate (%)
             </Label>
             <Input
@@ -133,6 +137,7 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
               step="0.1"
               value={profile.monthlyDeclineRate || 0}
               onChange={(e) => updateProfile({ monthlyDeclineRate: Number(e.target.value) })}
+              className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
             />
           </div>
         )}

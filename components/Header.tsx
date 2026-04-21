@@ -8,17 +8,22 @@ import {
   Upload, 
   Share2,
   ChevronDown,
-  Edit3
+  Edit3,
+  BookOpen
 } from "lucide-react";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
+import DarkModeToggle from "@/components/DarkModeToggle";
+import { exportModel, importModel, generateShareableUrl } from "@/lib/model-export";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
-  const { model, updateModel } = useCryptoRunwayStore();
+  const { model, updateModel, setModel } = useRoughRunwayStore();
   const [isEditingName, setIsEditingName] = useState(false);
   const [modelName, setModelName] = useState(model.name);
   const [isHorizonOpen, setIsHorizonOpen] = useState(false);
   const [isDateOpen, setIsDateOpen] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [importData, setImportData] = useState("");
 
   const horizonOptions = [12, 15, 18];
   const currentDate = new Date();
@@ -42,6 +47,37 @@ export default function Header() {
     const dateString = newDate.toISOString().slice(0, 7); // YYYY-MM
     updateModel({ startDate: dateString });
     setIsDateOpen(false);
+  };
+
+  const handleExport = () => {
+    const compressed = exportModel(model);
+    const blob = new Blob([compressed], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${model.name.replace(/\s+/g, "-").toLowerCase()}-roughrunway-export.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleShare = () => {
+    const url = generateShareableUrl(model);
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Shareable URL copied to clipboard!");
+    });
+  };
+
+  const handleImport = () => {
+    const importedModel = importModel(importData);
+    if (importedModel) {
+      setModel(importedModel);
+      setIsImporting(false);
+      setImportData("");
+    } else {
+      alert("Failed to import model. Please check the data and try again.");
+    }
   };
 
   return (
@@ -149,23 +185,87 @@ export default function Header() {
             </div>
 
             {/* Action Buttons */}
-            <Button variant="outline" size="sm" className="flex items-center space-x-2">
-              <Upload className="h-4 w-4" />
-              <span>Import</span>
-            </Button>
-            
-            <Button variant="outline" size="sm" className="flex items-center space-x-2">
-              <Download className="h-4 w-4" />
-              <span>Export</span>
-            </Button>
-            
-            <Button variant="outline" size="sm" className="flex items-center space-x-2">
-              <Share2 className="h-4 w-4" />
-              <span>Share</span>
-            </Button>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.open('/docs', '_blank')}
+                className="flex items-center gap-2"
+              >
+                <BookOpen className="h-4 w-4" />
+                <span className="hidden sm:inline">Docs</span>
+              </Button>
+              
+              <DarkModeToggle />
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center space-x-2"
+                onClick={() => setIsImporting(true)}
+              >
+                <Upload className="h-4 w-4" />
+                <span>Import</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center space-x-2"
+                onClick={handleExport}
+              >
+                <Download className="h-4 w-4" />
+                <span>Export</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center space-x-2"
+                onClick={handleShare}
+              >
+                <Share2 className="h-4 w-4" />
+                <span>Share</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Import Modal */}
+      {isImporting && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">Import Model</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Paste the exported model data below:
+            </p>
+            <textarea
+              value={importData}
+              onChange={(e) => setImportData(e.target.value)}
+              className="w-full h-32 border border-gray-300 rounded-md p-2 text-sm"
+              placeholder="Paste exported model data here..."
+            />
+            <div className="flex justify-end space-x-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsImporting(false);
+                  setImportData("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleImport}
+                disabled={!importData.trim()}
+              >
+                Import
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

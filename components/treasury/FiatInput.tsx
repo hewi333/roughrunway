@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
 import { FiatHolding } from "@/lib/types";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
 
 interface FiatInputProps {
@@ -14,7 +14,7 @@ interface FiatInputProps {
 }
 
 export default function FiatInput({ fiatHoldings }: FiatInputProps) {
-  const { updateModel } = useCryptoRunwayStore();
+  const { updateModel } = useRoughRunwayStore();
   
   const addFiat = () => {
     const newFiat: FiatHolding = {
@@ -25,7 +25,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         fiat: [...fiatHoldings, newFiat],
       },
     });
@@ -38,7 +38,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         fiat: updatedFiat,
       },
     });
@@ -49,7 +49,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         fiat: updatedFiat,
       },
     });
@@ -64,7 +64,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label className="text-base font-medium">Fiat Currencies</Label>
+        <Label className="text-base font-medium dark:text-gray-100">Fiat Currencies</Label>
         <Button 
           type="button" 
           variant="outline" 
@@ -78,22 +78,22 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
       </div>
       
       {fiatHoldings.length === 0 ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-          <p className="text-gray-500">No fiat currencies added yet</p>
+        <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+          <p className="text-gray-500 dark:text-gray-400">No fiat currencies added yet</p>
         </div>
       ) : (
         <div className="space-y-3">
           {fiatHoldings.map((fiat) => (
             <div key={fiat.id} className="flex items-end gap-3">
               <div className="flex-1">
-                <Label htmlFor={`fiat-currency-${fiat.id}`} className="text-sm">
+                <Label htmlFor={`fiat-currency-${fiat.id}`} className="text-sm dark:text-gray-300">
                   Currency
                 </Label>
                 <select
                   id={`fiat-currency-${fiat.id}`}
                   value={fiat.currency}
                   onChange={(e) => updateFiat(fiat.id, { currency: e.target.value as any })}
-                  className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                 >
                   {currencyOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -104,7 +104,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
               </div>
               
               <div className="flex-1">
-                <Label htmlFor={`fiat-amount-${fiat.id}`} className="text-sm">
+                <Label htmlFor={`fiat-amount-${fiat.id}`} className="text-sm dark:text-gray-300">
                   Amount
                 </Label>
                 <Input
@@ -114,7 +114,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
                   step="1000"
                   value={fiat.amount}
                   onChange={(e) => updateFiat(fiat.id, { amount: Number(e.target.value) })}
-                  className="w-full"
+                  className="w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                 />
               </div>
               
