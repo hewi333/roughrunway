@@ -2,8 +2,8 @@
 import { test, expect } from '@playwright/test';
 
 test('dark mode toggle works correctly', async ({ page }) => {
-  // Navigate to the home page
-  await page.goto('/');
+  // Navigate to the dashboard page where the header with dark mode toggle is located
+  await page.goto('/dashboard');
   
   // Check that the dark mode toggle is visible
   const darkModeToggle = page.locator('button[aria-label="Switch to light mode"]');
