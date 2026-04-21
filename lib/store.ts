@@ -6,7 +6,7 @@ import { STORAGE_KEY, STORAGE_VERSION } from "./constants";
 import { debounce } from "./hooks";
 
 // Create a default model with demo data (Nexus Labs)
-const createDefaultModel = (): RoughRunwayModel => {
+export const createDefaultModel = (): RoughRunwayModel => {
   const now = new Date().toISOString();
   return {
     id: uuidv4(),

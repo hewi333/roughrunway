@@ -4,13 +4,13 @@
 // If any of these fail, the engine's math is broken — do not proceed to UI work.
 
 import { describe, it, expect } from "vitest";
-import { computeProjection } from "@/lib/projection-engine";
+import { computeProjection } from "../lib/projection-engine";
 import type {
   BurnCategory,
-  CryptoRunwayModel,
+  RoughRunwayModel,
   InflowCategory,
   VolatileAsset,
-} from "@/lib/types";
+} from "../lib/types";
 
 // ----------------------------------------------------------------------------
 // Helpers
@@ -92,7 +92,7 @@ function makeModel(args: {
   burnCategories?: BurnCategory[];
   inflowCategories?: InflowCategory[];
   projectionMonths?: 12 | 15 | 18;
-}): CryptoRunwayModel {
+}): RoughRunwayModel {
   return {
     id: "test",
     name: "Test",

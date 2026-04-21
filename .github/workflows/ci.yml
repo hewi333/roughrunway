@@ -31,7 +31,7 @@ jobs:
       run: npm run typecheck
     
     - name: Run unit tests
-      run: npm test
+      run: npm run test:unit
     
     - name: Build project
       run: npm run build
