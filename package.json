@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "test:unit": "vitest run tests/projection-engine.test.ts",
+    "test:unit": "vitest run tests/",
     "test:e2e": "playwright test",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
