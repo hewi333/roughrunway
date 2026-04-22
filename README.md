@@ -48,7 +48,13 @@ roughrunway/
 │   ├── 04-BUILD-PLAN.md
 │   ├── 05-PROJECTION-ENGINE.md
 │   ├── 06-PERPLEXITY-INTEGRATION.md
-│   └── 07-AGENT-ARCHITECTURE.md
+│   ├── 07-AGENT-ARCHITECTURE.md
+│   ├── DESIGN-SPEC.md              # Design system overview
+│   ├── DESIGN-QUESTIONNAIRE.md     # Design requirements gathering
+│   ├── THEME-CONCEPTS.md           # Visual theme directions
+│   ├── DESIGN-GAPS.md              # Current design issues
+│   ├── DESIGN-PROCESS.md           # Implementation roadmap
+│   └── DESIGN-INITIATIVE-SUMMARY.md # Design initiative summary
 ├── lib/                     # Pure logic (no UI dependencies)
 │   ├── types.ts             # Every TS interface
 │   ├── constants.ts         # Preset categories, scenario templates
