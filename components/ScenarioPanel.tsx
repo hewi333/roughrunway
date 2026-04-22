@@ -9,7 +9,6 @@ import { useRoughRunwayStore } from "@/lib/store";
 import { SCENARIO_TEMPLATES, SCENARIO_COLORS } from "@/lib/constants";
 import { Scenario } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
-import { applyScenarioOverrides } from "@/lib/scenario-engine";
 
 export default function ScenarioPanel() {
   const { model, updateModel } = useRoughRunwayStore();
@@ -22,48 +21,47 @@ export default function ScenarioPanel() {
   const addScenario = () => {
     if (!newScenarioName.trim()) return;
 
-    const template = selectedTemplate 
-      ? SCENARIO_TEMPLATES.find(t => t.key === selectedTemplate)
+    const template = selectedTemplate
+      ? SCENARIO_TEMPLATES.find((t) => t.key === selectedTemplate)
       : null;
 
     const newScenario: Scenario = {
       id: uuidv4(),
       name: newScenarioName,
-      color: template?.color || SCENARIO_COLORS[Math.floor(Math.random() * SCENARIO_COLORS.length)],
+      color:
+        template?.color ||
+        SCENARIO_COLORS[Math.floor(Math.random() * SCENARIO_COLORS.length)],
       createdAt: new Date().toISOString(),
       isActive: false,
       templateKey: template?.key,
-      overrides: template 
-        ? template.buildOverrides(model) 
-        : {}
+      overrides: template ? template.buildOverrides(model) : {},
     };
 
     updateModel({
-      scenarios: [...model.scenarios, newScenario]
+      scenarios: [...model.scenarios, newScenario],
     });
 
-    // Reset form
     setNewScenarioName("");
     setSelectedTemplate("");
     setIsCreating(false);
   };
 
   const updateScenario = (id: string, updates: Partial<Scenario>) => {
-    const updatedScenarios = model.scenarios.map(scenario => 
+    const updatedScenarios = model.scenarios.map((scenario) =>
       scenario.id === id ? { ...scenario, ...updates } : scenario
     );
     updateModel({ scenarios: updatedScenarios });
   };
 
   const deleteScenario = (id: string) => {
-    const updatedScenarios = model.scenarios.filter(scenario => scenario.id !== id);
+    const updatedScenarios = model.scenarios.filter((scenario) => scenario.id !== id);
     updateModel({ scenarios: updatedScenarios });
   };
 
   const toggleScenarioActive = (id: string) => {
-    const updatedScenarios = model.scenarios.map(scenario => ({
+    const updatedScenarios = model.scenarios.map((scenario) => ({
       ...scenario,
-      isActive: scenario.id === id ? !scenario.isActive : false
+      isActive: scenario.id === id ? !scenario.isActive : false,
     }));
     updateModel({ scenarios: updatedScenarios });
   };
@@ -74,7 +72,7 @@ export default function ScenarioPanel() {
       id: uuidv4(),
       name: `${scenario.name} (Copy)`,
       createdAt: new Date().toISOString(),
-      isActive: false
+      isActive: false,
     };
     updateModel({ scenarios: [...model.scenarios, duplicatedScenario] });
   };
@@ -96,10 +94,13 @@ export default function ScenarioPanel() {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-medium text-gray-900">Scenarios</h2>
-        <Button 
+        <div>
+          <div className="text-placard uppercase text-muted-foreground">Section</div>
+          <h2 className="text-h3 text-foreground">Scenarios</h2>
+        </div>
+        <Button
           onClick={() => setIsCreating(!isCreating)}
           variant="outline"
           size="sm"
@@ -111,12 +112,10 @@ export default function ScenarioPanel() {
       </div>
 
       {isCreating && (
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="mb-6 p-4 bg-muted rounded-panel border border-knob-silver dark:border-knob-silver-dark">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="scenario-name" className="text-sm font-medium">
-                Scenario Name
-              </Label>
+              <Label htmlFor="scenario-name">Scenario Name</Label>
               <Input
                 id="scenario-name"
                 value={newScenarioName}
@@ -127,19 +126,17 @@ export default function ScenarioPanel() {
             </div>
 
             <div>
-              <Label htmlFor="scenario-template" className="text-sm font-medium">
-                Template (Optional)
-              </Label>
+              <Label htmlFor="scenario-template">Template (Optional)</Label>
               <select
                 id="scenario-template"
                 value={selectedTemplate}
                 onChange={(e) => setSelectedTemplate(e.target.value)}
-                className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary mt-1"
+                className="w-full rounded-precise border border-input bg-background py-2 px-3 text-body focus:outline-none focus:ring-2 focus:ring-ring mt-1"
               >
                 <option value="">Custom Scenario</option>
                 {SCENARIO_TEMPLATES.map((template) => (
                   <option key={template.key} value={template.key}>
-                    {template.name} - {template.description}
+                    {template.name} — {template.description}
                   </option>
                 ))}
               </select>
@@ -156,10 +153,7 @@ export default function ScenarioPanel() {
               >
                 Cancel
               </Button>
-              <Button
-                onClick={addScenario}
-                disabled={!newScenarioName.trim()}
-              >
+              <Button onClick={addScenario} disabled={!newScenarioName.trim()}>
                 Create Scenario
               </Button>
             </div>
@@ -169,29 +163,26 @@ export default function ScenarioPanel() {
 
       {model.scenarios.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 mb-4">No scenarios created yet</p>
-          <Button 
-            onClick={() => setIsCreating(true)}
-            variant="outline"
-          >
+          <p className="text-body text-muted-foreground mb-4">No scenarios created yet</p>
+          <Button onClick={() => setIsCreating(true)} variant="outline">
             Create Your First Scenario
           </Button>
         </div>
       ) : (
         <div className="space-y-4">
           {model.scenarios.map((scenario) => (
-            <div 
-              key={scenario.id} 
-              className={`border rounded-lg p-4 ${
-                scenario.isActive 
-                  ? "border-primary bg-primary/5" 
-                  : "border-gray-200 hover:bg-gray-50"
+            <div
+              key={scenario.id}
+              className={`border rounded-panel p-4 transition-colors duration-150 ${
+                scenario.isActive
+                  ? "border-primary bg-primary/5"
+                  : "border-knob-silver dark:border-knob-silver-dark hover:bg-muted"
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div 
-                    className="w-4 h-4 rounded-full" 
+                  <div
+                    className="w-4 h-4 rounded-knob"
                     style={{ backgroundColor: scenario.color }}
                   />
                   {editingScenarioId === scenario.id ? (
@@ -199,18 +190,14 @@ export default function ScenarioPanel() {
                       <Input
                         value={editingName}
                         onChange={(e) => setEditingName(e.target.value)}
-                        className="h-8 text-sm"
+                        className="h-8"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") saveEditing(scenario.id);
                           if (e.key === "Escape") cancelEditing();
                         }}
                         autoFocus
                       />
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={cancelEditing}
-                      >
+                      <Button size="sm" variant="outline" onClick={cancelEditing}>
                         Cancel
                       </Button>
                       <Button
@@ -222,25 +209,21 @@ export default function ScenarioPanel() {
                       </Button>
                     </div>
                   ) : (
-                    <h3 className="font-medium text-gray-900">{scenario.name}</h3>
+                    <h3 className="text-body font-medium text-foreground">{scenario.name}</h3>
                   )}
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   {scenario.templateKey && (
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                      {SCENARIO_TEMPLATES.find(t => t.key === scenario.templateKey)?.name}
+                    <span className="text-placard uppercase bg-muted text-muted-foreground px-2 py-1 rounded-precise">
+                      {SCENARIO_TEMPLATES.find((t) => t.key === scenario.templateKey)?.name}
                     </span>
                   )}
-                  
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => startEditing(scenario)}
-                  >
+
+                  <Button size="sm" variant="ghost" onClick={() => startEditing(scenario)}>
                     <Edit3 className="h-4 w-4" />
                   </Button>
-                  
+
                   <Button
                     size="sm"
                     variant="ghost"
@@ -248,7 +231,7 @@ export default function ScenarioPanel() {
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
-                  
+
                   <Button
                     size="sm"
                     variant={scenario.isActive ? "default" : "outline"}
@@ -258,19 +241,19 @@ export default function ScenarioPanel() {
                     <Play className="h-4 w-4" />
                     {scenario.isActive ? "Active" : "Run"}
                   </Button>
-                  
+
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => deleteScenario(scenario.id)}
                   >
-                    <Trash2 className="h-4 w-4 text-red-500" />
+                    <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
               </div>
-              
+
               {scenario.isActive && (
-                <div className="mt-3 text-sm text-gray-600">
+                <div className="mt-3 text-body text-muted-foreground">
                   <p>This scenario is currently active and will be included in projections.</p>
                 </div>
               )}
