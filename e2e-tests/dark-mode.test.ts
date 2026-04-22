@@ -37,7 +37,7 @@ test('dark mode toggle works correctly', async ({ page }) => {
   console.log('Dark mode toggle is visible');
   
   // Get the initial aria-label
-  const initialLabel = await darkModeToggle.getAttribute('aria-label');
+  const initialLabel = (await darkModeToggle.getAttribute('aria-label')) || '';
   console.log('Initial aria-label:', initialLabel);
   
   // Click the dark mode toggle
@@ -47,7 +47,7 @@ test('dark mode toggle works correctly', async ({ page }) => {
   await expect(darkModeToggle).not.toHaveAttribute('aria-label', initialLabel, { timeout: 5000 });
   
   // Check if the aria-label changed
-  const newLabel = await darkModeToggle.getAttribute('aria-label');
+  const newLabel = (await darkModeToggle.getAttribute('aria-label')) || '';
   console.log('New aria-label:', newLabel);
   
   // The labels should be different
