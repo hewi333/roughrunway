@@ -1,13 +1,83 @@
 "use client";
 
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useRoughRunwayStore } from "@/lib/store";
+import { BurnCategory } from "@/lib/types";
+import { v4 as uuidv4 } from "uuid";
+import BurnCategoryRow from "@/components/burn/BurnCategoryRow";
+import BurnSummaryCard from "@/components/burn/BurnSummaryCard";
 
 export default function BurnPanel() {
+  const { model, updateModel } = useRoughRunwayStore();
+  const { burnCategories } = model;
+
+  const addCategory = () => {
+    const newCategory: BurnCategory = {
+      id: uuidv4(),
+      name: "New Burn Category",
+      type: "custom",
+      currency: "fiat",
+      monthlyBaseline: 0,
+      growthRate: 0,
+      adjustments: [],
+      isActive: true,
+    };
+
+    updateModel({
+      burnCategories: [...burnCategories, newCategory],
+    });
+  };
+
   return (
-    <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
-      <div className="text-placard uppercase text-muted-foreground">Section</div>
-      <h2 className="text-h3 text-foreground mt-1 mb-4">Burn Categories</h2>
-      <p className="text-body text-muted-foreground">Burn panel content will go here.</p>
+    <div className="space-y-8">
+      <div>
+        <div className="text-placard uppercase text-muted-foreground">Section</div>
+        <h2 className="text-h1 text-foreground mt-1">Burn Categories</h2>
+        <p className="text-body text-muted-foreground mt-2">
+          Configure your monthly burn categories including salaries, expenses, and other costs.
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <div className="text-placard uppercase text-muted-foreground">Burn</div>
+              <h3 className="text-h3 text-foreground">Categories</h3>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addCategory}
+              className="flex items-center gap-1"
+            >
+              <Plus className="h-4 w-4" />
+              Add Category
+            </Button>
+          </div>
+
+          {burnCategories.length === 0 ? (
+            <div className="text-center py-8 bg-muted rounded-panel border border-dashed border-knob-silver dark:border-knob-silver-dark">
+              <p className="text-body text-muted-foreground mb-4">No burn categories added yet</p>
+              <Button onClick={addCategory} variant="outline">
+                Add Your First Category
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {burnCategories.map((category) => (
+                <BurnCategoryRow key={category.id} category={category} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
+          <BurnSummaryCard />
+        </div>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRoughRunwayStore } from "@/lib/store";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardPlacard } from "@/components/ui/card";
 
 export default function TreasurySummaryCard() {
   const { model } = useRoughRunwayStore();
@@ -32,32 +32,33 @@ export default function TreasurySummaryCard() {
   
   return (
     <div>
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Treasury Summary</h3>
+      <div className="text-placard uppercase text-muted-foreground">Summary</div>
+      <h3 className="text-h3 text-foreground mt-1 mb-4">Treasury Overview</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total at Spot Value</CardTitle>
+          <CardHeader className="flex flex-col space-y-1 pb-2">
+            <CardPlacard>Total at Spot Value</CardPlacard>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-h2 font-mono font-bold text-foreground">
               ${totalAtSpot.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground mt-1">
               Current market value of all assets
             </p>
           </CardContent>
         </Card>
         
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total at Haircut Value</CardTitle>
+          <CardHeader className="flex flex-col space-y-1 pb-2">
+            <CardPlacard>Total at Haircut Value</CardPlacard>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-h2 font-mono font-bold text-foreground">
               ${totalAtHaircut.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground mt-1">
               Conservative liquidation value
             </p>
           </CardContent>
@@ -65,26 +66,38 @@ export default function TreasurySummaryCard() {
       </div>
       
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="text-sm font-medium text-gray-500">Stablecoins</div>
-          <div className="text-lg font-semibold text-gray-900">
-            ${stablecoinTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-          </div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-col space-y-1 pb-2">
+            <CardPlacard>Stablecoins</CardPlacard>
+          </CardHeader>
+          <CardContent>
+            <div className="text-h3 font-mono font-bold text-foreground">
+              ${stablecoinTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+            </div>
+          </CardContent>
+        </Card>
         
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="text-sm font-medium text-gray-500">Fiat</div>
-          <div className="text-lg font-semibold text-gray-900">
-            ${fiatTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-          </div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-col space-y-1 pb-2">
+            <CardPlacard>Fiat</CardPlacard>
+          </CardHeader>
+          <CardContent>
+            <div className="text-h3 font-mono font-bold text-foreground">
+              ${fiatTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+            </div>
+          </CardContent>
+        </Card>
         
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="text-sm font-medium text-gray-500">Volatile Assets</div>
-          <div className="text-lg font-semibold text-gray-900">
-            ${volatileAssetsSpotTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-          </div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-col space-y-1 pb-2">
+            <CardPlacard>Volatile Assets</CardPlacard>
+          </CardHeader>
+          <CardContent>
+            <div className="text-h3 font-mono font-bold text-foreground">
+              ${volatileAssetsSpotTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
