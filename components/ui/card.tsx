@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+// Instrument-panel card: 8px radius, knob-silver hairline border,
+// subtle shadow. See docs/DESIGN-IMPLEMENTATION.md §7.
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -9,7 +11,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "rounded-panel border border-knob-silver bg-card text-card-foreground shadow-sm dark:border-knob-silver-dark",
       className
     )}
     {...props}
@@ -29,6 +31,24 @@ const CardHeader = React.forwardRef<
 ));
 CardHeader.displayName = "CardHeader";
 
+// Optional placard label — uppercase, tracked, mono-style placard type
+// for the "HARD RUNWAY" / "EXTENDED RUNWAY" / "TREASURY" mini-headers
+// that sit above the main card title (vintage cockpit instrument feel).
+const CardPlacard = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "text-placard uppercase text-muted-foreground",
+      className
+    )}
+    {...props}
+  />
+));
+CardPlacard.displayName = "CardPlacard";
+
 const CardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
@@ -36,7 +56,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-h2 leading-none tracking-tight",
       className
     )}
     {...props}
@@ -50,7 +70,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-body text-muted-foreground", className)}
     {...props}
   />
 ));
@@ -76,4 +96,12 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardPlacard,
+};

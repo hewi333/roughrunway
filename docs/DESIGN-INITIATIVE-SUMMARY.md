@@ -1,5 +1,8 @@
 # Rough Runway Design Initiative - Summary
 
+> **Status: Historical / exploration.**
+> Decision locked on **Retro Swiss Aviation** (April 22, 2026) — a Swiss Minimalist + Retro Aviation hybrid. The active, binding spec is [`DESIGN-IMPLEMENTATION.md`](./DESIGN-IMPLEMENTATION.md). This summary is retained for context.
+
 ## Current Status
 
 The Rough Runway project has a basic UI implementation but lacks a cohesive design system. Key findings:

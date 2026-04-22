@@ -1,5 +1,8 @@
 # Rough Runway Design Specification
 
+> **Status: Historical / exploration.**
+> Decision locked on **Retro Swiss Aviation** (April 22, 2026). The active, binding spec is [`DESIGN-IMPLEMENTATION.md`](./DESIGN-IMPLEMENTATION.md). This document is retained for context on how the direction was scoped.
+
 ## Current State Assessment
 
 The project currently has:

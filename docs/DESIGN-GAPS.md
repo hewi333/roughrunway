@@ -1,5 +1,8 @@
 # Current Design Gaps & Issues
 
+> **Status: Audit reference.**
+> Produced during the exploration phase. The Retro Swiss Aviation system in [`DESIGN-IMPLEMENTATION.md`](./DESIGN-IMPLEMENTATION.md) addresses categories 1–8 directly (tokens, typography scale, spacing grid, state tokens, chart styling, accessibility). Use this document as a checklist of what the foundation work must close — not as a source of colors or tokens.
+
 ## 1. Visual Consistency
 
 ### Component Styling Inconsistencies
