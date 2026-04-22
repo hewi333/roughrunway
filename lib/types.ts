@@ -117,6 +117,9 @@ export interface MonthlyAdjustment {
   description: string;
 }
 
+// Export Adjustment as an alias for MonthlyAdjustment for backward compatibility
+export type Adjustment = MonthlyAdjustment;
+
 // ============================================================================
 // Scenarios
 // ============================================================================
