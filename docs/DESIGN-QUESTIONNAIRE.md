@@ -1,5 +1,8 @@
 # Rough Runway Design Questionnaire
 
+> **Status: Historical / exploration.**
+> Decision locked on **Retro Swiss Aviation** (April 22, 2026). Many of the open questions below have been resolved in [`DESIGN-IMPLEMENTATION.md`](./DESIGN-IMPLEMENTATION.md) — consult that doc for color, typography, spacing, chart, and accessibility decisions. This questionnaire is retained as a record of the discovery phase.
+
 ## 1. Brand Identity & Theme Direction
 
 ### 1.1 Overall Aesthetic Preferences

@@ -1,5 +1,8 @@
 # Rough Runway Design Process & Next Steps
 
+> **Status: Historical / exploration.**
+> The theme-selection and design-system-definition phases (Phases 1–3 below) are complete. Decision locked on **Retro Swiss Aviation** (April 22, 2026). The active implementation checklist lives in [`DESIGN-IMPLEMENTATION.md`](./DESIGN-IMPLEMENTATION.md) §9 and supersedes Phase 5 of this document.
+
 ## Phase 1: Information Gathering (Current)
 
 ### Completed

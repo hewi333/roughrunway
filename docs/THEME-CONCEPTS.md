@@ -1,5 +1,8 @@
 # Rough Runway Theme Concepts
 
+> **Status: Historical / exploration.**
+> Decision locked on a **Swiss Aviation + Retro Aviation hybrid** ("Retro Swiss Aviation"), April 22, 2026. The active spec is [`DESIGN-IMPLEMENTATION.md`](./DESIGN-IMPLEMENTATION.md). Concepts 1 and 2 below fed into the final direction; Concept 3 (Modern Crypto-Native) was discarded.
+
 ## Concept 1: Swiss Minimalist Aviation
 
 ### Visual Inspiration
