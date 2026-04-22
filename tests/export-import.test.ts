@@ -1,12 +1,13 @@
 // Test file for export/import functionality
 import { describe, it, expect } from 'vitest';
 import { exportModel, importModel } from '../lib/model-export';
-import { createDefaultModel } from '../lib/store';
+import { useRoughRunwayStore } from '../lib/store';
 
 describe('export and import model', () => {
   it('works correctly', () => {
-    // Create a default model
-    const model = createDefaultModel();
+    // Create a default model using the store
+    const store = useRoughRunwayStore.getState();
+    const model = store.model;
     
     // Export the model
     const exportedData = exportModel(model);

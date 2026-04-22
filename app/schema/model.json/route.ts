@@ -10,10 +10,10 @@ export const dynamic = "force-static";
 
 const SCHEMA = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://roughrunway.com/schema/model.json",
+  $id: "https://roughrunway.app/schema/model.json",
   title: "RoughRunwayModel",
   description:
-    "A complete Rough Runway treasury model. Self-contained — this is what the export/import endpoints produce and consume.",
+    "A complete RoughRunway treasury model. Self-contained — this is what the export/import endpoints produce and consume.",
   type: "object",
   required: [
     "id",

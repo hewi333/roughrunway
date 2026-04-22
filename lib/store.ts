@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { RoughRunwayModel, StoredData } from "./types";
+import { RoughRunwayModel, StoredData } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
-import { STORAGE_KEY, STORAGE_VERSION } from "./constants";
-import { debounce } from "./hooks";
+import { STORAGE_KEY, STORAGE_VERSION } from "@/lib/constants";
+import { debounce } from "@/lib/hooks";
 
 // Create a default model with demo data (Nexus Labs)
-export const createDefaultModel = (): RoughRunwayModel => {
+const createDefaultModel = (): RoughRunwayModel => {
   const now = new Date().toISOString();
   return {
     id: uuidv4(),
@@ -176,7 +176,7 @@ export const useRoughRunwayStore = create<RoughRunwayStore>()(
 );
 
 // Create a debounced version of the store update for performance
-export const useDebouncedCryptoRunwayStore = (() => {
+export const useDebouncedRoughRunwayStore = (() => {
   let debouncedUpdate: ((updates: Partial<RoughRunwayModel>) => void) | null = null;
   
   return () => {

@@ -1,4 +1,4 @@
-// RoughRunway Projection Engine
+// Rough Runway Projection Engine
 // Source of truth: docs/05-PROJECTION-ENGINE.md
 // Pure functions only — no side effects, no API calls, no state mutation.
 
@@ -15,8 +15,8 @@ import { computeMonthDate, formatMonthLabel, sum } from "./utils";
 import { applyScenarioOverrides } from "./scenario-engine";
 
 // ============================================================================
+
 // Primary Entry Point
-// ============================================================================
 
 export function computeProjection(model: RoughRunwayModel): {
   projections: MonthlyProjection[];

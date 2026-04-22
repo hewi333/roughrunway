@@ -2,8 +2,8 @@
 // Source of truth: docs/02-DATA-MODEL.md
 
 // ============================================================================
+
 // Top-Level Model
-// ============================================================================
 
 export interface RoughRunwayModel {
   id: string;
