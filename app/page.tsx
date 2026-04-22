@@ -4,78 +4,92 @@ import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 dark:text-gray-100">
-            Rough Runway
-          </h1>
-          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto dark:text-gray-300">
-            Financial runway modeling for crypto protocols. Plan, simulate, and optimize your treasury with AI-powered insights.
+          <div className="text-placard uppercase text-muted-foreground mb-4">
+            Treasury runway · Crypto organizations
+          </div>
+          <h1 className="text-display text-foreground mb-6">Rough Runway</h1>
+          <p className="text-body-lg text-muted-foreground mb-10 max-w-3xl mx-auto">
+            Financial runway modeling for crypto protocols. Plan, simulate, and
+            optimize your treasury with AI-powered insights.
           </p>
-          
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-16">
-            <Button asChild size="lg" className="text-lg px-8 py-6">
+
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-16">
+            <Button asChild size="lg" variant="knob" className="text-body-lg px-8">
               <Link href="/dashboard">
                 Launch the Tool
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            
-            <Button asChild size="lg" variant="outline" className="text-lg px-8 py-6 dark:border-gray-600 dark:text-gray-300">
-              <Link href="/setup">
-                Setup Wizard
-              </Link>
+
+            <Button asChild size="lg" variant="outline" className="text-body-lg px-8">
+              <Link href="/setup">Setup Wizard</Link>
             </Button>
-            
-            <Button asChild size="lg" variant="outline" className="text-lg px-8 py-6 dark:border-gray-600 dark:text-gray-300">
-              <Link href="https://github.com/hewi333/roughrunway" target="_blank">
+
+            <Button asChild size="lg" variant="outline" className="text-body-lg px-8">
+              <Link
+                href="https://github.com/hewi333/roughrunway"
+                target="_blank"
+              >
                 View on GitHub
               </Link>
             </Button>
           </div>
-          
-          <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-4xl mx-auto mb-16 dark:bg-gray-800 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 dark:text-gray-100">Powered by Perplexity</h2>
-            <p className="text-gray-600 mb-6 dark:text-gray-300">
-              Rough Runway leverages Perplexity's Sonar API to provide real-time market insights and AI-powered scenario analysis for crypto treasuries.
+
+          <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-8 max-w-4xl mx-auto mb-16 shadow-sm">
+            <div className="text-placard uppercase text-muted-foreground mb-2">
+              Powered by
+            </div>
+            <h2 className="text-h2 text-foreground mb-4">Perplexity</h2>
+            <p className="text-body text-muted-foreground mb-8">
+              Rough Runway leverages Perplexity's Sonar API to provide real-time
+              market insights and AI-powered scenario analysis for crypto
+              treasuries.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="bg-primary/10 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">📊</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2 dark:text-gray-100">Real-time Modeling</h3>
-                <p className="text-gray-600 text-sm dark:text-gray-300">
-                  Instantly model your runway with complex treasury compositions
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-primary/10 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🤖</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2 dark:text-gray-100">AI Scenarios</h3>
-                <p className="text-gray-600 text-sm dark:text-gray-300">
-                  Create custom scenarios with natural language using Perplexity
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-primary/10 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🔗</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2 dark:text-gray-100">Shareable Models</h3>
-                <p className="text-gray-600 text-sm dark:text-gray-300">
-                  Export and share your models with team members via URL
-                </p>
-              </div>
+              <FeatureTile
+                label="Instrument"
+                title="Real-time Modeling"
+                body="Instantly model your runway with complex treasury compositions."
+              />
+              <FeatureTile
+                label="Autopilot"
+                title="AI Scenarios"
+                body="Create custom scenarios with natural language using Perplexity."
+              />
+              <FeatureTile
+                label="Radio"
+                title="Shareable Models"
+                body="Export and share your models with team members via URL."
+              />
             </div>
           </div>
-          
-          <div className="text-gray-500 text-sm dark:text-gray-400">
+
+          <div className="text-caption text-muted-foreground">
             <p>Built at the Accountant Quits Web3 Hackathon</p>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function FeatureTile({
+  label,
+  title,
+  body,
+}: {
+  label: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="border border-knob-silver dark:border-knob-silver-dark rounded-panel p-4 text-left">
+      <div className="text-placard uppercase text-muted-foreground mb-1">{label}</div>
+      <h3 className="text-h3 text-foreground mb-2">{title}</h3>
+      <p className="text-body text-muted-foreground">{body}</p>
     </div>
   );
 }

@@ -10,8 +10,6 @@ export default function DashboardPage() {
   const [needsSetup, setNeedsSetup] = useState(false);
 
   useEffect(() => {
-    // Check if the user has completed the initial setup
-    // For now, we'll just check if the model name is the default
     if (model.name === "Untitled Model") {
       setNeedsSetup(true);
     }
@@ -19,7 +17,7 @@ export default function DashboardPage() {
 
   if (needsSetup) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background text-foreground">
         <SetupWizard />
       </div>
     );

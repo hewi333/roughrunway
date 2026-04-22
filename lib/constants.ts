@@ -96,15 +96,16 @@ export function defaultLiquidationPriority(tier: VolatileAssetTier): number {
 }
 
 // ============================================================================
-// Scenario Color Palette
+// Scenario Color Palette — Retro Swiss Aviation
+// See docs/DESIGN-IMPLEMENTATION.md §6 (chart styling, scenario lines).
 // ============================================================================
 
 export const SCENARIO_COLORS = [
-  "#EC4899",
-  "#14B8A6",
-  "#F97316",
-  "#8B5CF6",
-  "#06B6D4",
+  "#D4A574", // knob-gold
+  "#2E7D32", // aviation-green
+  "#6FA3D4", // sky-blue
+  "#C62828", // aviation-red
+  "#6B6B6B", // ink-secondary
 ];
 
 // ============================================================================
@@ -124,7 +125,7 @@ export const SCENARIO_TEMPLATES: ScenarioTemplate[] = [
     key: "bear_market",
     name: "Bear Market",
     description: "Native -50%, ETH -30%, revenue -30%, native haircut +10",
-    color: "#EC4899",
+    color: "#C62828", // aviation-red — bearish
     buildOverrides: (model) => {
       const native = model.treasury.volatileAssets.find((a) => a.tier === "native");
       const eth = model.treasury.volatileAssets.find(
@@ -157,7 +158,7 @@ export const SCENARIO_TEMPLATES: ScenarioTemplate[] = [
     key: "aggressive_hiring",
     name: "Aggressive Hiring",
     description: "Add 5 people at $15K/mo avg starting month 2",
-    color: "#14B8A6",
+    color: "#2E7D32", // aviation-green — growth
     buildOverrides: () => ({
       headcountChange: { count: 5, costPerHead: 15000, startMonth: 2 },
     }),
@@ -166,7 +167,7 @@ export const SCENARIO_TEMPLATES: ScenarioTemplate[] = [
     key: "emergency_cuts",
     name: "Emergency Cuts",
     description: "Cut non-headcount burn by 30%",
-    color: "#F97316",
+    color: "#D4A574", // knob-gold — caution
     buildOverrides: (model) => {
       const cutTargets = ["infrastructure", "legal", "marketing", "token_incentives", "grants_out", "office_admin"];
       const burnOverrides = model.burnCategories
@@ -179,7 +180,7 @@ export const SCENARIO_TEMPLATES: ScenarioTemplate[] = [
     key: "token_crash",
     name: "Token Crash",
     description: "Native -80%, haircut +20, sell rate halved",
-    color: "#8B5CF6",
+    color: "#6B6B6B", // ink-secondary — muted/somber
     buildOverrides: (model) => {
       const native = model.treasury.volatileAssets.find((a) => a.tier === "native");
       if (!native) return {};

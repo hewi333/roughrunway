@@ -25,56 +25,52 @@ export default function AppShell({ children }: AppShellProps) {
   const isMobile = useMediaQuery("(max-width: 1024px)");
   const { model } = useRoughRunwayStore();
 
-  // Handle mobile view
   if (isMobile) {
     return <MobileInterstitial />;
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar */}
-      <div 
-        className={`bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-all duration-300 ease-in-out ${
+    <div className="flex h-screen bg-background text-foreground">
+      <div
+        className={`bg-card border-r border-knob-silver dark:border-knob-silver-dark transition-all duration-150 ease-out ${
           isSidebarCollapsed ? "w-20" : "w-80"
         }`}
       >
-        <Sidebar 
-          activePanel={activePanel} 
+        <Sidebar
+          activePanel={activePanel}
           setActivePanel={setActivePanel}
           isCollapsed={isSidebarCollapsed}
           setIsCollapsed={setIsSidebarCollapsed}
         />
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        
+
         <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
             {activePanel === "treasury" && <TreasuryPanel />}
             {activePanel === "burn" && <BurnPanel />}
             {activePanel === "inflow" && <InflowPanel />}
             {activePanel === "scenarios" && <ScenarioProjectionChart />}
-            
-            {/* Projection visualization - always visible */}
+
             <div className="mt-8">
               <RunwaySummaryCards />
             </div>
-            
+
             <div className="mt-8">
               <ScenarioProjectionChart />
             </div>
-            
+
             <div className="mt-8">
               <MonthlyBreakdownTable />
             </div>
-            
+
             <div className="mt-8 flex justify-center">
               <Button
                 variant="outline"
-                onClick={() => window.open('/docs', '_blank')}
-                className="flex items-center gap-2 dark:border-gray-600 dark:text-gray-300"
+                onClick={() => window.open("/docs", "_blank")}
+                className="flex items-center gap-2"
               >
                 <BookOpen className="h-4 w-4" />
                 View Documentation
@@ -82,8 +78,8 @@ export default function AppShell({ children }: AppShellProps) {
             </div>
           </div>
         </main>
-        
-        <footer className="border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+
+        <footer className="border-t border-knob-silver dark:border-knob-silver-dark bg-card">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <FooterBrand />
           </div>

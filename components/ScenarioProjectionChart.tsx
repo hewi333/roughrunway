@@ -1,18 +1,16 @@
 "use client";
 
 import React from "react";
-import { 
-  ResponsiveContainer, 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  AreaChart, 
+import {
+  ResponsiveContainer,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   Area,
-  ComposedChart
+  ComposedChart,
 } from "recharts";
 import { computeScenarioProjection } from "@/lib/projection-engine";
 import { useRoughRunwayStore } from "@/lib/store";
@@ -23,180 +21,170 @@ interface ScenarioProjectionChartProps {
   className?: string;
 }
 
+const AXIS_TICK = {
+  fill: "hsl(var(--muted-foreground))",
+  fontSize: 10,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase" as const,
+};
+
+function ChartTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-card border border-knob-silver dark:border-knob-silver-dark rounded-panel p-3 shadow-sm min-w-[180px]">
+      <p className="text-placard uppercase text-muted-foreground mb-1">Month</p>
+      <p className="text-body font-medium text-foreground mb-2">{label}</p>
+      <div className="space-y-1">
+        {payload.map((entry: any, i: number) => (
+          <div key={i} className="flex items-center justify-between gap-4 text-body">
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-block h-2 w-2 rounded-sm"
+                style={{ backgroundColor: entry.color }}
+              />
+              <span className="text-foreground">{entry.name}</span>
+            </div>
+            <span className="font-mono text-foreground">
+              ${Number(entry.value).toLocaleString()}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ScenarioProjectionChart({ className }: ScenarioProjectionChartProps) {
   const { model } = useRoughRunwayStore();
   const { projections: baselineProjections } = useProjection();
-  
-  // Get active scenarios
-  const activeScenarios = model.scenarios.filter(s => s.isActive);
-  
-  // Compute scenario projections
-  const scenarioProjections = activeScenarios.map(scenario => {
+
+  const activeScenarios = model.scenarios.filter((s) => s.isActive);
+
+  const scenarioProjections = activeScenarios.map((scenario) => {
     const projection = computeScenarioProjection(model, scenario);
     return {
       scenario,
       projections: projection.projections,
-      summary: projection.summary
+      summary: projection.summary,
     };
   });
-  
-  // Transform data for the chart
+
   const chartData = baselineProjections.map((baseline, index) => {
     const dataPoint: any = {
       month: baseline.label,
-      baseline: baseline.extendedBalance,
+      hard: baseline.hardBalance,
+      extended: baseline.extendedBalance,
     };
-    
-    // Add scenario data
+
     scenarioProjections.forEach(({ scenario, projections }) => {
       if (projections[index]) {
         dataPoint[`scenario_${scenario.id}`] = projections[index].extendedBalance;
       }
     });
-    
+
     return dataPoint;
   });
-  
-  // Create lines for the chart
-  const lines = [
-    {
-      key: "baseline",
-      name: "Baseline",
-      color: "#14B8A6",
-      stroke: "#14B8A6",
-      fill: "#14B8A6"
-    },
-    ...scenarioProjections.map(({ scenario }) => ({
-      key: `scenario_${scenario.id}`,
-      name: scenario.name,
-      color: scenario.color,
-      stroke: scenario.color,
-      fill: scenario.color
-    }))
-  ];
 
-  // Custom tooltip component for dark mode
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded shadow">
-          <p className="font-medium text-gray-900 dark:text-gray-100">{`Month: ${label}`}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-gray-900 dark:text-gray-100">
-              <span style={{ color: entry.color }}>{entry.name}</span>: $
-              {Number(entry.value).toLocaleString()}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
+  const isComparison = activeScenarios.length > 0;
 
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700 ${className}`}>
-      <h2 className="text-lg font-medium text-gray-900 mb-4 dark:text-gray-100">
-        {activeScenarios.length > 0 ? "Scenario Comparison" : "Runway Projection"}
-      </h2>
-      
-      {activeScenarios.length > 0 ? (
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="month" 
-                stroke="#6b7280" 
-                tick={{ fill: "#6b7280" }} 
-              />
-              <YAxis 
-                tickFormatter={(value) => `$${value / 1000000}M`}
-                stroke="#6b7280" 
-                tick={{ fill: "#6b7280" }} 
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Area 
-                type="monotone" 
-                dataKey="baseline" 
-                name="Baseline" 
-                stackId="1" 
-                stroke="#14B8A6" 
-                fill="#14B8A6" 
-                fillOpacity={0.6}
-              />
-              {scenarioProjections.map(({ scenario }) => (
-                <Line 
-                  key={scenario.id}
-                  type="monotone" 
-                  dataKey={`scenario_${scenario.id}`} 
-                  name={scenario.name} 
-                  stroke={scenario.color} 
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-              ))}
-            </ComposedChart>
-          </ResponsiveContainer>
+    <div
+      className={`bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6 ${className ?? ""}`}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <div className="text-placard uppercase text-muted-foreground">Instrument</div>
+          <h2 className="text-h3 text-foreground">
+            {isComparison ? "Scenario Comparison" : "Runway Projection"}
+          </h2>
         </div>
-      ) : (
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
+      </div>
+
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            data={chartData}
+            margin={{ top: 8, right: 24, left: 16, bottom: 8 }}
+          >
+            <CartesianGrid
+              vertical={false}
+              stroke="var(--chart-grid)"
+              strokeOpacity={0.2}
+            />
+            <XAxis
+              dataKey="month"
+              stroke="var(--chart-grid)"
+              strokeOpacity={0.4}
+              tick={AXIS_TICK}
+              tickLine={{ stroke: "var(--chart-grid)", strokeOpacity: 0.4 }}
+            />
+            <YAxis
+              tickFormatter={(value) => `$${value / 1_000_000}M`}
+              stroke="var(--chart-grid)"
+              strokeOpacity={0.4}
+              tick={{
+                fill: "hsl(var(--muted-foreground))",
+                fontSize: 10,
+                fontFamily: "var(--font-jetbrains-mono)",
               }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="month" 
-                stroke="#6b7280" 
-                tick={{ fill: "#6b7280" }} 
+              tickLine={{ stroke: "var(--chart-grid)", strokeOpacity: 0.4 }}
+            />
+            <Tooltip
+              content={<ChartTooltip />}
+              cursor={{
+                stroke: "var(--chart-grid)",
+                strokeOpacity: 0.5,
+                strokeDasharray: "4 4",
+              }}
+            />
+            <Legend
+              wrapperStyle={{
+                fontSize: 10,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                color: "hsl(var(--muted-foreground))",
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="extended"
+              name="Extended Runway"
+              stroke="var(--chart-extended-runway)"
+              strokeWidth={2}
+              strokeDasharray="8 4"
+              fill="var(--chart-extended-runway)"
+              fillOpacity={0.15}
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="hard"
+              name="Hard Runway"
+              stroke="var(--chart-hard-runway)"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              dot={false}
+              activeDot={{ r: 5, stroke: "hsl(var(--card))", strokeWidth: 2 }}
+              isAnimationActive={false}
+            />
+            {scenarioProjections.map(({ scenario }) => (
+              <Line
+                key={scenario.id}
+                type="monotone"
+                dataKey={`scenario_${scenario.id}`}
+                name={scenario.name}
+                stroke={scenario.color}
+                strokeWidth={1.5}
+                dot={false}
+                activeDot={{ r: 4, stroke: "hsl(var(--card))", strokeWidth: 2 }}
+                isAnimationActive={false}
               />
-              <YAxis 
-                tickFormatter={(value) => `$${value / 1000000}M`}
-                stroke="#6b7280" 
-                tick={{ fill: "#6b7280" }} 
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Area 
-                type="monotone" 
-                dataKey="baseline" 
-                name="Extended Runway" 
-                stackId="1" 
-                stroke="#14B8A6" 
-                fill="#14B8A6" 
-                fillOpacity={0.6}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="baseline" 
-                name="Hard Runway" 
-                stroke="#EC4899" 
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-      
-      {activeScenarios.length > 0 && (
+            ))}
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+
+      {isComparison && (
         <div className="mt-6">
           <ScenarioSummaryCards />
         </div>

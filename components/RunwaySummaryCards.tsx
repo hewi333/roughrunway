@@ -1,59 +1,87 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardPlacard } from "@/components/ui/card";
 import { useProjection } from "@/lib/hooks/useProjection";
+import { cn } from "@/lib/utils";
+
+function formatCompactDollars(value: number): string {
+  if (!value) return "$0";
+  if (Math.abs(value) >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+  if (Math.abs(value) >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
+  return `$${Math.round(value).toLocaleString()}`;
+}
+
+function runwayColorClass(months: number | null): string {
+  if (months === null) return "text-aviation-green dark:text-aviation-green-dark";
+  if (months > 12) return "text-aviation-green dark:text-aviation-green-dark";
+  if (months >= 6) return "text-knob-gold dark:text-knob-gold-dark";
+  return "text-swiss-red dark:text-aviation-red-dark";
+}
 
 export default function RunwaySummaryCards() {
   const { summary } = useProjection();
-  
-  const hardRunway = summary.hardRunwayMonths ?? 0;
-  const extendedRunway = summary.extendedRunwayMonths ?? 0;
+
+  const hardRunway = summary.hardRunwayMonths;
+  const extendedRunway = summary.extendedRunwayMonths;
   const fundingGap = summary.fundingGapUSD;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <Card className="bg-white dark:bg-gray-800 dark:border-gray-700">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-900 dark:text-gray-100">Hard Runway</CardTitle>
-          <div className="h-4 w-4 text-muted-foreground" />
+      <Card>
+        <CardHeader className="flex flex-col space-y-1 pb-2">
+          <CardPlacard>Hard Runway</CardPlacard>
+          <span className="text-caption text-muted-foreground">
+            Stablecoins + fiat only
+          </span>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {hardRunway !== null ? `${hardRunway} months` : "18+ months"}
+          <div className={cn("text-h1 font-mono font-bold", runwayColorClass(hardRunway))}>
+            {hardRunway !== null ? `${hardRunway} mo` : "18+ mo"}
           </div>
-          <p className="text-xs text-muted-foreground dark:text-gray-400">
-            Based on liquid assets only
+          <p className="text-caption text-muted-foreground mt-2">
+            The guaranteed floor
           </p>
         </CardContent>
       </Card>
-      
-      <Card className="bg-white dark:bg-gray-800 dark:border-gray-700">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-900 dark:text-gray-100">Extended Runway</CardTitle>
-          <div className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {extendedRunway !== null ? `${extendedRunway} months` : "18+ months"}
-          </div>
-          <p className="text-xs text-muted-foreground dark:text-gray-400">
+
+      <Card>
+        <CardHeader className="flex flex-col space-y-1 pb-2">
+          <CardPlacard>Extended Runway</CardPlacard>
+          <span className="text-caption text-muted-foreground">
             Includes volatile assets
+          </span>
+        </CardHeader>
+        <CardContent>
+          <div className={cn("text-h1 font-mono font-bold", runwayColorClass(extendedRunway))}>
+            {extendedRunway !== null ? `${extendedRunway} mo` : "18+ mo"}
+          </div>
+          <p className="text-caption text-muted-foreground mt-2">
+            Simulated month-by-month
           </p>
         </CardContent>
       </Card>
-      
-      <Card className="bg-white dark:bg-gray-800 dark:border-gray-700">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-900 dark:text-gray-100">Funding Gap</CardTitle>
-          <div className="h-4 w-4 text-muted-foreground" />
+
+      <Card>
+        <CardHeader className="flex flex-col space-y-1 pb-2">
+          <CardPlacard>Funding Gap</CardPlacard>
+          <span className="text-caption text-muted-foreground">
+            Unmet deficit over horizon
+          </span>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {fundingGap > 0 ? `-$${(fundingGap / 1000000).toFixed(1)}M` : '$0'}
+          <div
+            className={cn(
+              "text-h1 font-mono font-bold",
+              fundingGap > 0
+                ? "text-aviation-red dark:text-aviation-red-dark"
+                : "text-aviation-green dark:text-aviation-green-dark"
+            )}
+          >
+            {fundingGap > 0 ? `−${formatCompactDollars(fundingGap)}` : "$0"}
           </div>
-          <p className="text-xs text-muted-foreground dark:text-gray-400">
-            Unmet deficit over projection
+          <p className="text-caption text-muted-foreground mt-2">
+            Raise or cut to cover
           </p>
         </CardContent>
       </Card>
