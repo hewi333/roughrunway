@@ -3,7 +3,13 @@
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LiquidityProfile, MaxSellUnit } from "@/lib/types";
 
 interface LiquidityProfileEditorProps {
@@ -11,25 +17,31 @@ interface LiquidityProfileEditorProps {
   onChange: (profile: LiquidityProfile) => void;
 }
 
-export default function LiquidityProfileEditor({ profile, onChange }: LiquidityProfileEditorProps) {
+export default function LiquidityProfileEditor({
+  profile,
+  onChange,
+}: LiquidityProfileEditorProps) {
   const updateProfile = (updates: Partial<LiquidityProfile>) => {
     onChange({ ...profile, ...updates });
   };
 
   return (
-    <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-      <h4 className="font-medium text-gray-900">Liquidity Profile</h4>
-      
+    <div className="space-y-4 p-4 bg-muted rounded-panel border border-knob-silver dark:border-knob-silver-dark">
+      <div>
+        <div className="text-placard uppercase text-muted-foreground">Asset</div>
+        <h4 className="text-h3 text-foreground">Liquidity Profile</h4>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="maxSellUnit" className="text-sm">
+          <Label htmlFor="maxSellUnit" className="text-caption">
             Max Sell Unit
           </Label>
           <Select
             value={profile.maxSellUnit}
             onValueChange={(value) => updateProfile({ maxSellUnit: value as MaxSellUnit })}
           >
-            <SelectTrigger id="maxSellUnit">
+            <SelectTrigger id="maxSellUnit" className="mt-1">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -38,9 +50,9 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
             </SelectContent>
           </Select>
         </div>
-        
+
         <div>
-          <Label htmlFor="maxSellPerMonth" className="text-sm">
+          <Label htmlFor="maxSellPerMonth" className="text-caption">
             Max Sell Per Month
           </Label>
           <Input
@@ -50,13 +62,14 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
             step="any"
             value={profile.maxSellPerMonth}
             onChange={(e) => updateProfile({ maxSellPerMonth: Number(e.target.value) })}
+            className="mt-1"
           />
         </div>
-        
+
         {profile.maxSellUnit === "percent_of_volume" && (
           <>
             <div>
-              <Label htmlFor="percentOfVolume" className="text-sm">
+              <Label htmlFor="percentOfVolume" className="text-caption">
                 Percent of Volume (%)
               </Label>
               <Input
@@ -66,12 +79,15 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
                 max="100"
                 step="0.1"
                 value={profile.percentOfVolume || 0}
-                onChange={(e) => updateProfile({ percentOfVolume: Number(e.target.value) })}
+                onChange={(e) =>
+                  updateProfile({ percentOfVolume: Number(e.target.value) })
+                }
+                className="mt-1"
               />
             </div>
-            
+
             <div>
-              <Label htmlFor="dailyVolume" className="text-sm">
+              <Label htmlFor="dailyVolume" className="text-caption">
                 Daily Volume (USD)
               </Label>
               <Input
@@ -81,13 +97,14 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
                 step="1000"
                 value={profile.dailyVolume || 0}
                 onChange={(e) => updateProfile({ dailyVolume: Number(e.target.value) })}
+                className="mt-1"
               />
             </div>
           </>
         )}
-        
+
         <div>
-          <Label htmlFor="haircutPercent" className="text-sm">
+          <Label htmlFor="haircutPercent" className="text-caption">
             Haircut (%)
           </Label>
           <Input
@@ -98,18 +115,19 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
             step="0.1"
             value={profile.haircutPercent}
             onChange={(e) => updateProfile({ haircutPercent: Number(e.target.value) })}
+            className="mt-1"
           />
         </div>
-        
+
         <div>
-          <Label htmlFor="priceAssumption" className="text-sm">
+          <Label htmlFor="priceAssumption" className="text-caption">
             Price Assumption
           </Label>
           <Select
             value={profile.priceAssumption}
             onValueChange={(value) => updateProfile({ priceAssumption: value as any })}
           >
-            <SelectTrigger id="priceAssumption">
+            <SelectTrigger id="priceAssumption" className="mt-1">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -119,10 +137,10 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
             </SelectContent>
           </Select>
         </div>
-        
+
         {profile.priceAssumption === "monthly_decline" && (
           <div>
-            <Label htmlFor="monthlyDeclineRate" className="text-sm">
+            <Label htmlFor="monthlyDeclineRate" className="text-caption">
               Monthly Decline Rate (%)
             </Label>
             <Input
@@ -132,7 +150,10 @@ export default function LiquidityProfileEditor({ profile, onChange }: LiquidityP
               max="100"
               step="0.1"
               value={profile.monthlyDeclineRate || 0}
-              onChange={(e) => updateProfile({ monthlyDeclineRate: Number(e.target.value) })}
+              onChange={(e) =>
+                updateProfile({ monthlyDeclineRate: Number(e.target.value) })
+              }
+              className="mt-1"
             />
           </div>
         )}

@@ -4,13 +4,13 @@
 // If any of these fail, the engine's math is broken — do not proceed to UI work.
 
 import { describe, it, expect } from "vitest";
-import { computeProjection } from "@/lib/projection-engine";
+import { computeProjection } from "../lib/projection-engine";
 import type {
   BurnCategory,
   RoughRunwayModel,
   InflowCategory,
   VolatileAsset,
-} from "@/lib/types";
+} from "../lib/types";
 
 // ----------------------------------------------------------------------------
 // Helpers

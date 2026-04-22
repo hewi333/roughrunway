@@ -1,80 +1,119 @@
 "use client";
 
 import React from "react";
-import { 
-  ResponsiveContainer, 
-  LineChart, 
-  Line, 
-  BarChart, 
-  Bar,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  AreaChart, 
+import {
+  ResponsiveContainer,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   Area,
-  ComposedChart
+  ComposedChart,
 } from "recharts";
+import { useProjection } from "@/lib/hooks/useProjection";
+
+const AXIS_STYLE = { fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase" as const };
+
+function ChartTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-card border border-knob-silver dark:border-knob-silver-dark rounded-panel p-3 shadow-sm">
+      <p className="text-placard uppercase text-muted-foreground mb-1">Month</p>
+      <p className="text-body font-medium text-foreground mb-2">{label}</p>
+      {payload.map((entry: any, i: number) => (
+        <div key={i} className="flex items-center justify-between gap-4 text-body">
+          <div className="flex items-center gap-2">
+            <span
+              className="inline-block h-2 w-2 rounded-sm"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span className="text-foreground">{entry.name}</span>
+          </div>
+          <span className="font-mono text-foreground">
+            ${Number(entry.value).toLocaleString()}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function ProjectionChart() {
-  // TODO: Replace with actual projection data from the store
-  const data = [
-    { month: "May 2026", hard: 2000000, extended: 3500000 },
-    { month: "Jun 2026", hard: 1800000, extended: 3200000 },
-    { month: "Jul 2026", hard: 1600000, extended: 2900000 },
-    { month: "Aug 2026", hard: 1400000, extended: 2600000 },
-    { month: "Sep 2026", hard: 1200000, extended: 2300000 },
-    { month: "Oct 2026", hard: 1000000, extended: 2000000 },
-    { month: "Nov 2026", hard: 800000, extended: 1700000 },
-    { month: "Dec 2026", hard: 600000, extended: 1400000 },
-    { month: "Jan 2027", hard: 400000, extended: 1100000 },
-    { month: "Feb 2027", hard: 200000, extended: 800000 },
-    { month: "Mar 2027", hard: 0, extended: 500000 },
-    { month: "Apr 2027", hard: 0, extended: 200000 },
-  ];
+  const { projections } = useProjection();
+
+  const chartData = projections.map((projection) => ({
+    month: projection.label,
+    hard: projection.hardBalance,
+    extended: projection.extendedBalance,
+  }));
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h2 className="text-lg font-medium text-gray-900 mb-4">Runway Projection</h2>
+    <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
+      <div className="mb-4">
+        <div className="text-placard uppercase text-muted-foreground">Instrument</div>
+        <h2 className="text-h3 text-foreground">Runway Projection</h2>
+      </div>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
-            data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
+            data={chartData}
+            margin={{ top: 8, right: 24, left: 16, bottom: 8 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis 
-              tickFormatter={(value) => `$${value / 1000000}M`}
+            <CartesianGrid
+              vertical={false}
+              stroke="var(--chart-grid)"
+              strokeOpacity={0.2}
             />
-            <Tooltip 
-              formatter={(value) => [`$${Number(value).toLocaleString()}`, '']}
-              labelFormatter={(label) => `Month: ${label}`}
+            <XAxis
+              dataKey="month"
+              stroke="var(--chart-grid)"
+              strokeOpacity={0.4}
+              tick={{ fill: "hsl(var(--muted-foreground))", ...AXIS_STYLE }}
+              tickLine={{ stroke: "var(--chart-grid)", strokeOpacity: 0.4 }}
             />
-            <Legend />
-            <Area 
-              type="monotone" 
-              dataKey="extended" 
-              name="Extended Runway" 
-              stackId="1" 
-              stroke="#14B8A6" 
-              fill="#14B8A6" 
-              fillOpacity={0.6}
+            <YAxis
+              tickFormatter={(value) => `$${value / 1_000_000}M`}
+              stroke="var(--chart-grid)"
+              strokeOpacity={0.4}
+              tick={{
+                fill: "hsl(var(--muted-foreground))",
+                fontSize: 10,
+                fontFamily: "var(--font-jetbrains-mono)",
+              }}
+              tickLine={{ stroke: "var(--chart-grid)", strokeOpacity: 0.4 }}
             />
-            <Line 
-              type="monotone" 
-              dataKey="hard" 
-              name="Hard Runway" 
-              stroke="#EC4899" 
+            <Tooltip content={<ChartTooltip />} cursor={{ stroke: "var(--chart-grid)", strokeOpacity: 0.5, strokeDasharray: "4 4" }} />
+            <Legend
+              wrapperStyle={{
+                fontSize: 10,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                color: "hsl(var(--muted-foreground))",
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="extended"
+              name="Extended Runway"
+              stroke="var(--chart-extended-runway)"
               strokeWidth={2}
-              dot={{ r: 4 }}
-              activeDot={{ r: 6 }}
+              strokeDasharray="8 4"
+              fill="var(--chart-extended-runway)"
+              fillOpacity={0.15}
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="hard"
+              name="Hard Runway"
+              stroke="var(--chart-hard-runway)"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              dot={false}
+              activeDot={{ r: 5, stroke: "hsl(var(--card))", strokeWidth: 2 }}
+              isAnimationActive={false}
             />
           </ComposedChart>
         </ResponsiveContainer>

@@ -15,7 +15,7 @@ import TreasurySummaryCard from "@/components/treasury/TreasurySummaryCard";
 export default function TreasuryPanel() {
   const { model, updateModel } = useRoughRunwayStore();
   const { treasury } = model;
-  
+
   const addVolatileAsset = () => {
     const newAsset: VolatileAsset = {
       id: uuidv4(),
@@ -28,7 +28,7 @@ export default function TreasuryPanel() {
       liquidationPriority: defaultLiquidationPriority("native"),
       liquidity: defaultLiquidityProfile("native", 0),
     };
-    
+
     updateModel({
       treasury: {
         ...treasury,
@@ -36,12 +36,12 @@ export default function TreasuryPanel() {
       },
     });
   };
-  
+
   const updateVolatileAsset = (updatedAsset: VolatileAsset) => {
     const updatedAssets = treasury.volatileAssets.map((asset) =>
       asset.id === updatedAsset.id ? updatedAsset : asset
     );
-    
+
     updateModel({
       treasury: {
         ...treasury,
@@ -49,10 +49,10 @@ export default function TreasuryPanel() {
       },
     });
   };
-  
+
   const removeVolatileAsset = (id: string) => {
     const updatedAssets = treasury.volatileAssets.filter((asset) => asset.id !== id);
-    
+
     updateModel({
       treasury: {
         ...treasury,
@@ -60,12 +60,12 @@ export default function TreasuryPanel() {
       },
     });
   };
-  
+
   const moveVolatileAsset = (fromIndex: number, toIndex: number) => {
     const assets = [...treasury.volatileAssets];
     const [movedAsset] = assets.splice(fromIndex, 1);
     assets.splice(toIndex, 0, movedAsset);
-    
+
     updateModel({
       treasury: {
         ...treasury,
@@ -73,34 +73,35 @@ export default function TreasuryPanel() {
       },
     });
   };
-  
+
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Treasury</h2>
-        <p className="text-gray-600">
+        <div className="text-placard uppercase text-muted-foreground">Section</div>
+        <h2 className="text-h1 text-foreground mt-1">Treasury</h2>
+        <p className="text-body text-muted-foreground mt-2">
           Configure your treasury holdings including stablecoins, fiat, and volatile assets.
         </p>
       </div>
-      
+
       <div className="space-y-8">
-        {/* Stablecoins */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
           <StablecoinInput stablecoins={treasury.stablecoins} />
         </div>
-        
-        {/* Fiat Currencies */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+
+        <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
           <FiatInput fiatHoldings={treasury.fiat} />
         </div>
-        
-        {/* Volatile Assets */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+
+        <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">Volatile Assets</h3>
-            <Button 
-              type="button" 
-              variant="outline" 
+            <div>
+              <div className="text-placard uppercase text-muted-foreground">Treasury</div>
+              <h3 className="text-h3 text-foreground">Volatile Assets</h3>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
               onClick={addVolatileAsset}
               className="flex items-center gap-1"
             >
@@ -108,10 +109,10 @@ export default function TreasuryPanel() {
               Add Asset
             </Button>
           </div>
-          
+
           {treasury.volatileAssets.length === 0 ? (
-            <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-              <p className="text-gray-500 mb-4">No volatile assets added yet</p>
+            <div className="text-center py-8 bg-muted rounded-panel border border-dashed border-knob-silver dark:border-knob-silver-dark">
+              <p className="text-body text-muted-foreground mb-4">No volatile assets added yet</p>
               <Button onClick={addVolatileAsset} variant="outline">
                 Add Your First Asset
               </Button>
@@ -125,7 +126,11 @@ export default function TreasuryPanel() {
                   onUpdate={updateVolatileAsset}
                   onRemove={() => removeVolatileAsset(asset.id)}
                   onMoveUp={index > 0 ? () => moveVolatileAsset(index, index - 1) : undefined}
-                  onMoveDown={index < treasury.volatileAssets.length - 1 ? () => moveVolatileAsset(index, index + 1) : undefined}
+                  onMoveDown={
+                    index < treasury.volatileAssets.length - 1
+                      ? () => moveVolatileAsset(index, index + 1)
+                      : undefined
+                  }
                   canMoveUp={index > 0}
                   canMoveDown={index < treasury.volatileAssets.length - 1}
                 />
@@ -133,9 +138,8 @@ export default function TreasuryPanel() {
             </div>
           )}
         </div>
-        
-        {/* Treasury Summary */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+
+        <div className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6">
           <TreasurySummaryCard />
         </div>
       </div>

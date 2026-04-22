@@ -2,15 +2,13 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { 
-  Wallet, 
-  TrendingDown, 
-  TrendingUp, 
+import {
+  Wallet,
+  TrendingDown,
+  TrendingUp,
   Layers,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
-  ChevronUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +23,7 @@ export default function Sidebar({
   activePanel,
   setActivePanel,
   isCollapsed,
-  setIsCollapsed
+  setIsCollapsed,
 }: SidebarProps) {
   const navItems = [
     { id: "treasury", label: "Treasury", icon: Wallet },
@@ -36,13 +34,20 @@ export default function Sidebar({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Collapse/Expand Button */}
+      {!isCollapsed && (
+        <div className="px-6 pt-6 pb-4">
+          <div className="text-placard uppercase text-muted-foreground">Rough Runway</div>
+          <div className="text-caption text-muted-foreground mt-1">Flight instruments</div>
+        </div>
+      )}
+
       <div className="flex justify-end p-4">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="h-8 w-8 p-0"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? (
             <ChevronRight className="h-4 w-4" />
@@ -52,26 +57,29 @@ export default function Sidebar({
         </Button>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-4">
+      <nav className="flex-1 px-4" aria-label="Main navigation">
         <ul className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activePanel === item.id;
-            
+
             return (
               <li key={item.id}>
                 <button
                   onClick={() => setActivePanel(item.id as any)}
                   className={cn(
-                    "w-full flex items-center rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors",
+                    "w-full flex items-center rounded-precise px-3 py-2 text-left text-body font-medium transition-colors duration-150",
                     isActive
                       ? "bg-primary text-primary-foreground"
-                      : "text-gray-700 hover:bg-gray-100",
+                      : "text-foreground hover:bg-muted",
                     isCollapsed ? "justify-center" : "justify-start"
                   )}
+                  aria-current={isActive ? "page" : undefined}
                 >
-                  <Icon className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")} />
+                  <Icon
+                    className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")}
+                    aria-hidden="true"
+                  />
                   {!isCollapsed && <span>{item.label}</span>}
                 </button>
               </li>

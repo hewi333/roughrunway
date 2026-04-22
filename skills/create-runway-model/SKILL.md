@@ -1,6 +1,6 @@
-# SKILL: Create a CryptoRunway Model
+# SKILL: Create a Rough Runway Model
 
-**Purpose**: Construct a valid `CryptoRunwayModel` JSON from a natural-language description of a crypto organization's treasury and burn, then import it into CryptoRunway.
+**Purpose**: Construct a valid `RoughRunwayModel` JSON from a natural-language description of a crypto organization's treasury and burn, then import it into Rough Runway.
 
 **When to use**: A user describes their org's financial situation and wants to see their runway. You need to turn that description into structured data the app can load.
 

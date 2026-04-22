@@ -4,8 +4,13 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { GripVertical, Trash2, ChevronDown, ChevronRight } from "lucide-react";
 import { VolatileAsset, VolatileAssetTier } from "@/lib/types";
 import LiquidityProfileEditor from "@/components/treasury/LiquidityProfileEditor";
@@ -31,37 +36,41 @@ export default function VolatileAssetInput({
   canMoveDown = false,
 }: VolatileAssetInputProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   const updateAsset = (updates: Partial<VolatileAsset>) => {
     onUpdate({ ...asset, ...updates });
   };
-  
+
   const updateLiquidityProfile = (profile: any) => {
     updateAsset({ liquidity: profile });
   };
-  
+
   const tierOptions: { value: VolatileAssetTier; label: string }[] = [
     { value: "major", label: "Major (ETH, BTC, etc.)" },
     { value: "alt", label: "Altcoin" },
     { value: "native", label: "Native Protocol Token" },
   ];
-  
+
   return (
-    <div className="border border-gray-200 rounded-lg bg-white">
-      <div 
-        className="flex items-center p-4 cursor-pointer hover:bg-gray-50"
+    <div className="border border-knob-silver dark:border-knob-silver-dark rounded-panel bg-card">
+      <div
+        className="flex items-center p-4 cursor-pointer hover:bg-muted transition-colors duration-150"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-2 flex-1">
-          <GripVertical className="h-5 w-5 text-gray-400" />
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
           <div>
-            <h3 className="font-medium text-gray-900">{asset.name || "Unnamed Asset"}</h3>
-            <p className="text-sm text-gray-500">
-              {asset.ticker} • {asset.quantity.toLocaleString()} tokens
+            <h3 className="text-body font-medium text-foreground">
+              {asset.name || "Unnamed Asset"}
+            </h3>
+            <p className="text-caption text-muted-foreground">
+              <span className="font-mono">{asset.ticker}</span>
+              {" • "}
+              <span className="font-mono">{asset.quantity.toLocaleString()}</span> tokens
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {canMoveUp && (
             <Button
@@ -73,6 +82,7 @@ export default function VolatileAssetInput({
                 onMoveUp && onMoveUp();
               }}
               className="h-8 w-8 p-0"
+              aria-label="Move up"
             >
               ↑
             </Button>
@@ -87,6 +97,7 @@ export default function VolatileAssetInput({
                 onMoveDown && onMoveDown();
               }}
               className="h-8 w-8 p-0"
+              aria-label="Move down"
             >
               ↓
             </Button>
@@ -100,8 +111,9 @@ export default function VolatileAssetInput({
               onRemove();
             }}
             className="h-8 w-8 p-0"
+            aria-label="Remove asset"
           >
-            <Trash2 className="h-4 w-4 text-red-500" />
+            <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
           <Button
             type="button"
@@ -112,6 +124,7 @@ export default function VolatileAssetInput({
               setIsExpanded(!isExpanded);
             }}
             className="h-8 w-8 p-0"
+            aria-label={isExpanded ? "Collapse" : "Expand"}
           >
             {isExpanded ? (
               <ChevronDown className="h-4 w-4" />
@@ -121,12 +134,12 @@ export default function VolatileAssetInput({
           </Button>
         </div>
       </div>
-      
+
       {isExpanded && (
-        <div className="p-4 border-t border-gray-200 space-y-4">
+        <div className="p-4 border-t border-knob-silver dark:border-knob-silver-dark space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor={`asset-name-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-name-${asset.id}`} className="text-caption">
                 Asset Name
               </Label>
               <Input
@@ -134,11 +147,12 @@ export default function VolatileAssetInput({
                 value={asset.name}
                 onChange={(e) => updateAsset({ name: e.target.value })}
                 placeholder="e.g., Ethereum"
+                className="mt-1"
               />
             </div>
-            
+
             <div>
-              <Label htmlFor={`asset-ticker-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-ticker-${asset.id}`} className="text-caption">
                 Ticker
               </Label>
               <Input
@@ -146,25 +160,26 @@ export default function VolatileAssetInput({
                 value={asset.ticker}
                 onChange={(e) => updateAsset({ ticker: e.target.value })}
                 placeholder="e.g., ETH"
+                className="mt-1 font-mono"
               />
             </div>
-            
+
             <div>
-              <Label htmlFor={`asset-tier-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-tier-${asset.id}`} className="text-caption">
                 Asset Tier
               </Label>
               <Select
                 value={asset.tier}
                 onValueChange={(value) => {
                   const tier = value as VolatileAssetTier;
-                  updateAsset({ 
+                  updateAsset({
                     tier,
                     liquidationPriority: defaultLiquidationPriority(tier),
-                    liquidity: defaultLiquidityProfile(tier, asset.quantity)
+                    liquidity: defaultLiquidityProfile(tier, asset.quantity),
                   });
                 }}
               >
-                <SelectTrigger id={`asset-tier-${asset.id}`}>
+                <SelectTrigger id={`asset-tier-${asset.id}`} className="mt-1">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -176,9 +191,9 @@ export default function VolatileAssetInput({
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
-              <Label htmlFor={`asset-quantity-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-quantity-${asset.id}`} className="text-caption">
                 Quantity
               </Label>
               <Input
@@ -188,11 +203,12 @@ export default function VolatileAssetInput({
                 step="any"
                 value={asset.quantity}
                 onChange={(e) => updateAsset({ quantity: Number(e.target.value) })}
+                className="mt-1"
               />
             </div>
-            
+
             <div>
-              <Label htmlFor={`asset-price-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-price-${asset.id}`} className="text-caption">
                 Current Price (USD)
               </Label>
               <Input
@@ -202,11 +218,12 @@ export default function VolatileAssetInput({
                 step="0.01"
                 value={asset.currentPrice}
                 onChange={(e) => updateAsset({ currentPrice: Number(e.target.value) })}
+                className="mt-1"
               />
             </div>
-            
+
             <div>
-              <Label htmlFor={`asset-priority-${asset.id}`} className="text-sm">
+              <Label htmlFor={`asset-priority-${asset.id}`} className="text-caption">
                 Liquidation Priority
               </Label>
               <Input
@@ -215,18 +232,18 @@ export default function VolatileAssetInput({
                 min="0"
                 max="100"
                 value={asset.liquidationPriority}
-                onChange={(e) => updateAsset({ liquidationPriority: Number(e.target.value) })}
+                onChange={(e) =>
+                  updateAsset({ liquidationPriority: Number(e.target.value) })
+                }
+                className="mt-1"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Lower numbers are liquidated first (0-100 scale)
+              <p className="text-caption text-muted-foreground mt-1">
+                Lower numbers are liquidated first (0–100 scale)
               </p>
             </div>
           </div>
-          
-          <LiquidityProfileEditor
-            profile={asset.liquidity}
-            onChange={updateLiquidityProfile}
-          />
+
+          <LiquidityProfileEditor profile={asset.liquidity} onChange={updateLiquidityProfile} />
         </div>
       )}
     </div>
