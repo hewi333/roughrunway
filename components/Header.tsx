@@ -11,6 +11,7 @@ import {
   Edit3
 } from "lucide-react";
 import { useRoughRunwayStore } from "@/lib/store";
+import DarkModeToggle from "@/components/DarkModeToggle";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -163,6 +164,7 @@ export default function Header() {
               <Share2 className="h-4 w-4" />
               <span>Share</span>
             </Button>
+            <DarkModeToggle />
           </div>
         </div>
       </div>
