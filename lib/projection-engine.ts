@@ -1,10 +1,10 @@
-// CryptoRunway Projection Engine
+// Rough Runway Projection Engine
 // Source of truth: docs/05-PROJECTION-ENGINE.md
 // Pure functions only — no side effects, no API calls, no state mutation.
 
 import type {
   BurnCategory,
-  CryptoRunwayModel,
+  RoughRunwayModel,
   InflowCategory,
   MonthlyProjection,
   RunwaySummary,
@@ -15,10 +15,10 @@ import { computeMonthDate, formatMonthLabel, sum } from "./utils";
 import { applyScenarioOverrides } from "./scenario-engine";
 
 // ============================================================================
-// Primary Entry Point
-// ============================================================================
 
-export function computeProjection(model: CryptoRunwayModel): {
+// Primary Entry Point
+
+export function computeProjection(model: RoughRunwayModel): {
   projections: MonthlyProjection[];
   summary: RunwaySummary;
 } {
@@ -273,7 +273,7 @@ export function computeAssetPrice(asset: VolatileAsset, month: number): number {
 }
 
 function buildSummary(opts: {
-  model: CryptoRunwayModel;
+  model: RoughRunwayModel;
   projections: MonthlyProjection[];
   hardRunwayMonth: number | null;
   extendedRunwayMonth: number | null;
@@ -323,7 +323,7 @@ function buildSummary(opts: {
 // ============================================================================
 
 export function computeScenarioProjection(
-  baseline: CryptoRunwayModel,
+  baseline: RoughRunwayModel,
   scenario: Scenario
 ): { projections: MonthlyProjection[]; summary: RunwaySummary } {
   const modifiedModel = applyScenarioOverrides(baseline, scenario.overrides);

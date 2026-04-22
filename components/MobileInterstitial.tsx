@@ -16,7 +16,7 @@ export default function MobileInterstitial() {
         </h1>
         
         <p className="mt-4 text-gray-600">
-          CryptoRunway is designed for desktop use with complex financial modeling.
+          RoughRunway is designed for desktop use with complex financial modeling.
           Please visit this page on a desktop computer to access the full dashboard.
         </p>
         

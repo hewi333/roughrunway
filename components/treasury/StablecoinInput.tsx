@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
 import { StablecoinHolding } from "@/lib/types";
 import { COMMON_STABLECOINS } from "@/lib/constants";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
 
 interface StablecoinInputProps {
@@ -15,7 +15,7 @@ interface StablecoinInputProps {
 }
 
 export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
-  const { updateModel } = useCryptoRunwayStore();
+  const { updateModel } = useRoughRunwayStore();
   
   const addStablecoin = () => {
     const newStablecoin: StablecoinHolding = {
@@ -26,7 +26,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         stablecoins: [...stablecoins, newStablecoin],
       },
     });
@@ -39,7 +39,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         stablecoins: updatedStablecoins,
       },
     });
@@ -50,7 +50,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         stablecoins: updatedStablecoins,
       },
     });

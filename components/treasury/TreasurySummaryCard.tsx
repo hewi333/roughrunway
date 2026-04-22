@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function TreasurySummaryCard() {
-  const { model } = useCryptoRunwayStore();
+  const { model } = useRoughRunwayStore();
   const { treasury } = model;
   
   // Calculate total at spot value

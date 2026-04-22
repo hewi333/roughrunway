@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { CryptoRunwayModel, StoredData } from "@/lib/types";
+import { RoughRunwayModel, StoredData } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
 import { STORAGE_KEY, STORAGE_VERSION } from "@/lib/constants";
 import { debounce } from "@/lib/hooks";
 
 // Create a default model with demo data (Nexus Labs)
-const createDefaultModel = (): CryptoRunwayModel => {
+const createDefaultModel = (): RoughRunwayModel => {
   const now = new Date().toISOString();
   return {
     id: uuidv4(),
@@ -137,14 +137,14 @@ const createDefaultModel = (): CryptoRunwayModel => {
   };
 };
 
-interface CryptoRunwayStore {
-  model: CryptoRunwayModel;
-  setModel: (model: CryptoRunwayModel) => void;
-  updateModel: (updates: Partial<CryptoRunwayModel>) => void;
+interface RoughRunwayStore {
+  model: RoughRunwayModel;
+  setModel: (model: RoughRunwayModel) => void;
+  updateModel: (updates: Partial<RoughRunwayModel>) => void;
   resetToDefault: () => void;
 }
 
-export const useCryptoRunwayStore = create<CryptoRunwayStore>()(
+export const useRoughRunwayStore = create<RoughRunwayStore>()(
   persist(
     (set, get) => ({
       model: createDefaultModel(),
@@ -176,18 +176,18 @@ export const useCryptoRunwayStore = create<CryptoRunwayStore>()(
 );
 
 // Create a debounced version of the store update for performance
-export const useDebouncedCryptoRunwayStore = (() => {
-  let debouncedUpdate: ((updates: Partial<CryptoRunwayModel>) => void) | null = null;
+export const useDebouncedRoughRunwayStore = (() => {
+  let debouncedUpdate: ((updates: Partial<RoughRunwayModel>) => void) | null = null;
   
   return () => {
-    const { updateModel } = useCryptoRunwayStore();
+    const { updateModel } = useRoughRunwayStore();
     
     if (!debouncedUpdate) {
       debouncedUpdate = debounce(updateModel, 500);
     }
     
     return {
-      ...useCryptoRunwayStore(),
+      ...useRoughRunwayStore(),
       updateModel: debouncedUpdate
     };
   };

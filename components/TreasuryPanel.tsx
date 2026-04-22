@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { VolatileAsset, VolatileAssetTier } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
 import { defaultLiquidityProfile, defaultLiquidationPriority } from "@/lib/constants";
@@ -13,7 +13,7 @@ import VolatileAssetInput from "@/components/treasury/VolatileAssetInput";
 import TreasurySummaryCard from "@/components/treasury/TreasurySummaryCard";
 
 export default function TreasuryPanel() {
-  const { model, updateModel } = useCryptoRunwayStore();
+  const { model, updateModel } = useRoughRunwayStore();
   const { treasury } = model;
   
   const addVolatileAsset = () => {

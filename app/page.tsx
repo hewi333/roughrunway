@@ -8,7 +8,7 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            CryptoRunway
+            RoughRunway
           </h1>
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
             Financial runway modeling for crypto protocols. Plan, simulate, and optimize your treasury with AI-powered insights.
@@ -32,7 +32,7 @@ export default function HomePage() {
           <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-4xl mx-auto mb-16">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Powered by Perplexity</h2>
             <p className="text-gray-600 mb-6">
-              CryptoRunway leverages Perplexity's Sonar API to provide real-time market insights and AI-powered scenario analysis for crypto treasuries.
+              RoughRunway leverages Perplexity's Sonar API to provide real-time market insights and AI-powered scenario analysis for crypto treasuries.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
 import { FiatHolding } from "@/lib/types";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { v4 as uuidv4 } from "uuid";
 
 interface FiatInputProps {
@@ -14,7 +14,7 @@ interface FiatInputProps {
 }
 
 export default function FiatInput({ fiatHoldings }: FiatInputProps) {
-  const { updateModel } = useCryptoRunwayStore();
+  const { updateModel } = useRoughRunwayStore();
   
   const addFiat = () => {
     const newFiat: FiatHolding = {
@@ -25,7 +25,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         fiat: [...fiatHoldings, newFiat],
       },
     });
@@ -38,7 +38,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         fiat: updatedFiat,
       },
     });
@@ -49,7 +49,7 @@ export default function FiatInput({ fiatHoldings }: FiatInputProps) {
     
     updateModel({
       treasury: {
-        ...useCryptoRunwayStore.getState().model.treasury,
+        ...useRoughRunwayStore.getState().model.treasury,
         fiat: updatedFiat,
       },
     });

@@ -13,7 +13,7 @@ import ProjectionChart from "@/components/ProjectionChart";
 import RunwaySummaryCards from "@/components/RunwaySummaryCards";
 import MonthlyBreakdownTable from "@/components/MonthlyBreakdownTable";
 import FooterBrand from "@/components/FooterBrand";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 
 interface AppShellProps {
   children?: React.ReactNode;
@@ -23,7 +23,7 @@ export default function AppShell({ children }: AppShellProps) {
   const [activePanel, setActivePanel] = useState<"treasury" | "burn" | "inflow" | "scenarios">("treasury");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const isMobile = useMediaQuery("(max-width: 1024px)");
-  const { model } = useCryptoRunwayStore();
+  const { model } = useRoughRunwayStore();
 
   // Handle mobile view
   if (isMobile) {

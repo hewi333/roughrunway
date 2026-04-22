@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// JSON Schema (draft-07) for CryptoRunwayModel.
+// JSON Schema (draft-07) for RoughRunwayModel.
 // Source of truth: lib/types.ts + docs/02-DATA-MODEL.md.
 //
 // Served at /schema/model.json with Content-Type: application/schema+json
@@ -10,10 +10,10 @@ export const dynamic = "force-static";
 
 const SCHEMA = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://cryptorunway.app/schema/model.json",
-  title: "CryptoRunwayModel",
+  $id: "https://roughrunway.app/schema/model.json",
+  title: "RoughRunwayModel",
   description:
-    "A complete CryptoRunway treasury model. Self-contained — this is what the export/import endpoints produce and consume.",
+    "A complete RoughRunway treasury model. Self-contained — this is what the export/import endpoints produce and consume.",
   type: "object",
   required: [
     "id",

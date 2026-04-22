@@ -10,11 +10,11 @@ import {
   ChevronDown,
   Edit3
 } from "lucide-react";
-import { useCryptoRunwayStore } from "@/lib/store";
+import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
-  const { model, updateModel } = useCryptoRunwayStore();
+  const { model, updateModel } = useRoughRunwayStore();
   const [isEditingName, setIsEditingName] = useState(false);
   const [modelName, setModelName] = useState(model.name);
   const [isHorizonOpen, setIsHorizonOpen] = useState(false);

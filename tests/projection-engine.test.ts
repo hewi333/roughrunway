@@ -7,7 +7,7 @@ import { describe, it, expect } from "vitest";
 import { computeProjection } from "@/lib/projection-engine";
 import type {
   BurnCategory,
-  CryptoRunwayModel,
+  RoughRunwayModel,
   InflowCategory,
   VolatileAsset,
 } from "@/lib/types";
@@ -92,7 +92,7 @@ function makeModel(args: {
   burnCategories?: BurnCategory[];
   inflowCategories?: InflowCategory[];
   projectionMonths?: 12 | 15 | 18;
-}): CryptoRunwayModel {
+}): RoughRunwayModel {
   return {
     id: "test",
     name: "Test",
