@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Trash2, SlidersHorizontal, Copy, Zap } from "lucide-react";
+import { Plus, Trash2, SlidersHorizontal, Copy, Zap, Sparkles } from "lucide-react";
 import { useRoughRunwayStore } from "@/lib/store";
 import { SCENARIO_TEMPLATES, SCENARIO_COLORS } from "@/lib/constants";
 import type { Scenario } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
 import ScenarioEditor from "@/components/ScenarioEditor";
+import AIScenarioBuilder from "@/components/ai/AIScenarioBuilder";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -58,6 +59,7 @@ function TemplateGrid({ onPick }: { onPick: (key: string) => void }) {
 export default function ScenarioPanel() {
   const { model, updateModel } = useRoughRunwayStore();
   const [isCreating, setIsCreating] = useState(false);
+  const [createTab, setCreateTab] = useState<"templates" | "ai">("templates");
   const [newName, setNewName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -165,47 +167,92 @@ export default function ScenarioPanel() {
         {/* Create form */}
         {isCreating && (
           <div className="mb-6 p-4 bg-muted rounded-panel border border-knob-silver dark:border-knob-silver-dark space-y-4">
-            {/* Quick-pick templates */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Zap className="h-4 w-4 text-knob-gold" />
-                <span className="text-body font-medium text-foreground">Start from template</span>
-              </div>
-              <TemplateGrid onPick={createFromTemplate} />
+            {/* Tabs */}
+            <div className="flex items-center gap-1 border-b border-knob-silver/40 dark:border-knob-silver-dark/40 pb-3">
+              <button
+                type="button"
+                onClick={() => setCreateTab("templates")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-precise text-caption font-medium transition-colors ${
+                  createTab === "templates"
+                    ? "bg-background text-foreground shadow-sm border border-knob-silver/40 dark:border-knob-silver-dark/40"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Zap className="h-3 w-3" />
+                Templates
+              </button>
+              <button
+                type="button"
+                onClick={() => setCreateTab("ai")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-precise text-caption font-medium transition-colors ${
+                  createTab === "ai"
+                    ? "bg-background text-foreground shadow-sm border border-knob-silver/40 dark:border-knob-silver-dark/40"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Sparkles className="h-3 w-3 text-perplexity" />
+                Describe in words
+              </button>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-knob-silver/40 dark:bg-knob-silver-dark/40" />
-              <span className="text-caption text-muted-foreground uppercase tracking-wide">or custom</span>
-              <div className="flex-1 h-px bg-knob-silver/40 dark:bg-knob-silver-dark/40" />
-            </div>
+            {/* AI builder tab */}
+            {createTab === "ai" && (
+              <AIScenarioBuilder
+                onCreated={(scenario) => {
+                  setEditorScenario(scenario);
+                  setIsCreating(false);
+                }}
+                onCancel={() => setIsCreating(false)}
+              />
+            )}
 
-            {/* Custom name */}
-            <div className="flex items-end gap-2">
-              <div className="flex-1">
-                <Label htmlFor="scenario-name" className="text-caption text-muted-foreground">
-                  Custom scenario name
-                </Label>
-                <Input
-                  id="scenario-name"
-                  value={newName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setNewName(e.target.value)
-                  }
-                  placeholder="e.g. Slow Growth, Fundraise Win…"
-                  className="mt-1"
-                  onKeyDown={(e: React.KeyboardEvent) => {
-                    if (e.key === "Enter") createCustom();
-                    if (e.key === "Escape") setIsCreating(false);
-                  }}
-                  autoFocus
-                />
-              </div>
-              <Button onClick={createCustom} disabled={!newName.trim()}>
-                Create &amp; Edit
-              </Button>
-            </div>
+            {/* Templates tab */}
+            {createTab === "templates" && (
+              <>
+                {/* Quick-pick templates */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="h-4 w-4 text-knob-gold" />
+                    <span className="text-body font-medium text-foreground">Start from template</span>
+                  </div>
+                  <TemplateGrid onPick={createFromTemplate} />
+                </div>
 
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-knob-silver/40 dark:bg-knob-silver-dark/40" />
+                  <span className="text-caption text-muted-foreground uppercase tracking-wide">or custom</span>
+                  <div className="flex-1 h-px bg-knob-silver/40 dark:bg-knob-silver-dark/40" />
+                </div>
+
+                {/* Custom name */}
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="scenario-name" className="text-caption text-muted-foreground">
+                      Custom scenario name
+                    </Label>
+                    <Input
+                      id="scenario-name"
+                      value={newName}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewName(e.target.value)
+                      }
+                      placeholder="e.g. Slow Growth, Fundraise Win…"
+                      className="mt-1"
+                      onKeyDown={(e: React.KeyboardEvent) => {
+                        if (e.key === "Enter") createCustom();
+                        if (e.key === "Escape") setIsCreating(false);
+                      }}
+                      autoFocus
+                    />
+                  </div>
+                  <Button onClick={createCustom} disabled={!newName.trim()}>
+                    Create &amp; Edit
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {createTab === "templates" && (
             <div className="flex justify-end">
               <Button
                 variant="ghost"
@@ -218,6 +265,7 @@ export default function ScenarioPanel() {
                 Cancel
               </Button>
             </div>
+            )}
           </div>
         )}
 
