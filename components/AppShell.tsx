@@ -11,6 +11,7 @@ import InflowPanel from "@/components/InflowPanel";
 import ScenarioPanel from "@/components/ScenarioPanel";
 import ProjectionChart from "@/components/ProjectionChart";
 import RunwaySummaryCards from "@/components/RunwaySummaryCards";
+import FundingGapCallout from "@/components/FundingGapCallout";
 import MonthlyBreakdownTable from "@/components/MonthlyBreakdownTable";
 import FooterBrand from "@/components/FooterBrand";
 import { useRoughRunwayStore } from "@/lib/store";
@@ -61,7 +62,11 @@ export default function AppShell({ children }: AppShellProps) {
             <div className="mt-8">
               <RunwaySummaryCards />
             </div>
-            
+
+            <div className="mt-4">
+              <FundingGapCallout />
+            </div>
+
             <div className="mt-8">
               <ProjectionChart />
             </div>
