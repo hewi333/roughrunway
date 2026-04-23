@@ -13,6 +13,7 @@ import {
   CardPlacard,
 } from "@/components/ui/card";
 import { useRoughRunwayStore } from "@/lib/store";
+import AISetupAssistant from "@/components/ai/AISetupAssistant";
 
 export default function SetupWizard() {
   const { model, updateModel } = useRoughRunwayStore();
@@ -63,6 +64,20 @@ export default function SetupWizard() {
         <CardContent>
           {step === 1 && (
             <div className="space-y-6">
+              {/* AI shortcut — full page */}
+              <div className="rounded-panel border border-knob-silver dark:border-knob-silver-dark p-4 bg-muted">
+                <AISetupAssistant onApplied={() => {
+                  // Model was set — wizard will re-evaluate and close
+                  updateModel({ name: model.name }); // trigger re-render
+                }} />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-knob-silver/40 dark:bg-knob-silver-dark/40" />
+                <span className="text-caption text-muted-foreground uppercase tracking-wide">or set up manually</span>
+                <div className="flex-1 h-px bg-knob-silver/40 dark:bg-knob-silver-dark/40" />
+              </div>
+
               <div>
                 <div className="text-placard uppercase text-muted-foreground mb-1">
                   Identification

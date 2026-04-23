@@ -14,6 +14,7 @@ import RunwaySummaryCards from "@/components/RunwaySummaryCards";
 import FundingGapCallout from "@/components/FundingGapCallout";
 import MonthlyBreakdownTable from "@/components/MonthlyBreakdownTable";
 import ScenarioComparison from "@/components/ScenarioComparison";
+import MarketBanner from "@/components/ai/MarketBanner";
 import FooterBrand from "@/components/FooterBrand";
 import { useRoughRunwayStore } from "@/lib/store";
 
@@ -50,6 +51,7 @@ export default function AppShell({ children }: AppShellProps) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
+        <MarketBanner />
         <Header />
         
         <main className="flex-1 overflow-y-auto p-6">
