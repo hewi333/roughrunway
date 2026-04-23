@@ -13,6 +13,7 @@ import ProjectionChart from "@/components/ProjectionChart";
 import RunwaySummaryCards from "@/components/RunwaySummaryCards";
 import FundingGapCallout from "@/components/FundingGapCallout";
 import MonthlyBreakdownTable from "@/components/MonthlyBreakdownTable";
+import ScenarioComparison from "@/components/ScenarioComparison";
 import FooterBrand from "@/components/FooterBrand";
 import { useRoughRunwayStore } from "@/lib/store";
 
@@ -71,6 +72,10 @@ export default function AppShell({ children }: AppShellProps) {
               <ProjectionChart />
             </div>
             
+            <div className="mt-8">
+              <ScenarioComparison />
+            </div>
+
             <div className="mt-8">
               <MonthlyBreakdownTable />
             </div>
