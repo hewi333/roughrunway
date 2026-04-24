@@ -9,6 +9,38 @@
     { "url": "https://roughrunway.com" }
   ],
   "paths": {
+    "/api/agent/encode": {
+      "get": {
+        "operationId": "encodeRunwayModel",
+        "summary": "PREFERRED: Build a shareUrl from structured params — instant, no LLM call",
+        "description": "Parse the user description yourself, then call this endpoint with structured params. Returns a shareUrl immediately with zero latency. This is the recommended path for all agents.",
+        "parameters": [
+          { "name": "name", "in": "query", "schema": { "type": "string" }, "description": "Model name", "example": "DeFi Team" },
+          { "name": "stable", "in": "query", "schema": { "type": "string" }, "description": "Stablecoin balances as NAME:AMOUNT pairs, comma-separated", "example": "USDC:1500000,USDT:0" },
+          { "name": "fiat", "in": "query", "schema": { "type": "string" }, "description": "Fiat balances as CURRENCY:AMOUNT pairs", "example": "USD:50000" },
+          { "name": "volatile", "in": "query", "schema": { "type": "string" }, "description": "Volatile assets as TICKER:QTY:PRICE:TIER (TIER = major/native/alt)", "example": "ETH:50:3500:major,NEX:100000000:0.08:native" },
+          { "name": "burn", "in": "query", "schema": { "type": "string" }, "description": "Monthly burn: single number OR category:amount pairs", "example": "150000" },
+          { "name": "team", "in": "query", "schema": { "type": "integer" }, "description": "Team size — computes headcount at $15k/person/month", "example": 10 },
+          { "name": "months", "in": "query", "schema": { "type": "integer" }, "description": "Projection months (default 12)" }
+        ],
+        "responses": {
+          "200": {
+            "description": "ShareUrl generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "shareUrl": { "type": "string" },
+                    "modelName": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/agent/build": {
       "get": {
         "operationId": "buildRunwayModelGet",
