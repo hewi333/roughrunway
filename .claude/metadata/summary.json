@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-04-24T17:48:10.877Z",
+  "repo": "roughrunway",
+  "framework": "next.js 14 (app router)",
+  "counts": {
+    "apiRoutes": 5,
+    "pages": 4,
+    "components": 43,
+    "libFunctions": 19,
+    "tsFiles": 67,
+    "tsLines": 9245
+  },
+  "pages": [
+    "app/dashboard/page.tsx",
+    "app/docs/page.tsx",
+    "app/page.tsx",
+    "app/setup/page.tsx"
+  ],
+  "apiRoutes": [
+    "/api/agent/build",
+    "/api/agent/encode",
+    "/api/ai/market-banner",
+    "/api/ai/parse-scenario",
+    "/api/ai/parse-setup"
+  ],
+  "componentDomains": [
+    "ai",
+    "burn",
+    "inflow",
+    "top-level",
+    "treasury",
+    "ui"
+  ]
+}

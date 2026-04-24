@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-04-24T17:48:10.799Z",
+  "routes": [
+    {
+      "path": "/api/agent/build",
+      "file": "app/api/agent/build/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "usesPerplexity": true,
+      "lines": 180
+    },
+    {
+      "path": "/api/agent/encode",
+      "file": "app/api/agent/encode/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "usesPerplexity": false,
+      "lines": 149
+    },
+    {
+      "path": "/api/ai/market-banner",
+      "file": "app/api/ai/market-banner/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "usesPerplexity": true,
+      "lines": 77
+    },
+    {
+      "path": "/api/ai/parse-scenario",
+      "file": "app/api/ai/parse-scenario/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "usesPerplexity": true,
+      "lines": 113
+    },
+    {
+      "path": "/api/ai/parse-setup",
+      "file": "app/api/ai/parse-setup/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "usesPerplexity": true,
+      "lines": 78
+    }
+  ]
+}

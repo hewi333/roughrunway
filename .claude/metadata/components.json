@@ -1,0 +1,421 @@
+{
+  "generatedAt": "2026-04-24T17:48:10.848Z",
+  "components": [
+    {
+      "name": "AIScenarioBuilder",
+      "file": "components/ai/AIScenarioBuilder.tsx",
+      "domain": "ai",
+      "isClient": true,
+      "exports": [
+        "AIScenarioBuilder"
+      ],
+      "lines": 263
+    },
+    {
+      "name": "AISetupAssistant",
+      "file": "components/ai/AISetupAssistant.tsx",
+      "domain": "ai",
+      "isClient": true,
+      "exports": [
+        "AISetupAssistant"
+      ],
+      "lines": 231
+    },
+    {
+      "name": "MarketBanner",
+      "file": "components/ai/MarketBanner.tsx",
+      "domain": "ai",
+      "isClient": true,
+      "exports": [
+        "MarketBanner"
+      ],
+      "lines": 198
+    },
+    {
+      "name": "PoweredByBadge",
+      "file": "components/ai/PoweredByBadge.tsx",
+      "domain": "ai",
+      "isClient": true,
+      "exports": [
+        "PoweredByBadge"
+      ],
+      "lines": 35
+    },
+    {
+      "name": "VoiceInput",
+      "file": "components/ai/VoiceInput.tsx",
+      "domain": "ai",
+      "isClient": true,
+      "exports": [
+        "VoiceInput"
+      ],
+      "lines": 104
+    },
+    {
+      "name": "AppShell",
+      "file": "components/AppShell.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "AppShell"
+      ],
+      "lines": 95
+    },
+    {
+      "name": "AdjustmentRow",
+      "file": "components/burn/AdjustmentRow.tsx",
+      "domain": "burn",
+      "isClient": true,
+      "exports": [
+        "AdjustmentRow"
+      ],
+      "lines": 72
+    },
+    {
+      "name": "BurnCategoryRow",
+      "file": "components/burn/BurnCategoryRow.tsx",
+      "domain": "burn",
+      "isClient": true,
+      "exports": [
+        "BurnCategoryRow"
+      ],
+      "lines": 166
+    },
+    {
+      "name": "BurnSummaryCard",
+      "file": "components/burn/BurnSummaryCard.tsx",
+      "domain": "burn",
+      "isClient": true,
+      "exports": [
+        "BurnSummaryCard"
+      ],
+      "lines": 72
+    },
+    {
+      "name": "BurnPanel",
+      "file": "components/BurnPanel.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "BurnPanel"
+      ],
+      "lines": 83
+    },
+    {
+      "name": "DarkModeToggle",
+      "file": "components/DarkModeToggle.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "DarkModeToggle"
+      ],
+      "lines": 59
+    },
+    {
+      "name": "ExportDialog",
+      "file": "components/ExportDialog.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ExportDialog"
+      ],
+      "lines": 137
+    },
+    {
+      "name": "FooterBrand",
+      "file": "components/FooterBrand.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "FooterBrand"
+      ],
+      "lines": 52
+    },
+    {
+      "name": "FundingGapCallout",
+      "file": "components/FundingGapCallout.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "FundingGapCallout"
+      ],
+      "lines": 49
+    },
+    {
+      "name": "Header",
+      "file": "components/Header.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "Header"
+      ],
+      "lines": 221
+    },
+    {
+      "name": "ImportDialog",
+      "file": "components/ImportDialog.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ImportDialog"
+      ],
+      "lines": 215
+    },
+    {
+      "name": "AdjustmentRow",
+      "file": "components/inflow/AdjustmentRow.tsx",
+      "domain": "inflow",
+      "isClient": true,
+      "exports": [
+        "AdjustmentRow"
+      ],
+      "lines": 72
+    },
+    {
+      "name": "InflowCategoryRow",
+      "file": "components/inflow/InflowCategoryRow.tsx",
+      "domain": "inflow",
+      "isClient": true,
+      "exports": [
+        "InflowCategoryRow"
+      ],
+      "lines": 166
+    },
+    {
+      "name": "InflowPanel",
+      "file": "components/InflowPanel.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "InflowPanel"
+      ],
+      "lines": 14
+    },
+    {
+      "name": "MobileInterstitial",
+      "file": "components/MobileInterstitial.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "MobileInterstitial"
+      ],
+      "lines": 43
+    },
+    {
+      "name": "MonthlyBreakdownTable",
+      "file": "components/MonthlyBreakdownTable.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "MonthlyBreakdownTable"
+      ],
+      "lines": 178
+    },
+    {
+      "name": "ProjectionChart",
+      "file": "components/ProjectionChart.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ProjectionChart"
+      ],
+      "lines": 463
+    },
+    {
+      "name": "RunwaySummaryCards",
+      "file": "components/RunwaySummaryCards.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "RunwaySummaryCards"
+      ],
+      "lines": 91
+    },
+    {
+      "name": "ScenarioComparison",
+      "file": "components/ScenarioComparison.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ScenarioComparison"
+      ],
+      "lines": 268
+    },
+    {
+      "name": "ScenarioEditor",
+      "file": "components/ScenarioEditor.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ScenarioEditor"
+      ],
+      "lines": 611
+    },
+    {
+      "name": "ScenarioPanel",
+      "file": "components/ScenarioPanel.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ScenarioPanel"
+      ],
+      "lines": 403
+    },
+    {
+      "name": "ScenarioProjectionChart",
+      "file": "components/ScenarioProjectionChart.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ScenarioProjectionChart"
+      ],
+      "lines": 195
+    },
+    {
+      "name": "ScenarioSummaryCards",
+      "file": "components/ScenarioSummaryCards.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "ScenarioSummaryCards"
+      ],
+      "lines": 70
+    },
+    {
+      "name": "SetupWizard",
+      "file": "components/SetupWizard.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "SetupWizard"
+      ],
+      "lines": 193
+    },
+    {
+      "name": "Sidebar",
+      "file": "components/Sidebar.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "Sidebar"
+      ],
+      "lines": 93
+    },
+    {
+      "name": "FiatInput",
+      "file": "components/treasury/FiatInput.tsx",
+      "domain": "treasury",
+      "isClient": true,
+      "exports": [
+        "FiatInput"
+      ],
+      "lines": 136
+    },
+    {
+      "name": "LiquidityProfileEditor",
+      "file": "components/treasury/LiquidityProfileEditor.tsx",
+      "domain": "treasury",
+      "isClient": true,
+      "exports": [
+        "LiquidityProfileEditor"
+      ],
+      "lines": 164
+    },
+    {
+      "name": "StablecoinInput",
+      "file": "components/treasury/StablecoinInput.tsx",
+      "domain": "treasury",
+      "isClient": true,
+      "exports": [
+        "StablecoinInput"
+      ],
+      "lines": 132
+    },
+    {
+      "name": "TreasurySummaryCard",
+      "file": "components/treasury/TreasurySummaryCard.tsx",
+      "domain": "treasury",
+      "isClient": true,
+      "exports": [
+        "TreasurySummaryCard"
+      ],
+      "lines": 104
+    },
+    {
+      "name": "VolatileAssetInput",
+      "file": "components/treasury/VolatileAssetInput.tsx",
+      "domain": "treasury",
+      "isClient": true,
+      "exports": [
+        "VolatileAssetInput"
+      ],
+      "lines": 252
+    },
+    {
+      "name": "TreasuryPanel",
+      "file": "components/TreasuryPanel.tsx",
+      "domain": "top-level",
+      "isClient": true,
+      "exports": [
+        "TreasuryPanel"
+      ],
+      "lines": 149
+    },
+    {
+      "name": "button",
+      "file": "components/ui/button.tsx",
+      "domain": "ui",
+      "isClient": false,
+      "exports": [],
+      "lines": 65
+    },
+    {
+      "name": "card",
+      "file": "components/ui/card.tsx",
+      "domain": "ui",
+      "isClient": false,
+      "exports": [],
+      "lines": 108
+    },
+    {
+      "name": "input",
+      "file": "components/ui/input.tsx",
+      "domain": "ui",
+      "isClient": false,
+      "exports": [],
+      "lines": 31
+    },
+    {
+      "name": "label",
+      "file": "components/ui/label.tsx",
+      "domain": "ui",
+      "isClient": true,
+      "exports": [],
+      "lines": 26
+    },
+    {
+      "name": "select",
+      "file": "components/ui/select.tsx",
+      "domain": "ui",
+      "isClient": true,
+      "exports": [],
+      "lines": 160
+    },
+    {
+      "name": "switch",
+      "file": "components/ui/switch.tsx",
+      "domain": "ui",
+      "isClient": true,
+      "exports": [],
+      "lines": 29
+    },
+    {
+      "name": "textarea",
+      "file": "components/ui/textarea.tsx",
+      "domain": "ui",
+      "isClient": false,
+      "exports": [],
+      "lines": 24
+    }
+  ]
+}
