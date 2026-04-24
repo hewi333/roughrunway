@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { X, TrendingUp, TrendingDown, ExternalLink, Zap } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { TrendingUp, TrendingDown, ExternalLink, Zap } from "lucide-react";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -37,33 +37,27 @@ function formatPrice(price: number): string {
 }
 
 const REFRESH_MS = 10 * 60 * 1000; // 10 minutes
-const HEADLINE_INTERVAL_MS = 12 * 1000; // rotate every 12 seconds
-const DISMISS_KEY = "rr_banner_dismissed";
 
 // ─── sub-components ───────────────────────────────────────────────────────────
 
 function PriceTicker({ entry }: { entry: PriceEntry }) {
   const positive = entry.change24h >= 0;
   return (
-    <div className="flex items-center gap-1.5 shrink-0">
-      <span className="text-caption font-mono font-semibold text-foreground">
-        {entry.ticker}
-      </span>
-      <span className="text-caption font-mono text-foreground">
-        {formatPrice(entry.price)}
-      </span>
+    <div className="flex items-center gap-2 shrink-0">
+      <span className="text-sm font-mono font-semibold">{entry.ticker}</span>
+      <span className="text-sm font-mono">{formatPrice(entry.price)}</span>
       <span
         className={cn(
-          "text-placard font-mono flex items-center gap-0.5",
+          "text-sm font-mono flex items-center gap-0.5",
           positive
             ? "text-aviation-green dark:text-aviation-green-dark"
             : "text-aviation-red dark:text-aviation-red-dark"
         )}
       >
         {positive ? (
-          <TrendingUp className="h-2.5 w-2.5" aria-hidden="true" />
+          <TrendingUp className="h-3 w-3" aria-hidden="true" />
         ) : (
-          <TrendingDown className="h-2.5 w-2.5" aria-hidden="true" />
+          <TrendingDown className="h-3 w-3" aria-hidden="true" />
         )}
         {positive ? "+" : ""}
         {entry.change24h.toFixed(1)}%
@@ -72,126 +66,118 @@ function PriceTicker({ entry }: { entry: PriceEntry }) {
   );
 }
 
+function HeadlineItem({ headline }: { headline: Headline }) {
+  return (
+    <a
+      href={headline.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 shrink-0 hover:text-mountain-white dark:hover:text-foreground transition-colors"
+      data-action="market-headline"
+    >
+      <span className="text-sm">{headline.title}</span>
+      <span className="text-sm opacity-60">— {headline.source}</span>
+      <ExternalLink className="h-3 w-3 opacity-60" aria-hidden="true" />
+    </a>
+  );
+}
+
+function Separator() {
+  return (
+    <span
+      className="h-4 w-px bg-knob-silver/30 shrink-0"
+      aria-hidden="true"
+    />
+  );
+}
+
 // ─── main component ───────────────────────────────────────────────────────────
 
 export default function MarketBanner() {
   const { model } = useRoughRunwayStore();
   const [data, setData] = useState<BannerData | null>(null);
-  const [headlineIdx, setHeadlineIdx] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
   const [loading, setLoading] = useState(true);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Derive tickers from the model's volatile assets + defaults
   const tickers = [
     "BTC",
     "ETH",
     ...model.treasury.volatileAssets
-      .filter((a: { ticker: string }) => !["BTC", "ETH"].includes(a.ticker.toUpperCase()))
+      .filter(
+        (a: { ticker?: string }) =>
+          a.ticker && !["BTC", "ETH"].includes(a.ticker.toUpperCase())
+      )
       .map((a: { ticker: string }) => a.ticker.toUpperCase()),
   ].slice(0, 6);
 
   const fetchData = async () => {
     try {
       const res = await fetch(`/api/ai/market-banner?tokens=${tickers.join(",")}`);
-      if (!res.ok) return; // degrade silently
+      if (!res.ok) return;
       const json: BannerData = await res.json();
       setData(json);
     } catch {
-      // network error — keep last data or stay hidden
+      // network error — keep last data
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Check if user has dismissed this session
-    if (sessionStorage.getItem(DISMISS_KEY)) {
-      setDismissed(true);
-      setLoading(false);
-      return;
-    }
     fetchData();
     const interval = setInterval(fetchData, REFRESH_MS);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Rotate headlines
-  useEffect(() => {
-    if (!data?.headlines?.length) return;
-    timerRef.current = setInterval(() => {
-      setHeadlineIdx((i: number) => (i + 1) % data.headlines.length);
-    }, HEADLINE_INTERVAL_MS);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [data?.headlines]);
-
-  const dismiss = () => {
-    sessionStorage.setItem(DISMISS_KEY, "1");
-    setDismissed(true);
-  };
-
-  // Don't render if dismissed, still loading, or no data came back
-  if (dismissed || loading || !data) return null;
+  if (loading || !data) return null;
   if (!data.prices?.length && !data.headlines?.length) return null;
 
-  const headline = data.headlines?.[headlineIdx];
+  // Build a single flat array of ticker items, alternating prices and headlines
+  // with separators so the scroll reads like a real news crawl.
+  const items: React.ReactNode[] = [];
+  data.prices.forEach((p, i) => {
+    items.push(<PriceTicker key={`p-${p.ticker}-${i}`} entry={p} />);
+    items.push(<Separator key={`ps-${i}`} />);
+  });
+  data.headlines.forEach((h, i) => {
+    items.push(<HeadlineItem key={`h-${i}`} headline={h} />);
+    items.push(<Separator key={`hs-${i}`} />);
+  });
 
   return (
     <div
-      className="flex items-center gap-3 px-4 py-2 bg-ink dark:bg-panel-dark border-b border-knob-silver/20 text-mountain-white dark:text-foreground shrink-0"
+      className="relative flex items-stretch bg-ink dark:bg-panel-dark border-b border-knob-silver/20 text-mountain-white dark:text-foreground shrink-0 overflow-hidden"
       role="complementary"
       aria-label="Live market data"
       data-action="market-banner"
     >
-      {/* Price tickers */}
-      <div className="flex items-center gap-4 overflow-hidden shrink-0">
-        {data.prices.map((p: PriceEntry) => (
-          <PriceTicker key={p.ticker} entry={p} />
-        ))}
+      {/* Scrolling track — content duplicated for seamless loop */}
+      <div className="flex-1 overflow-hidden py-3 group">
+        <div
+          className="flex items-center whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused] w-max"
+          style={{ willChange: "transform" }}
+        >
+          <div className="flex items-center gap-6 pr-6">{items}</div>
+          <div className="flex items-center gap-6 pr-6" aria-hidden="true">
+            {items.map((node, i) =>
+              React.isValidElement(node)
+                ? React.cloneElement(node, { key: `dup-${i}` })
+                : node
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Divider */}
-      {headline && (
-        <div className="h-4 w-px bg-knob-silver/30 shrink-0" aria-hidden="true" />
-      )}
-
-      {/* Rotating headline */}
-      {headline && (
-        <a
-          href={headline.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-caption text-mountain-white/80 dark:text-muted-foreground hover:text-mountain-white dark:hover:text-foreground transition-colors min-w-0 flex-1"
-          data-action="market-headline"
-        >
-          <span className="truncate">{headline.title}</span>
-          <span className="text-mountain-white/50 dark:text-muted-foreground shrink-0">
-            — {headline.source}
-          </span>
-          <ExternalLink className="h-3 w-3 shrink-0 opacity-60" aria-hidden="true" />
-        </a>
-      )}
-
-      {/* Powered by Perplexity */}
-      <div className="flex items-center gap-1 shrink-0 ml-auto">
-        <Zap className="h-3 w-3 text-perplexity shrink-0" aria-hidden="true" />
-        <span className="text-placard uppercase tracking-wide text-perplexity hidden lg:inline">
-          Perplexity
+      {/* Pinned "Powered by Perplexity" — sits above the scroll with a gradient fade */}
+      <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-ink via-ink to-transparent dark:from-panel-dark dark:via-panel-dark dark:to-transparent">
+        <Zap
+          className="h-3.5 w-3.5 text-perplexity shrink-0"
+          aria-hidden="true"
+        />
+        <span className="text-xs font-semibold uppercase tracking-wide text-perplexity">
+          Live · Perplexity
         </span>
       </div>
-
-      {/* Dismiss */}
-      <button
-        type="button"
-        onClick={dismiss}
-        className="shrink-0 text-mountain-white/50 hover:text-mountain-white dark:text-muted-foreground dark:hover:text-foreground transition-colors"
-        aria-label="Dismiss market banner"
-      >
-        <X className="h-3.5 w-3.5" aria-hidden="true" />
-      </button>
     </div>
   );
 }
