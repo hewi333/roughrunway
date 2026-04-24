@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useMediaQuery } from "@/lib/hooks";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
@@ -16,7 +16,6 @@ import MonthlyBreakdownTable from "@/components/MonthlyBreakdownTable";
 import ScenarioComparison from "@/components/ScenarioComparison";
 import MarketBanner from "@/components/ai/MarketBanner";
 import FooterBrand from "@/components/FooterBrand";
-import { useRoughRunwayStore } from "@/lib/store";
 
 interface AppShellProps {
   children?: React.ReactNode;
@@ -25,24 +24,23 @@ interface AppShellProps {
 export default function AppShell({ children }: AppShellProps) {
   const [activePanel, setActivePanel] = useState<"treasury" | "burn" | "inflow" | "scenarios">("treasury");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isChartCompact, setIsChartCompact] = useState(false);
   const isMobile = useMediaQuery("(max-width: 1024px)");
-  const { model } = useRoughRunwayStore();
 
-  // Handle mobile view
   if (isMobile) {
     return <MobileInterstitial />;
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-background">
       {/* Sidebar */}
-      <div 
-        className={`bg-white border-r border-gray-200 transition-all duration-300 ease-in-out ${
-          isSidebarCollapsed ? "w-20" : "w-80"
+      <div
+        className={`bg-white dark:bg-panel-dark border-r border-gray-200 dark:border-border transition-all duration-300 ease-in-out ${
+          isSidebarCollapsed ? "w-16" : "w-56"
         }`}
       >
-        <Sidebar 
-          activePanel={activePanel} 
+        <Sidebar
+          activePanel={activePanel}
           setActivePanel={setActivePanel}
           isCollapsed={isSidebarCollapsed}
           setIsCollapsed={setIsSidebarCollapsed}
@@ -53,38 +51,36 @@ export default function AppShell({ children }: AppShellProps) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <MarketBanner />
         <Header />
-        
+
         <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto">
-            {activePanel === "treasury" && <TreasuryPanel />}
-            {activePanel === "burn" && <BurnPanel />}
-            {activePanel === "inflow" && <InflowPanel />}
-            {activePanel === "scenarios" && <ScenarioPanel />}
-            
-            {/* Projection visualization - always visible */}
-            <div className="mt-8">
+          <div className="max-w-7xl mx-auto space-y-8">
+            {/* Runway top deck — always visible across every panel */}
+            <section aria-label="Runway overview" className="space-y-4">
               <RunwaySummaryCards />
-            </div>
-
-            <div className="mt-4">
               <FundingGapCallout />
-            </div>
+              <ProjectionChart
+                compact={isChartCompact}
+                onToggleCompact={() => setIsChartCompact((v) => !v)}
+              />
+            </section>
 
-            <div className="mt-8">
-              <ProjectionChart />
-            </div>
-            
-            <div className="mt-8">
+            {/* Active editor panel (AI-first, manual below) */}
+            <section aria-label="Editor">
+              {activePanel === "treasury" && <TreasuryPanel />}
+              {activePanel === "burn" && <BurnPanel />}
+              {activePanel === "inflow" && <InflowPanel />}
+              {activePanel === "scenarios" && <ScenarioPanel />}
+            </section>
+
+            {/* Breakdowns */}
+            <section aria-label="Breakdowns" className="space-y-8">
               <ScenarioComparison />
-            </div>
-
-            <div className="mt-8">
               <MonthlyBreakdownTable />
-            </div>
+            </section>
           </div>
         </main>
-        
-        <footer className="border-t border-gray-200 bg-white">
+
+        <footer className="border-t border-gray-200 dark:border-border bg-white dark:bg-panel-dark">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <FooterBrand />
           </div>

@@ -16,6 +16,8 @@ import { useRoughRunwayStore } from "@/lib/store";
 import { computeScenarioProjection } from "@/lib/projection-engine";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Scenario, VolatileAsset, VolatileAssetTier } from "@/lib/types";
 
@@ -165,7 +167,12 @@ function CompositionLegend({ stablecoinsColor, fiatColor, assets }: CompositionL
 
 // ─── Main chart ───────────────────────────────────────────────────────────────
 
-export default function ProjectionChart() {
+interface ProjectionChartProps {
+  compact?: boolean;
+  onToggleCompact?: () => void;
+}
+
+export default function ProjectionChart({ compact = false, onToggleCompact }: ProjectionChartProps = {}) {
   const [showAreas, setShowAreas] = useState(true);
   const { projections } = useProjection();
   const { model } = useRoughRunwayStore();
@@ -239,15 +246,18 @@ export default function ProjectionChart() {
 
   return (
     <div
-      className="bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark p-6"
+      className={cn(
+        "bg-card rounded-panel border border-knob-silver dark:border-knob-silver-dark",
+        compact ? "p-4" : "p-6"
+      )}
       data-action="projection-chart"
     >
       {/* Header */}
-      <div className="mb-4 flex items-start justify-between gap-4">
+      <div className={cn("flex items-start justify-between gap-4", compact ? "mb-2" : "mb-4")}>
         <div className="flex-1 min-w-0">
           <div className="text-placard uppercase text-muted-foreground">Instrument</div>
           <h2 className="text-h3 text-foreground">Runway Projection</h2>
-          {showAreas && (
+          {showAreas && !compact && (
             <CompositionLegend
               stablecoinsColor={STABLECOINS_COLOR}
               fiatColor={FIAT_COLOR}
@@ -262,26 +272,44 @@ export default function ProjectionChart() {
 
         {/* Controls */}
         <div
-          className="flex items-center gap-2 shrink-0"
+          className="flex items-center gap-3 shrink-0"
           data-action="projection-controls"
         >
-          <Label
-            htmlFor="areas-toggle"
-            className="text-caption text-muted-foreground uppercase tracking-wide cursor-pointer"
-          >
-            Composition
-          </Label>
-          <Switch
-            id="areas-toggle"
-            checked={showAreas}
-            onCheckedChange={setShowAreas}
-            aria-label="Toggle treasury composition areas"
-          />
+          <div className="flex items-center gap-2">
+            <Label
+              htmlFor="areas-toggle"
+              className="text-caption text-muted-foreground uppercase tracking-wide cursor-pointer"
+            >
+              Composition
+            </Label>
+            <Switch
+              id="areas-toggle"
+              checked={showAreas}
+              onCheckedChange={setShowAreas}
+              aria-label="Toggle treasury composition areas"
+            />
+          </div>
+          {onToggleCompact && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onToggleCompact}
+              className="h-8 w-8 p-0"
+              aria-label={compact ? "Expand runway chart" : "Compact runway chart"}
+              title={compact ? "Expand chart" : "Compact chart"}
+            >
+              {compact ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Chart */}
-      <div className="h-80">
+      <div className={compact ? "h-40" : "h-80"}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={chartData}
@@ -418,7 +446,10 @@ export default function ProjectionChart() {
       </div>
 
       {/* Runway line legend */}
-      <div className="flex items-center gap-6 mt-3 pt-3 border-t border-knob-silver/30 dark:border-knob-silver-dark/30">
+      <div className={cn(
+        "flex flex-wrap items-center gap-x-6 gap-y-1 border-t border-knob-silver/30 dark:border-knob-silver-dark/30",
+        compact ? "mt-2 pt-2" : "mt-3 pt-3"
+      )}>
         <div className="flex items-center gap-2">
           <span
             className="inline-block h-0.5 w-6 rounded-full"
