@@ -10,6 +10,44 @@
   ],
   "paths": {
     "/api/agent/build": {
+      "get": {
+        "operationId": "buildRunwayModelGet",
+        "summary": "Build a runway model via GET (for web_fetch / browser-based agents)",
+        "description": "Preferred for agents that can only make GET requests (e.g. Claude web_fetch). URL-encode the description as a query parameter. Returns a shareUrl the user can open directly.",
+        "parameters": [
+          {
+            "name": "description",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "description": "Plain-English description of the treasury, team size, burn rate, and asset prices.",
+            "example": "10-person DeFi team, $1.5M USDC, 50 ETH at $3500, 100M native tokens at $0.08, $150k monthly burn"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Model built successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "shareUrl": { "type": "string", "description": "Full URL the user can open to view their interactive runway model." },
+                    "summary": { "type": "string" },
+                    "modelName": { "type": "string" }
+                  },
+                  "required": ["shareUrl", "summary", "modelName"]
+                }
+              }
+            }
+          },
+          "400": { "description": "Could not parse the description" },
+          "503": { "description": "AI features not configured" }
+        }
+      },
       "post": {
         "operationId": "buildRunwayModel",
         "summary": "Build a runway model from a plain-English description",

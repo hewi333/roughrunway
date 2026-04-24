@@ -112,20 +112,13 @@ function buildModel(p: any): RoughRunwayModel {
   } as RoughRunwayModel;
 }
 
-export async function POST(req: NextRequest) {
+async function handleBuild(req: NextRequest, description: string) {
   if (!process.env.PERPLEXITY_API_KEY) {
     return Response.json({ error: "AI features not configured" }, { status: 503 });
   }
 
-  let body: { description?: string };
-  try {
-    body = await req.json();
-  } catch {
-    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
-
-  const description = String(body.description ?? "").trim().slice(0, MAX_DESC_LENGTH);
-  if (!description) {
+  const safe = description.trim().slice(0, MAX_DESC_LENGTH);
+  if (!safe) {
     return Response.json({ error: "description is required" }, { status: 400 });
   }
 
@@ -134,7 +127,7 @@ export async function POST(req: NextRequest) {
       model: "sonar-pro",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: description },
+        { role: "user", content: safe },
       ],
       response_format: {
         type: "json_schema",
@@ -161,8 +154,26 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("[agent/build]", err instanceof Error ? err.message : err);
     return Response.json(
-      { error: "Could not parse that description. Try including your treasury amounts, burn rate, and team size." },
+      { error: "Could not parse that description. Include treasury amounts, burn rate, and team size." },
       { status: 400 }
     );
   }
+}
+
+// GET — for agents that can only fetch URLs (e.g. Claude web_fetch, browser tools)
+// Usage: GET /api/agent/build?description=<url-encoded description>
+export async function GET(req: NextRequest) {
+  const description = req.nextUrl.searchParams.get("description") ?? "";
+  return handleBuild(req, description);
+}
+
+// POST — for agents with full HTTP tool use (ChatGPT function calling, etc.)
+export async function POST(req: NextRequest) {
+  let body: { description?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+  return handleBuild(req, String(body.description ?? ""));
 }

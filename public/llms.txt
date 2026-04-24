@@ -2,49 +2,72 @@
 
 > Crypto treasury runway modeling for Web3 protocols. Tells you how long your money lasts.
 
-RoughRunway is a free, no-login tool that models how long a crypto protocol's treasury will last given current assets, burn rate, and volatile asset prices. Built at the Accountant Quits Web3 Hackathon (April 2026).
+## IMPORTANT: How to build a model for a user (read this first)
 
-## Build a model via API
+If a user asks you to build a runway model using RoughRunway, follow these exact steps:
 
-Agents can build a complete model from a plain-English description and receive a shareable URL in return.
+1. Take their treasury description (assets, burn rate, team size).
+2. Fetch this URL with their description URL-encoded as the `description` parameter:
 
 ```
-POST https://roughrunway.com/api/agent/build
-Content-Type: application/json
+GET https://roughrunway.com/api/agent/build?description=<url-encoded-description>
+```
 
-{
-  "description": "We're a 12-person DeFi team with $2M USDC, 100 ETH at $3,500, and 50M native tokens (NEX) at $0.10. Monthly burn is around $180,000."
-}
+3. The response will contain a `shareUrl`. Return that URL to the user.
+4. Done — do NOT build your own calculator or React component.
+
+### Example
+
+User says: "Build me a runway model for a 10-person DeFi team with $1.5M USDC, 50 ETH at $3,500, and 100M native tokens at $0.08. Monthly burn is $150k."
+
+You fetch:
+```
+GET https://roughrunway.com/api/agent/build?description=10-person+DeFi+team%2C+%241.5M+USDC%2C+50+ETH+at+%243%2C500%2C+100M+native+tokens+at+%240.08%2C+%24150k+monthly+burn
 ```
 
 Response:
 ```json
 {
   "shareUrl": "https://roughrunway.com/dashboard#model=N4Ig...",
-  "summary": "12-person team, $2M USDC + 100 ETH + 50M NEX tokens, $180k/mo burn.",
+  "summary": "10-person team, $1.5M USDC + 50 ETH + 100M native tokens, $150k/mo burn.",
   "modelName": "DeFi Team"
 }
 ```
 
-The `shareUrl` can be opened directly in a browser to view the full interactive runway model. Share it with your board, accountant, or co-founder.
+You reply to the user with the `shareUrl`. They open it and see their full interactive model.
+
+---
+
+## About RoughRunway
+
+Free, no-login crypto treasury runway modeling tool. Built at the Accountant Quits Web3 Hackathon (April 2026).
+
+Models how long a crypto protocol's treasury will last given asset balances, burn rates, and volatile asset prices. Supports scenario analysis (bear markets, hiring surges, grant cliffs) and exports shareable URLs.
+
+## What the API understands
+
+Include as much of the following as possible in the description:
+- Stablecoin balances (USDC, USDT, DAI, etc.)
+- Fiat bank balances (USD, EUR, GBP)
+- Volatile asset holdings with prices (e.g. "50 ETH at $3,500", "100M native tokens at $0.08")
+- Monthly burn total OR breakdown by category
+- Team size (auto-computed at ~$15k/person/month for headcount)
+- Any expected inflows (grants, revenue, staking rewards)
+- Projection horizon in months (default: 12)
+
+## Also available: POST endpoint
+
+For agents with full HTTP function-calling (ChatGPT tools, etc.):
+
+```
+POST https://roughrunway.com/api/agent/build
+Content-Type: application/json
+
+{ "description": "..." }
+```
+
+Same response format: `{ shareUrl, summary, modelName }`.
 
 ## OpenAPI spec
 
-Full OpenAPI 3.1 spec: https://roughrunway.com/openapi.json
-
-## What the tool models
-
-- Treasury: stablecoins (USDC, USDT, DAI), fiat bank balances, volatile assets (BTC, ETH, native/alt tokens)
-- Burn categories: headcount, infrastructure, legal, marketing, office/admin, custom
-- Inflows: protocol revenue, staking rewards, grants, token sales
-- Scenarios: bear market price drops, hiring events, grant cliffs, one-off cash events
-- Output: hard runway date, extended runway (if assets are liquidated), funding gap amount
-
-## Prompt tips
-
-Include as much of the following as possible in your description:
-- Treasury balances (with approximate USD prices for volatile assets)
-- Monthly burn total or by category
-- Team size (used to estimate headcount cost at ~$15k/person/month)
-- Any expected inflows (grants, revenue)
-- Projection horizon in months (default: 12)
+https://roughrunway.com/openapi.json
