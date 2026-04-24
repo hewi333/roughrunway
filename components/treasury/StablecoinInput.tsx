@@ -73,8 +73,8 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
       </div>
       
       {stablecoins.length === 0 ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-          <p className="text-gray-500">No stablecoins added yet</p>
+        <div className="text-center py-8 bg-muted rounded-lg border border-dashed border-knob-silver dark:border-knob-silver-dark">
+          <p className="text-muted-foreground">No stablecoins added yet</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -88,7 +88,7 @@ export default function StablecoinInput({ stablecoins }: StablecoinInputProps) {
                   id={`stablecoin-name-${stablecoin.id}`}
                   value={stablecoin.name}
                   onChange={(e) => updateStablecoin(stablecoin.id, { name: e.target.value })}
-                  className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-md border border-gray-300 dark:border-border bg-background text-foreground py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   {COMMON_STABLECOINS.map((coin) => (
                     <option key={coin} value={coin}>

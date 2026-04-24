@@ -78,7 +78,7 @@ export default function Header() {
                     onChange={(e) => setModelName(e.target.value)}
                     onBlur={handleNameSave}
                     onKeyDown={(e) => e.key === "Enter" && handleNameSave()}
-                    className="px-2 py-1 border border-gray-300 rounded-md text-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="px-2 py-1 bg-background text-foreground border border-gray-300 dark:border-border rounded-md text-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary"
                     autoFocus
                   />
                 </div>

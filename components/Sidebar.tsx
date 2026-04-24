@@ -34,31 +34,42 @@ export default function Sidebar({
 
   return (
     <div className="flex flex-col h-full">
-      {!isCollapsed && (
-        <div className="px-6 pt-6 pb-4">
-          <div className="text-placard uppercase text-muted-foreground">Rough Runway</div>
-          <div className="text-caption text-muted-foreground mt-1">Flight instruments</div>
-        </div>
-      )}
-
-      <div className="flex justify-end p-4">
+      <div
+        className={cn(
+          "flex items-center border-b border-gray-200 dark:border-border",
+          isCollapsed ? "justify-center px-2 py-3" : "justify-between px-3 py-3"
+        )}
+      >
+        {!isCollapsed && (
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold leading-none">
+              Rough Runway
+            </div>
+            <div className="text-[10px] text-muted-foreground/80 mt-0.5 leading-none">
+              Flight instruments
+            </div>
+          </div>
+        )}
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="h-8 w-8 p-0"
+          className="h-7 w-7 p-0 shrink-0"
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? (
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3.5 w-3.5" />
           ) : (
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3.5 w-3.5" />
           )}
         </Button>
       </div>
 
-      <nav className="flex-1 px-4" aria-label="Main navigation">
-        <ul className="space-y-2">
+      <nav
+        className={cn("flex-1 py-2", isCollapsed ? "px-2" : "px-2")}
+        aria-label="Main navigation"
+      >
+        <ul className="space-y-0.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activePanel === item.id;
@@ -68,19 +79,20 @@ export default function Sidebar({
                 <button
                   onClick={() => setActivePanel(item.id as any)}
                   className={cn(
-                    "w-full flex items-center rounded-precise px-3 py-2 text-left text-body font-medium transition-colors duration-150",
+                    "w-full flex items-center rounded-precise text-left text-sm font-medium transition-colors duration-150",
+                    isCollapsed ? "justify-center px-2 py-2" : "justify-start px-2.5 py-1.5",
                     isActive
                       ? "bg-primary text-primary-foreground"
-                      : "text-foreground hover:bg-muted",
-                    isCollapsed ? "justify-center" : "justify-start"
+                      : "text-foreground hover:bg-muted"
                   )}
                   aria-current={isActive ? "page" : undefined}
+                  title={isCollapsed ? item.label : undefined}
                 >
                   <Icon
-                    className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")}
+                    className={cn("h-4 w-4 shrink-0", isCollapsed ? "" : "mr-2.5")}
                     aria-hidden="true"
                   />
-                  {!isCollapsed && <span>{item.label}</span>}
+                  {!isCollapsed && <span className="truncate">{item.label}</span>}
                 </button>
               </li>
             );
