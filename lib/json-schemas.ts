@@ -172,3 +172,91 @@ export const PARSED_SETUP_SCHEMA = {
   },
   required: ["summary"],
 };
+
+// ─── Edit schemas ────────────────────────────────────────────────────────────
+// Used by /api/ai/parse-edit to let the user modify a slice (treasury / burn)
+// of an existing model in natural language. The LLM returns the COMPLETE
+// desired state of the slice post-edit, preserving IDs of items it kept.
+
+export const TREASURY_EDIT_SCHEMA = {
+  type: "object",
+  properties: {
+    patch: {
+      type: "object",
+      properties: {
+        stablecoins: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Existing id — omit for new items" },
+              name: { type: "string" },
+              amount: { type: "number", minimum: 0 },
+            },
+            required: ["name", "amount"],
+          },
+        },
+        fiat: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              currency: { type: "string", enum: ["USD", "EUR", "GBP"] },
+              amount: { type: "number", minimum: 0 },
+            },
+            required: ["currency", "amount"],
+          },
+        },
+        volatileAssets: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              ticker: { type: "string" },
+              tier: { type: "string", enum: ["major", "alt", "native"] },
+              quantity: { type: "number", minimum: 0 },
+              currentPrice: { type: "number", minimum: 0 },
+              liquidationPriority: { type: "number", minimum: 1, maximum: 100 },
+              haircutPercent: { type: "number", minimum: 0, maximum: 99 },
+            },
+            required: ["name", "ticker", "tier", "quantity", "currentPrice"],
+          },
+        },
+      },
+    },
+    summary: { type: "string" },
+  },
+  required: ["patch", "summary"],
+};
+
+export const BURN_EDIT_SCHEMA = {
+  type: "object",
+  properties: {
+    patch: {
+      type: "object",
+      properties: {
+        burnCategories: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string", description: "Existing id — omit for new items" },
+              name: { type: "string" },
+              presetKey: { type: "string" },
+              monthlyBaseline: { type: "number", minimum: 0 },
+              growthRate: { type: "number" },
+              isActive: { type: "boolean" },
+            },
+            required: ["name", "monthlyBaseline"],
+          },
+        },
+      },
+      required: ["burnCategories"],
+    },
+    summary: { type: "string" },
+  },
+  required: ["patch", "summary"],
+};
