@@ -1,180 +1,119 @@
-# Rough Runway
+# RoughRunway
 
-Self-serve treasury runway forecasting for small crypto organizations.
+**Know your runway. Before you run out.**
 
-**Live demo**: _TBD — deploy to Vercel post-hackathon_
-**Status**: UI implementation in progress. Core features implemented.
-
-> Built for the **Accountant Quits Web3 Crypto Hackathon** (April 20-27, 2026).
-> AI inference powered by **Perplexity AI** (hackathon sponsor).
+🔗 **[roughrunway.com](https://roughrunway.com)** · Built for the [Accountant Quits Web3 Hackathon](https://lu.ma/accountantquits) · April 2026
 
 ---
 
-## What this is
-
-Rough Runway answers one question for a crypto-org CFO: **"When do we run out of money?"**
-
-Unlike enterprise treasury tools, there's no login, no onboarding, no sales call, no integrations. You open the page, enter your numbers, and get two runway numbers:
-
-- **Hard Runway** — months of runway using only stablecoins + fiat. The guaranteed floor.
-- **Extended Runway** — months including realistic liquidation of volatile assets (BTC, ETH, native tokens), accounting for per-asset haircut and sell capacity. Simulated month by month, not a snapshot valuation.
-
-Plus scenario analysis (bear market, aggressive hiring, token crash) that branches off the baseline without mutating it.
-
-All data is client-side (localStorage). Export as JSON, share as a URL, or hand to an AI agent.
+<!--
+  ADD SCREENSHOT: replace this comment with:
+  ![RoughRunway dashboard](./docs/screenshot.png)
+  Best shot: dark mode, chart visible, at least one scenario active, funding gap callout showing.
+-->
 
 ---
 
-## Features Implemented
+## The problem
 
-- **Dark Mode Support** - Toggle between light and dark themes
-- **Export/Import Functionality** - Save and share models as compressed text files or URLs
-- **Scenario Management** - Create, edit, and compare different financial scenarios
-- **Responsive Design** - Works on desktop and mobile devices
-- **Accessibility Improvements** - Enhanced usability for all users
-- **Setup Wizard** - Guided onboarding for new users
-- **Documentation** - Comprehensive user guide
+Every DAO and crypto org has the same meeting:
 
----
+> *"How long do we have?"*
+> *"Depends on ETH."*
+> *"Okay but… roughly?"*
+> *"Hard to say."*
 
-## Repository layout
+Your treasury isn't just USDC. It's ETH that swings 40% in a month, native tokens you can't dump without crashing your own price, and a burn rate split across payroll, legal, infra, and grants. Modeling that in a spreadsheet is a full-time job — and it's wrong the moment prices move.
 
-```
-roughrunway/
-├── docs/                    # Specs — start here
-│   ├── 01-PRODUCT-SPEC.md
-│   ├── 02-DATA-MODEL.md
-│   ├── 03-ARCHITECTURE.md
-│   ├── 04-BUILD-PLAN.md
-│   ├── 05-PROJECTION-ENGINE.md
-│   ├── 06-PERPLEXITY-INTEGRATION.md
-│   ├── 07-AGENT-ARCHITECTURE.md
-│   ├── DESIGN-SPEC.md              # Design system overview
-│   ├── DESIGN-QUESTIONNAIRE.md     # Design requirements gathering
-│   ├── THEME-CONCEPTS.md           # Visual theme directions
-│   ├── DESIGN-GAPS.md              # Current design issues
-│   ├── DESIGN-PROCESS.md           # Implementation roadmap
-│   └── DESIGN-INITIATIVE-SUMMARY.md # Design initiative summary
-├── lib/                     # Pure logic (no UI dependencies)
-│   ├── types.ts             # Every TS interface
-│   ├── constants.ts         # Preset categories, scenario templates
-│   ├── utils.ts             # ID gen, currency/date formatters
-│   ├── projection-engine.ts # computeProjection() — the core math
-│   └── scenario-engine.ts   # applyScenarioOverrides()
-├── tests/
-│   └── projection-engine.test.ts  # 9 canonical fixtures, 26 assertions
-├── app/                     # Next.js 14 App Router
-│   ├── layout.tsx
-│   ├── page.tsx             # Landing page
-│   ├── dashboard/page.tsx   # Main app
-│   ├── setup/page.tsx       # Setup wizard
-│   ├── docs/page.tsx        # Documentation
-│   └── schema/              # /schema/*.json — public JSON Schema endpoints
-├── skills/                  # Agent-facing SKILL.md files
-│   ├── create-runway-model/
-│   ├── import-export-model/
-│   ├── run-scenario/
-│   └── analyze-projection/
-├── public/
-│   └── .well-known/
-│       └── agent-instructions.md  # First port of call for AI agents
-└── components/              # UI components organized by feature
-```
+**RoughRunway solves this in under a minute.**
 
 ---
 
-## Getting started
+## What it does
+
+Input your treasury. Set your burn. Get two numbers instantly:
+
+- **Hard runway** — how long your stables and fiat last at current burn. The guaranteed floor.
+- **Extended runway** — how much longer if you liquidate volatile assets in priority order, with per-asset haircuts and monthly sell limits. Simulated month-by-month, not a snapshot.
+
+Then stress-test it:
+
+> *"What if ETH drops 60%?"*
+> *"What if we hire 3 engineers?"*
+> *"What if our grant cliff hits in month 4?"*
+
+Run scenarios side-by-side. See exactly how each one moves your runway date.
+
+Share the link. Anyone who clicks it sees your exact model — no login, no account, no setup.
+
+---
+
+## Five-second demo
+
+1. Go to **[roughrunway.com](https://roughrunway.com)**
+2. Describe your treasury in plain English — AI fills in the model
+3. See your runway chart and summary cards
+4. Open Scenarios — type a stress test in plain English
+5. Click **Share** — copy a link with your full model encoded in the URL
+
+---
+
+## What makes it different
+
+**It actually models crypto treasuries**
+
+Most tools treat your treasury as a single number. RoughRunway models each asset separately — stablecoins, fiat, BTC/ETH, and native tokens — with realistic sell constraints:
+
+| Asset tier | Haircut | Behavior |
+|------------|---------|----------|
+| Major (BTC, ETH) | 2% | Liquid, sell up to your monthly limit |
+| Alt tokens | 10% | Sell constrained by your set limit |
+| Native/protocol token | 15% | High illiquidity, last to liquidate |
+
+**Scenario analysis without the spreadsheet**
+
+Type a scenario in plain English. The AI parses it into overrides and runs a parallel projection. Compare multiple scenarios against baseline in a single table — runway delta, funding gap, average net burn.
+
+**Shareable links with no backend**
+
+The entire model compresses into the URL hash using lz-string. Send it to your board, your accountant, or a co-founder. They click it, they see it. Nothing stored on a server.
+
+---
+
+## AI features
+
+- **Setup assistant** — describe your treasury in plain English, AI builds the full model
+- **Scenario parser** — type "bear market, ETH down 70%, cut marketing 30%" and it creates the override set
+- **Live market banner** — real-time crypto prices and news headlines for your assets, powered by Perplexity Sonar
+
+---
+
+## Quickstart
 
 ```bash
-# Install
+git clone https://github.com/hewi333/roughrunway
+cd roughrunway
+cp .env.example .env.local   # add your PERPLEXITY_API_KEY
 npm install
-
-# Run tests (validates the projection engine — 26 passing)
-npm test
-
-# Typecheck
-npm run typecheck
-
-# Dev server
 npm run dev
 ```
 
-Open http://localhost:3000.
-
-### Environment variables
-
-Copy `.env.local.example` to `.env.local` and fill in:
-
-```
-PERPLEXITY_API_KEY=*** key>
-```
-
-Perplexity is the AI provider for scenario parsing, the live market banner, and the natural-language setup assistant. See `docs/06-PERPLEXITY-INTEGRATION.md`.
-
----
-
-## The projection engine is tested
-
-Before building any UI, the pure-function engine in `lib/projection-engine.ts` is validated against 9 hand-verified fixtures covering:
-
-1. Pure cash baseline
-2. Stables + fiat mix
-3. Inflows offsetting burn
-4. Liquid native token extends runway (with strain)
-5. Illiquid native token — liquidity bottleneck
-6. Multi-asset priority (ETH first, then native)
-7. Declining token price
-8. One-off event spike
-9. Profitable org (infinite runway)
-
-Run `npm test` to verify. If any fixture fails, the engine's math is wrong — do not proceed to UI work until fixed.
-
----
-
-## For AI agents
-
-Rough Runway is designed to be agent-friendly from day one.
-
-- **JSON Schema**: [`/schema/model.json`](./app/schema/model.json/route.ts), [`/schema/scenario.json`](./app/schema/scenario.json/route.ts)
-- **Agent instructions**: [`/.well-known/agent-instructions.md`](./public/.well-known/agent-instructions.md)
-- **Skills**: [`/skills/`](./skills/) — four SKILL.md files covering model creation, import/export, scenarios, and projection analysis
-
-### Typical agent flow
-
-1. Agent reads `/.well-known/agent-instructions.md`
-2. Agent reads relevant SKILL.md
-3. Agent asks the user for their treasury/burn via conversation
-4. Agent constructs JSON matching `/schema/model.json`
-5. Agent hands the user a shareable URL: `https://roughrunway.com/dashboard#model=<lz-compressed-base64>`
-6. User clicks — model loads, projection runs, scenarios can be built
-
-No API keys, no auth, no coordination. The tool is self-describing.
+Open [localhost:3000](http://localhost:3000). AI features require a [Perplexity API key](https://www.perplexity.ai/) — everything else works without one.
 
 ---
 
 ## Tech stack
 
-| Layer | Choice |
+| | |
 |---|---|
-| Framework | Next.js 14 (App Router) |
-| Language | TypeScript (strict) |
-| Styling | Tailwind CSS |
-| State | Zustand |
-| Charts | Recharts |
-| Persistence | localStorage (client-only) |
-| AI | Perplexity API (Sonar models) |
-| Testing | Vitest |
+| Framework | Next.js 14 (App Router, TypeScript strict) |
+| State | Zustand + localStorage (no backend, no database) |
+| Charts | Recharts — stacked treasury areas + scenario overlay lines |
+| AI | Perplexity Sonar / Sonar Pro with structured JSON output |
+| Styling | Tailwind CSS + shadcn/ui |
+| Sharing | lz-string URL compression — full model in the hash |
 | Hosting | Vercel |
 
 ---
 
-## License
-
-MIT. See `LICENSE`.
-
----
-
-## Credits
-
-- Hackathon: [Accountant Quits Web3 Crypto Hackathon](https://accountantquits.com)
-- Sponsor: [Perplexity AI](https://www.perplexity.ai)
+*Built for the Accountant Quits Web3 Hackathon, April 2026.*
