@@ -1,0 +1,50 @@
+# RoughRunway
+
+> Crypto treasury runway modeling for Web3 protocols. Tells you how long your money lasts.
+
+RoughRunway is a free, no-login tool that models how long a crypto protocol's treasury will last given current assets, burn rate, and volatile asset prices. Built at the Accountant Quits Web3 Hackathon (April 2026).
+
+## Build a model via API
+
+Agents can build a complete model from a plain-English description and receive a shareable URL in return.
+
+```
+POST https://roughrunway.com/api/agent/build
+Content-Type: application/json
+
+{
+  "description": "We're a 12-person DeFi team with $2M USDC, 100 ETH at $3,500, and 50M native tokens (NEX) at $0.10. Monthly burn is around $180,000."
+}
+```
+
+Response:
+```json
+{
+  "shareUrl": "https://roughrunway.com/dashboard#model=N4Ig...",
+  "summary": "12-person team, $2M USDC + 100 ETH + 50M NEX tokens, $180k/mo burn.",
+  "modelName": "DeFi Team"
+}
+```
+
+The `shareUrl` can be opened directly in a browser to view the full interactive runway model. Share it with your board, accountant, or co-founder.
+
+## OpenAPI spec
+
+Full OpenAPI 3.1 spec: https://roughrunway.com/openapi.json
+
+## What the tool models
+
+- Treasury: stablecoins (USDC, USDT, DAI), fiat bank balances, volatile assets (BTC, ETH, native/alt tokens)
+- Burn categories: headcount, infrastructure, legal, marketing, office/admin, custom
+- Inflows: protocol revenue, staking rewards, grants, token sales
+- Scenarios: bear market price drops, hiring events, grant cliffs, one-off cash events
+- Output: hard runway date, extended runway (if assets are liquidated), funding gap amount
+
+## Prompt tips
+
+Include as much of the following as possible in your description:
+- Treasury balances (with approximate USD prices for volatile assets)
+- Monthly burn total or by category
+- Team size (used to estimate headcount cost at ~$15k/person/month)
+- Any expected inflows (grants, revenue)
+- Projection horizon in months (default: 12)
