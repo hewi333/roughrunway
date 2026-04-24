@@ -227,11 +227,11 @@ export default function HomePage() {
             <div className="rounded-xl border border-white/10 bg-[#050d1a] overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-white/[0.02]">
                 <Terminal className="h-3.5 w-3.5 text-white/30" />
-                <span className="text-xs font-mono text-white/30">Agent fetches</span>
+                <span className="text-xs font-mono text-white/30">Agent fetches (instant, no extra LLM)</span>
               </div>
               <p className="px-4 py-4 text-xs text-white/60 font-mono leading-relaxed break-all">
-                roughrunway.com/api/agent/build
-                <span className="text-[#6FA3D4]">?description=10-person+DeFi+team%2C+%241.5M+USDC%2C+50+ETH+at+%243%2C500%2C+100M+native+tokens+at+%240.08%2C+%24150k+monthly+burn</span>
+                roughrunway.com/api/agent/encode
+                <span className="text-[#6FA3D4]">?name=DeFi+Team&stable=USDC:1500000&volatile=ETH:50:3500:major,NEX:100000000:0.08:native&burn=150000&team=10</span>
               </p>
             </div>
 

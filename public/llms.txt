@@ -1,73 +1,100 @@
 # RoughRunway
 
-> Crypto treasury runway modeling for Web3 protocols. Tells you how long your money lasts.
+> Crypto treasury runway modeling for Web3 protocols. Tells you how long their money lasts.
 
-## IMPORTANT: How to build a model for a user (read this first)
+## IMPORTANT: How to build a model for a user
 
-If a user asks you to build a runway model using RoughRunway, follow these exact steps:
+When a user asks you to build a runway model using RoughRunway, follow these steps **exactly**:
 
-1. Take their treasury description (assets, burn rate, team size).
-2. Fetch this URL with their description URL-encoded as the `description` parameter:
+1. Parse the user's description yourself (you are an LLM — do this directly, no extra API call needed).
+2. Call the encode endpoint below with structured query params.
+3. Return the `shareUrl` from the response to the user. That's it.
+
+**Do NOT build your own calculator. Do NOT write code. Just call the URL and return the link.**
+
+---
+
+## Step 1 — Parse the description
+
+Extract these values from the user's description:
+
+| Field | What to extract |
+|-------|----------------|
+| `name` | Short project or team name (e.g. "DeFi Team") |
+| `stable` | Stablecoin balances as `NAME:AMOUNT` pairs, comma-separated (e.g. `USDC:1500000`) |
+| `fiat` | Fiat bank balances as `CURRENCY:AMOUNT` (e.g. `USD:200000`) — omit if not mentioned |
+| `volatile` | Crypto holdings as `TICKER:QTY:PRICE:TIER`, comma-separated. TIER = `major` for BTC/ETH, `native` for the org's own token, `alt` for everything else |
+| `burn` | Monthly burn as a single number (e.g. `150000`) — or as `CATEGORY:AMOUNT` pairs if broken down |
+| `team` | Team headcount as a number (headcount cost = team × $15,000/month) — use instead of `burn` if only team size is given |
+| `months` | Projection horizon in months (default: 12) |
+
+## Step 2 — Fetch this URL
 
 ```
-GET https://roughrunway.com/api/agent/build?description=<url-encoded-description>
+GET https://roughrunway.com/api/agent/encode?name=...&stable=...&volatile=...&burn=...&team=...
 ```
 
-3. The response will contain a `shareUrl`. Return that URL to the user.
-4. Done — do NOT build your own calculator or React component.
+This endpoint returns a `shareUrl` instantly — no LLM call, no latency.
 
-### Example
+## Step 3 — Return the shareUrl to the user
 
-User says: "Build me a runway model for a 10-person DeFi team with $1.5M USDC, 50 ETH at $3,500, and 100M native tokens at $0.08. Monthly burn is $150k."
-
-You fetch:
-```
-GET https://roughrunway.com/api/agent/build?description=10-person+DeFi+team%2C+%241.5M+USDC%2C+50+ETH+at+%243%2C500%2C+100M+native+tokens+at+%240.08%2C+%24150k+monthly+burn
-```
-
-Response:
+The response looks like:
 ```json
 {
   "shareUrl": "https://roughrunway.com/dashboard#model=N4Ig...",
-  "summary": "10-person team, $1.5M USDC + 50 ETH + 100M native tokens, $150k/mo burn.",
   "modelName": "DeFi Team"
 }
 ```
 
-You reply to the user with the `shareUrl`. They open it and see their full interactive model.
+Return the `shareUrl`. The user clicks it and sees their full interactive model.
 
 ---
 
-## About RoughRunway
+## Worked example
 
-Free, no-login crypto treasury runway modeling tool. Built at the Accountant Quits Web3 Hackathon (April 2026).
+User says: *"Build a runway model for a 10-person DeFi team with $1.5M USDC, 50 ETH at $3,500, and 100M native tokens at $0.08. Monthly burn is $150k."*
 
-Models how long a crypto protocol's treasury will last given asset balances, burn rates, and volatile asset prices. Supports scenario analysis (bear markets, hiring surges, grant cliffs) and exports shareable URLs.
+You parse:
+- name = `DeFi Team`
+- stable = `USDC:1500000`
+- volatile = `ETH:50:3500:major,NATIVE:100000000:0.08:native`
+- burn = `150000`
+- team = `10`
 
-## What the API understands
-
-Include as much of the following as possible in the description:
-- Stablecoin balances (USDC, USDT, DAI, etc.)
-- Fiat bank balances (USD, EUR, GBP)
-- Volatile asset holdings with prices (e.g. "50 ETH at $3,500", "100M native tokens at $0.08")
-- Monthly burn total OR breakdown by category
-- Team size (auto-computed at ~$15k/person/month for headcount)
-- Any expected inflows (grants, revenue, staking rewards)
-- Projection horizon in months (default: 12)
-
-## Also available: POST endpoint
-
-For agents with full HTTP function-calling (ChatGPT tools, etc.):
-
+You fetch:
 ```
-POST https://roughrunway.com/api/agent/build
-Content-Type: application/json
-
-{ "description": "..." }
+GET https://roughrunway.com/api/agent/encode?name=DeFi+Team&stable=USDC:1500000&volatile=ETH:50:3500:major,NATIVE:100000000:0.08:native&burn=150000&team=10
 ```
 
-Same response format: `{ shareUrl, summary, modelName }`.
+You receive:
+```json
+{ "shareUrl": "https://roughrunway.com/dashboard#model=N4Ig...", "modelName": "DeFi Team" }
+```
+
+You reply: *"Here's your runway model: https://roughrunway.com/dashboard#model=N4Ig..."*
+
+---
+
+## Tier reference
+
+| Ticker | Tier |
+|--------|------|
+| BTC, ETH, WBTC, WETH | `major` |
+| "our token", "native token", "protocol token" | `native` |
+| Everything else | `alt` |
+
+---
+
+## Fallback: LLM-parsed endpoint (slower, may timeout)
+
+If you can't parse structured params yourself, try:
+```
+GET https://roughrunway.com/api/agent/build?description=<url-encoded description>
+```
+This calls an LLM server-side to parse the description, which takes 15–30 seconds and may timeout.
+The `/api/agent/encode` path above is strongly preferred.
+
+---
 
 ## OpenAPI spec
-
 https://roughrunway.com/openapi.json
