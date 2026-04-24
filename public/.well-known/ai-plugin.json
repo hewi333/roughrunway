@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "RoughRunway",
+  "name_for_model": "roughrunway",
+  "description_for_human": "Crypto treasury runway modeling for Web3 orgs. Know how long your money lasts.",
+  "description_for_model": "RoughRunway models how long a crypto protocol's treasury will last given burn rates and volatile asset prices. Use the /api/agent/build endpoint to create a runway model from a plain-English description of the org's treasury, team size, and burn rate. Returns a shareUrl the user can open to view their interactive model.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://roughrunway.com/openapi.json"
+  },
+  "logo_url": "https://roughrunway.com/logo.png",
+  "contact_email": "",
+  "legal_info_url": "https://roughrunway.com"
+}

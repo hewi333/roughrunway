@@ -1,0 +1,83 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "RoughRunway Agent API",
+    "description": "Build crypto treasury runway models from natural language descriptions. Returns a shareable URL pointing to a fully interactive model.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "https://roughrunway.com" }
+  ],
+  "paths": {
+    "/api/agent/build": {
+      "post": {
+        "operationId": "buildRunwayModel",
+        "summary": "Build a runway model from a plain-English description",
+        "description": "Parse a natural-language description of a crypto treasury, burn rate, and team, then return a shareable URL that loads the model interactively. No authentication required.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["description"],
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "description": "Plain-English description of the treasury, team size, burn rate, and asset prices.",
+                    "example": "We're a 12-person DeFi team with $2M USDC, 100 ETH at $3,500, and 50M native tokens (NEX) at $0.10. Monthly burn is $180k mostly on headcount."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Model built successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "shareUrl": {
+                      "type": "string",
+                      "description": "Full URL the user can open to view their interactive runway model.",
+                      "example": "https://roughrunway.com/dashboard#model=N4Ig..."
+                    },
+                    "summary": {
+                      "type": "string",
+                      "description": "Human-readable summary of what was parsed from the description."
+                    },
+                    "modelName": {
+                      "type": "string",
+                      "description": "Short name derived from the description for the model."
+                    }
+                  },
+                  "required": ["shareUrl", "summary", "modelName"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Could not parse the description",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "AI features not configured on this instance"
+          }
+        }
+      }
+    }
+  }
+}
