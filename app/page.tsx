@@ -223,32 +223,29 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-3">
-            {/* Example prompt */}
+            {/* How the agent calls it */}
             <div className="rounded-xl border border-white/10 bg-[#050d1a] overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-white/[0.02]">
                 <Terminal className="h-3.5 w-3.5 text-white/30" />
-                <span className="text-xs font-mono text-white/30">You → Claude</span>
+                <span className="text-xs font-mono text-white/30">Agent fetches</span>
               </div>
-              <p className="px-4 py-4 text-sm text-white/70 font-mono leading-relaxed">
-                Go to roughrunway.com and build a runway model for a 10-person DeFi
-                team with $1.5M USDC, 50 ETH at $3,500, and 100M native tokens at
-                $0.08. Monthly burn is $150k.
+              <p className="px-4 py-4 text-xs text-white/60 font-mono leading-relaxed break-all">
+                roughrunway.com/api/agent/build
+                <span className="text-[#6FA3D4]">?description=10-person+DeFi+team%2C+%241.5M+USDC%2C+50+ETH+at+%243%2C500%2C+100M+native+tokens+at+%240.08%2C+%24150k+monthly+burn</span>
               </p>
             </div>
 
-            {/* Example response */}
+            {/* Response */}
             <div className="rounded-xl border border-[#2E7D32]/30 bg-[#2E7D32]/5 overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#2E7D32]/10">
-                <span className="text-xs font-mono text-[#4ADE80]/60">Claude → You</span>
+                <span className="text-xs font-mono text-[#4ADE80]/60">Response → agent returns to user</span>
               </div>
               <div className="px-4 py-4 space-y-2">
-                <p className="text-sm text-white/60 font-mono leading-relaxed">
-                  Built your model — $1.5M USDC + 50 ETH + 100M NEX tokens,
-                  $150k/mo burn, 10-person team.
+                <p className="text-xs text-white/40 font-mono">{`{ "shareUrl":`}</p>
+                <p className="text-sm text-[#6FA3D4] font-mono break-all pl-4">
+                  "roughrunway.com/dashboard#model=N4Ig…"
                 </p>
-                <p className="text-sm text-[#6FA3D4] font-mono break-all">
-                  roughrunway.com/dashboard#model=N4Ig…
-                </p>
+                <p className="text-xs text-white/40 font-mono">{`}`}</p>
               </div>
             </div>
           </div>
