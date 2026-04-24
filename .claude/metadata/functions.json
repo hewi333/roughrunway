@@ -1,0 +1,138 @@
+{
+  "generatedAt": "2026-04-24T17:48:10.862Z",
+  "functions": [
+    {
+      "name": "cn",
+      "file": "lib/utils.ts",
+      "line": 4,
+      "signature": "export function cn(...inputs: ClassValue[]) {",
+      "kind": "function"
+    },
+    {
+      "name": "computeAssetPrice",
+      "file": "lib/projection-engine.ts",
+      "line": 260,
+      "signature": "export function computeAssetPrice(asset: VolatileAsset, month: number): number {",
+      "kind": "function"
+    },
+    {
+      "name": "computeMonthDate",
+      "file": "lib/utils.ts",
+      "line": 18,
+      "signature": "export function computeMonthDate(startDate: string, monthOffset: number): string {",
+      "kind": "function"
+    },
+    {
+      "name": "computeProjection",
+      "file": "lib/projection-engine.ts",
+      "line": 21,
+      "signature": "export function computeProjection(model: RoughRunwayModel): {",
+      "kind": "function"
+    },
+    {
+      "name": "defaultLiquidationPriority",
+      "file": "lib/constants.ts",
+      "line": 87,
+      "signature": "export function defaultLiquidationPriority(tier: VolatileAssetTier): number {",
+      "kind": "function"
+    },
+    {
+      "name": "exportModel",
+      "file": "lib/model-export.ts",
+      "line": 4,
+      "signature": "export function exportModel(model: RoughRunwayModel): string {",
+      "kind": "function"
+    },
+    {
+      "name": "exportModelJson",
+      "file": "lib/model-export.ts",
+      "line": 16,
+      "signature": "export function exportModelJson(model: RoughRunwayModel): string {",
+      "kind": "function"
+    },
+    {
+      "name": "formatMonthLabel",
+      "file": "lib/utils.ts",
+      "line": 12,
+      "signature": "export function formatMonthLabel(startDate: string, monthOffset: number): string {",
+      "kind": "function"
+    },
+    {
+      "name": "generateId",
+      "file": "lib/utils.ts",
+      "line": 24,
+      "signature": "export function generateId(prefix: string = \"id\"): string {",
+      "kind": "function"
+    },
+    {
+      "name": "generateShareableUrl",
+      "file": "lib/model-export.ts",
+      "line": 67,
+      "signature": "export function generateShareableUrl(model: RoughRunwayModel): string {",
+      "kind": "function"
+    },
+    {
+      "name": "getMonthlyBurn",
+      "file": "lib/projection-engine.ts",
+      "line": 202,
+      "signature": "export function getMonthlyBurn(category: BurnCategory, month: number): number {",
+      "kind": "function"
+    },
+    {
+      "name": "getMonthlyInflow",
+      "file": "lib/projection-engine.ts",
+      "line": 231,
+      "signature": "export function getMonthlyInflow(category: InflowCategory, month: number): number {",
+      "kind": "function"
+    },
+    {
+      "name": "importModel",
+      "file": "lib/model-export.ts",
+      "line": 26,
+      "signature": "export function importModel(compressedData: string): RoughRunwayModel | null {",
+      "kind": "function"
+    },
+    {
+      "name": "importModelFromJson",
+      "file": "lib/model-export.ts",
+      "line": 45,
+      "signature": "export function importModelFromJson(jsonText: string): RoughRunwayModel | null {",
+      "kind": "function"
+    },
+    {
+      "name": "parseShareableUrl",
+      "file": "lib/model-export.ts",
+      "line": 56,
+      "signature": "export function parseShareableUrl(url: string): RoughRunwayModel | null {",
+      "kind": "function"
+    },
+    {
+      "name": "sum",
+      "file": "lib/utils.ts",
+      "line": 8,
+      "signature": "export function sum<T>(array: T[], fn: (item: T) => number): number {",
+      "kind": "function"
+    },
+    {
+      "name": "useDebouncedRoughRunwayStore",
+      "file": "lib/store.ts",
+      "line": 179,
+      "signature": "export const useDebouncedRoughRunwayStore = (() => {",
+      "kind": "const-arrow"
+    },
+    {
+      "name": "useMediaQuery",
+      "file": "lib/hooks.ts",
+      "line": 5,
+      "signature": "export function useMediaQuery(query: string): boolean {",
+      "kind": "function"
+    },
+    {
+      "name": "useProjection",
+      "file": "lib/hooks/useProjection.ts",
+      "line": 11,
+      "signature": "export function useProjection(): ProjectionData {",
+      "kind": "function"
+    }
+  ]
+}

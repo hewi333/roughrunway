@@ -13,7 +13,10 @@
     "test:e2e": "playwright test",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "verify:engine": "python3 scripts/verify-engine.py"
+    "verify:engine": "python3 scripts/verify-engine.py",
+    "meta:generate": "node .claude/scripts/generate-metadata.js",
+    "meta:validate": "node .claude/scripts/validate-docs.js && node .claude/scripts/doc-health-check.js",
+    "meta:all": "npm run meta:generate && npm run meta:validate"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.8",
