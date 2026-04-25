@@ -15,6 +15,7 @@ import FundingGapCallout from "@/components/FundingGapCallout";
 import MonthlyBreakdownTable from "@/components/MonthlyBreakdownTable";
 import ScenarioComparison from "@/components/ScenarioComparison";
 import MarketBanner from "@/components/ai/MarketBanner";
+import DemoCoachmark from "@/components/DemoCoachmark";
 import FooterBrand from "@/components/FooterBrand";
 
 interface AppShellProps {
@@ -50,6 +51,10 @@ export default function AppShell({ children }: AppShellProps) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <MarketBanner />
+        <DemoCoachmark
+          activePanel={activePanel}
+          onGoToScenarios={() => setActivePanel("scenarios")}
+        />
         <Header />
 
         <main className="flex-1 overflow-y-auto p-6">

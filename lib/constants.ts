@@ -7,7 +7,9 @@ import type {
   VolatileAssetTier,
 } from "./types";
 
-export const STORAGE_VERSION = 1;
+// Bump on default-model shape changes — bumping discards persisted state on
+// older versions and falls back to createDefaultModel() (lib/store.ts).
+export const STORAGE_VERSION = 2;
 export const STORAGE_KEY = "roughrunway_data";
 
 // ============================================================================
