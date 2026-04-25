@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Terminal } from "lucide-react";
+import { ArrowRight, Terminal, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 
@@ -10,21 +10,9 @@ export default function HomePage() {
       {/* Swiss flag stripe — thin red/white accent across the very top */}
       <div className="h-1 w-full bg-swiss-red" />
 
-      {/* Nav */}
-      <nav className="px-4 sm:px-6 py-4 sm:py-5 max-w-6xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-2.5 min-w-0">
-          <span className="relative inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-sm bg-swiss-red">
-            <span className="absolute h-0.5 w-3.5 bg-white" />
-            <span className="absolute h-3.5 w-0.5 bg-white" />
-          </span>
-          <span className="font-mono font-bold text-base sm:text-lg tracking-tight text-ink truncate">
-            RoughRunway
-          </span>
-        </Link>
-      </nav>
-
-      {/* Hero — full-bleed alpine runway photo with left-side text overlay */}
-      <section className="relative overflow-hidden min-h-[540px] sm:min-h-[600px] lg:min-h-[720px] flex items-center">
+      {/* Hero — full-bleed alpine runway photo with the wordmark and copy
+          overlaid, so the picture starts immediately under the red stripe. */}
+      <section className="relative overflow-hidden min-h-[560px] sm:min-h-[620px] lg:min-h-[720px] flex items-center">
         <Image
           src="/hero-alpine.jpg"
           alt="Asphalt runway on a snow-covered alpine ridge at dawn, with snow-capped peaks glowing in warm light"
@@ -50,12 +38,27 @@ export default function HomePage() {
           }}
         />
 
-        <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+        {/* Wordmark sits on the brightest scrim corner */}
+        <nav className="absolute top-0 left-0 right-0 z-10 px-4 sm:px-6 py-4 sm:py-5">
+          <div className="max-w-6xl mx-auto">
+            <Link href="/" className="inline-flex items-center gap-2.5 min-w-0">
+              <span className="relative inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-sm bg-swiss-red">
+                <span className="absolute h-0.5 w-3.5 bg-white" />
+                <span className="absolute h-3.5 w-0.5 bg-white" />
+              </span>
+              <span className="font-mono font-bold text-base sm:text-lg tracking-tight text-ink truncate">
+                RoughRunway
+              </span>
+            </Link>
+          </div>
+        </nav>
+
+        <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-28 pb-14 sm:pb-20">
           <div className="max-w-xl space-y-6 sm:space-y-8">
             <div className="space-y-3 sm:space-y-4">
               <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-swiss-red">
                 <span className="inline-block h-2 w-2 mr-2 align-middle bg-swiss-red rounded-sm" />
-                Accountant Quits Web3 · April 2026
+                Built for The Accountant Quits Hackathon
               </p>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-ink">
                 Know your runway.
@@ -63,16 +66,15 @@ export default function HomePage() {
                 <span className="text-swiss-red">Before you run out.</span>
               </h1>
               <p className="text-base sm:text-lg text-ink-secondary max-w-md leading-relaxed">
-                Crypto treasury runway modeling for Web3 orgs. Input your assets,
-                set your burn rate, stress-test scenarios — know exactly how long
-                your money lasts.
+                Crypto treasury runway modeling for Web3 orgs — stress-test
+                scenarios and see exactly how long your money lasts.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-3 items-center">
               <Button asChild size="lg" className="gap-2 text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6">
                 <Link href="/dashboard">
-                  Try the live demo
+                  Build model
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -86,23 +88,44 @@ export default function HomePage() {
             <p className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-ink-secondary">
               4 clicks → sample model + sensitivity scenario
             </p>
+          </div>
+        </div>
+      </section>
 
-            <p className="pt-1 sm:pt-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-ink-secondary flex flex-wrap items-center gap-x-2 gap-y-1">
-              {["No login", "Free to use", "Shareable link"].map((tag, i) => (
-                <span key={tag} className="inline-flex items-center gap-2">
-                  {i > 0 && (
-                    <span className="h-1 w-1 bg-knob-silver rounded-full" aria-hidden />
-                  )}
-                  {tag}
-                </span>
-              ))}
-            </p>
+      {/* Sponsor strip — sits right after the hero. Text wordmarks for now;
+          drop logos into /public/sponsors/ and swap to <Image> when ready. */}
+      <section className="bg-mountain-white border-b border-knob-silver/40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-7 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-ink-secondary flex-shrink-0">
+            Hackathon partners
+          </span>
+          <div className="flex items-center gap-8 sm:gap-10">
+            <Link
+              href="https://theaccountantquits.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-sm sm:text-base font-semibold tracking-tight text-ink hover:text-swiss-red transition-colors"
+              aria-label="The Accountant Quits"
+            >
+              The Accountant Quits
+            </Link>
+            <span className="h-4 w-px bg-knob-silver/60" aria-hidden />
+            <Link
+              href="https://www.perplexity.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm sm:text-base font-medium text-perplexity hover:opacity-80 transition-opacity"
+              aria-label="Perplexity"
+            >
+              <Zap className="h-4 w-4" aria-hidden />
+              Perplexity
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Features — snow-white strip with mountain silhouette accents */}
-      <section className="relative bg-white border-y border-knob-silver/40">
+      <section className="relative bg-white border-b border-knob-silver/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="flex items-baseline gap-3 mb-8 sm:mb-10">
             <span className="h-3 w-3 bg-swiss-red rounded-sm" />
@@ -219,9 +242,8 @@ export default function HomePage() {
               <span className="absolute h-2.5 w-0.5 bg-white" />
             </span>
             <span className="font-mono text-xs sm:text-sm text-ink-secondary">
-              Built for the{" "}
-              <span className="text-ink">Accountant Quits Web3 Hackathon</span>
-              {" "}· April 2026
+              Built for{" "}
+              <span className="text-ink">The Accountant Quits Hackathon</span>
             </span>
           </div>
           <div className="flex items-center gap-6 text-sm text-ink-secondary">
