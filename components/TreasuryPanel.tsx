@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, RefreshCw, Loader2 } from "lucide-react";
 import { useRoughRunwayStore } from "@/lib/store";
-import { VolatileAsset, VolatileAssetTier, StablecoinHolding, FiatHolding } from "@/lib/types";
+import { VolatileAsset, StablecoinHolding, FiatHolding } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
 import { defaultLiquidityProfile, defaultLiquidationPriority } from "@/lib/constants";
 import StablecoinInput from "@/components/treasury/StablecoinInput";
@@ -12,30 +12,21 @@ import FiatInput from "@/components/treasury/FiatInput";
 import VolatileAssetInput from "@/components/treasury/VolatileAssetInput";
 import TreasurySummaryCard from "@/components/treasury/TreasurySummaryCard";
 import DescribeEdit from "@/components/ai/DescribeEdit";
-
-interface TreasuryEditPatch {
-  stablecoins?: { id?: string; name: string; amount: number }[];
-  fiat?: { id?: string; currency: "USD" | "EUR" | "GBP"; amount: number }[];
-  volatileAssets?: {
-    id?: string;
-    name: string;
-    ticker: string;
-    tier: VolatileAssetTier;
-    quantity: number;
-    currentPrice: number;
-    liquidationPriority?: number;
-    haircutPercent?: number;
-  }[];
-}
+import {
+  validateTreasuryPatchClient,
+  validatePriceSetClient,
+  ValidatedTreasuryPatchShape,
+} from "@/lib/patch-validators";
 
 export default function TreasuryPanel() {
   const { model, updateModel } = useRoughRunwayStore();
   const { treasury } = model;
+  const [refreshState, setRefreshState] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [refreshMsg, setRefreshMsg] = useState("");
 
-  const applyTreasuryPatch = (patch: TreasuryEditPatch) => {
-    // Full-replace semantics per slice: only slices present in the patch are replaced.
-    // Within a slice, items keep their id when the AI passes one; new items get a fresh UUID
-    // and internal fields (priceSource, liquidity) inherited from the existing item or defaults.
+  const applyTreasuryPatch = (raw: unknown) => {
+    const patch = validateTreasuryPatchClient(raw);
+    if (!patch) return;
     const nextStables: StablecoinHolding[] =
       patch.stablecoins?.map((s) => ({
         id: s.id ?? uuidv4(),
@@ -87,6 +78,54 @@ export default function TreasuryPanel() {
         volatileAssets: nextVolatiles,
       },
     });
+  };
+
+  const refreshPrices = async () => {
+    const tickers = Array.from(
+      new Set(
+        treasury.volatileAssets
+          .map((a) => (a.ticker ?? "").toUpperCase())
+          .filter(Boolean)
+      )
+    );
+    if (tickers.length === 0) return;
+
+    setRefreshState("loading");
+    setRefreshMsg("");
+    try {
+      const res = await fetch("/api/ai/refresh-prices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tickers }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setRefreshMsg(json.error ?? "Couldn't refresh prices.");
+        setRefreshState("error");
+        return;
+      }
+      const validated = validatePriceSetClient(json);
+      if (!validated || validated.prices.length === 0) {
+        setRefreshMsg("No prices returned.");
+        setRefreshState("error");
+        return;
+      }
+
+      const lookup = new Map(validated.prices.map((p) => [p.ticker, p.price]));
+      const updatedAssets = treasury.volatileAssets.map((a) => {
+        const newPrice = lookup.get((a.ticker ?? "").toUpperCase());
+        if (newPrice === undefined) return a;
+        return { ...a, currentPrice: newPrice, priceSource: "api" as const };
+      });
+
+      updateModel({ treasury: { ...treasury, volatileAssets: updatedAssets } });
+      setRefreshMsg(`Updated ${validated.prices.length} price${validated.prices.length === 1 ? "" : "s"}.`);
+      setRefreshState("done");
+      setTimeout(() => setRefreshState("idle"), 3000);
+    } catch {
+      setRefreshMsg("Network error.");
+      setRefreshState("error");
+    }
   };
 
   const addVolatileAsset = () => {
@@ -157,7 +196,7 @@ export default function TreasuryPanel() {
         </p>
       </div>
 
-      <DescribeEdit<TreasuryEditPatch>
+      <DescribeEdit<ValidatedTreasuryPatchShape>
         scope="treasury"
         current={{
           stablecoins: treasury.stablecoins,
@@ -191,16 +230,48 @@ export default function TreasuryPanel() {
               <div className="text-placard uppercase text-muted-foreground">Treasury</div>
               <h3 className="text-h3 text-foreground">Volatile Assets</h3>
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addVolatileAsset}
-              className="flex items-center gap-1"
-            >
-              <Plus className="h-4 w-4" />
-              Add Asset
-            </Button>
+            <div className="flex items-center gap-2">
+              {treasury.volatileAssets.length > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={refreshPrices}
+                  disabled={refreshState === "loading"}
+                  className="flex items-center gap-1"
+                  data-action="refresh-prices"
+                  title="Fetch current prices from Perplexity"
+                >
+                  {refreshState === "loading" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-4 w-4" />
+                  )}
+                  Refresh prices
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={addVolatileAsset}
+                className="flex items-center gap-1"
+              >
+                <Plus className="h-4 w-4" />
+                Add Asset
+              </Button>
+            </div>
           </div>
+
+          {refreshMsg && (
+            <p
+              className={`text-caption mb-3 ${
+                refreshState === "error"
+                  ? "text-aviation-red dark:text-aviation-red-dark"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {refreshMsg}
+            </p>
+          )}
 
           {treasury.volatileAssets.length === 0 ? (
             <div className="text-center py-8 bg-muted rounded-panel border border-dashed border-knob-silver dark:border-knob-silver-dark">

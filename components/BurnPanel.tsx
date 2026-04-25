@@ -9,23 +9,15 @@ import { v4 as uuidv4 } from "uuid";
 import BurnCategoryRow from "@/components/burn/BurnCategoryRow";
 import BurnSummaryCard from "@/components/burn/BurnSummaryCard";
 import DescribeEdit from "@/components/ai/DescribeEdit";
-
-interface BurnEditPatch {
-  burnCategories: {
-    id?: string;
-    name: string;
-    presetKey?: string;
-    monthlyBaseline: number;
-    growthRate?: number;
-    isActive?: boolean;
-  }[];
-}
+import { validateBurnPatchClient, ValidatedBurnPatchShape } from "@/lib/patch-validators";
 
 export default function BurnPanel() {
   const { model, updateModel } = useRoughRunwayStore();
   const { burnCategories } = model;
 
-  const applyBurnPatch = (patch: BurnEditPatch) => {
+  const applyBurnPatch = (raw: unknown) => {
+    const patch = validateBurnPatchClient(raw);
+    if (!patch) return;
     const next: BurnCategory[] = patch.burnCategories.map((c) => {
       const existing = c.id ? burnCategories.find((e) => e.id === c.id) : undefined;
       return {
@@ -70,7 +62,7 @@ export default function BurnPanel() {
         </p>
       </div>
 
-      <DescribeEdit<BurnEditPatch>
+      <DescribeEdit<ValidatedBurnPatchShape>
         scope="burn"
         current={{
           burnCategories: burnCategories.map((c) => ({

@@ -9,12 +9,17 @@ import PoweredByBadge from "@/components/ai/PoweredByBadge";
 
 type State = "idle" | "loading" | "done" | "error";
 
+// The `TPatch` generic is a hint for the caller; the component itself passes
+// the raw server payload through to `onApply`, where the caller MUST validate
+// it (see lib/patch-validators.ts) before mutating the store.
 interface DescribeEditProps<TPatch> {
-  scope: "treasury" | "burn";
+  scope: "treasury" | "burn" | "inflow";
   current: Record<string, unknown>;
   label: string;
   placeholder: string;
-  onApply: (patch: TPatch) => void;
+  onApply: (patch: unknown) => void;
+  // Phantom param so inference works at call sites.
+  _typeHint?: TPatch;
 }
 
 export default function DescribeEdit<TPatch = unknown>({
@@ -27,7 +32,7 @@ export default function DescribeEdit<TPatch = unknown>({
   const [prompt, setPrompt] = useState("");
   const [state, setState] = useState<State>("idle");
   const [summary, setSummary] = useState("");
-  const [patch, setPatch] = useState<TPatch | null>(null);
+  const [patch, setPatch] = useState<unknown>(null);
   const [errorMsg, setErrorMsg] = useState("");
 
   const reset = () => {
@@ -57,7 +62,7 @@ export default function DescribeEdit<TPatch = unknown>({
         return;
       }
       setSummary(json.summary ?? "");
-      setPatch(json.patch as TPatch);
+      setPatch(json.patch);
       setState("done");
     } catch {
       setErrorMsg("Network error. Check your connection.");
@@ -145,7 +150,7 @@ export default function DescribeEdit<TPatch = unknown>({
         </div>
       )}
 
-      {state === "done" && patch && (
+      {state === "done" && patch !== null && (
         <div className="rounded-panel border border-aviation-green/30 bg-aviation-green/5 p-3 space-y-2">
           <div className="flex items-start gap-2">
             <Check className="h-4 w-4 text-aviation-green dark:text-aviation-green-dark shrink-0 mt-0.5" />
