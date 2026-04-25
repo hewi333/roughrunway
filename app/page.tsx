@@ -72,7 +72,7 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-3 items-center">
               <Button asChild size="lg" className="gap-2 text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6">
                 <Link href="/dashboard">
-                  Build your model
+                  Try the live demo
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -82,6 +82,10 @@ export default function HomePage() {
                 </Link>
               </Button>
             </div>
+
+            <p className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-ink-secondary">
+              4 clicks → sample model + sensitivity scenario
+            </p>
 
             <p className="pt-1 sm:pt-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-ink-secondary flex flex-wrap items-center gap-x-2 gap-y-1">
               {["No login", "Free to use", "Shareable link"].map((tag, i) => (

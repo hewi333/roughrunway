@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,6 +64,16 @@ export default function ScenarioPanel() {
   const [editingName, setEditingName] = useState("");
   const [editorScenario, setEditorScenario] = useState<Scenario | null>(null);
 
+  // Demo flow: auto-open the templates picker so the 4th click on the
+  // guided path is staring at four ready-to-apply scenario cards.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const flag = sessionStorage.getItem("rr_demo_flow");
+    if ((flag === "scenarios" || flag === "pick-template") && model.scenarios.length === 0) {
+      setIsCreating(true);
+    }
+  }, [model.scenarios.length]);
+
   // ── mutations ──────────────────────────────────────────────────────────────
 
   const createFromTemplate = (templateKey: string) => {
@@ -73,12 +83,15 @@ export default function ScenarioPanel() {
       name: template.name,
       color: template.color,
       createdAt: new Date().toISOString(),
-      isActive: false,
+      isActive: true, // demo: light it up on the chart immediately
       templateKey: template.key,
       overrides: template.buildOverrides(model),
     };
     updateModel({ scenarios: [...model.scenarios, scenario] });
     setIsCreating(false);
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("rr_demo_flow");
+    }
   };
 
   const createCustom = () => {
