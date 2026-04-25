@@ -11,7 +11,6 @@ import InflowPanel from "@/components/InflowPanel";
 import ScenarioPanel from "@/components/ScenarioPanel";
 import ProjectionChart from "@/components/ProjectionChart";
 import RunwaySummaryCards from "@/components/RunwaySummaryCards";
-import FundingGapCallout from "@/components/FundingGapCallout";
 import MonthlyBreakdownTable from "@/components/MonthlyBreakdownTable";
 import ScenarioComparison from "@/components/ScenarioComparison";
 import MarketBanner from "@/components/ai/MarketBanner";
@@ -62,7 +61,6 @@ export default function AppShell({ children }: AppShellProps) {
             {/* Runway top deck — always visible across every panel */}
             <section aria-label="Runway overview" className="space-y-4">
               <RunwaySummaryCards />
-              <FundingGapCallout />
               <ProjectionChart
                 compact={isChartCompact}
                 onToggleCompact={() => setIsChartCompact((v) => !v)}
