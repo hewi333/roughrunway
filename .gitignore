@@ -38,3 +38,7 @@ yarn-error.log*
 
 # vitest
 /html/
+
+# playwright
+/playwright-report/
+/test-results/
