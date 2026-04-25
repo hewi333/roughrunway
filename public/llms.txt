@@ -48,6 +48,16 @@ The response looks like:
 
 Return the `shareUrl`. The user clicks it and sees their full interactive model.
 
+### If your tool can't fetch model-constructed URLs
+
+Some chat hosts (e.g. Claude.ai's web search) only fetch URLs that came from the user or from search results — they will refuse to fetch a URL you assembled yourself. **In that case, give the user the encode URL directly:**
+
+```
+https://roughrunway.com/api/agent/encode?name=...&stable=...&volatile=...&burn=...&team=...
+```
+
+The endpoint detects browser visits via the `Accept: text/html` header and **redirects (302) to the loaded dashboard**, so a single click on that URL opens the user's interactive model. They never see raw JSON. Tell the user: "Click this link to open your model."
+
 ---
 
 ## Worked example

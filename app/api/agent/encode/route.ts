@@ -140,9 +140,26 @@ export async function GET(req: NextRequest) {
 
   const origin = new URL(req.url).origin;
   const compressed = exportModel(model);
+  const shareUrl = `${origin}/dashboard#model=${compressed}`;
+
+  // Content negotiation: a human clicking this URL in a browser sends
+  // `Accept: text/html` and gets redirected straight to the loaded
+  // dashboard. Programmatic clients (MCP, Custom GPT, fetch()) send
+  // `Accept: */*` or `application/json` and continue to receive the JSON
+  // payload they expect. This matters because some chat clients
+  // (Claude.ai web) refuse to fetch model-constructed URLs and instead
+  // hand the URL back to the user — without the redirect they'd land on
+  // raw JSON; with it, one click loads their interactive model.
+  const accept = req.headers.get("accept") ?? "";
+  if (accept.includes("text/html")) {
+    return new Response(null, {
+      status: 302,
+      headers: { Location: shareUrl },
+    });
+  }
 
   return Response.json({
-    shareUrl: `${origin}/dashboard#model=${compressed}`,
+    shareUrl,
     modelName: model.name,
   });
 }

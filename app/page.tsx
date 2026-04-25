@@ -199,31 +199,33 @@ export default function HomePage() {
                 <li className="flex items-start gap-2">
                   <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
                   <span>
-                    <span className="text-ink font-medium">Claude.ai chat</span> with
-                    web search — say "open roughrunway.com and build a model…"
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
-                  <span>
-                    <span className="text-ink font-medium">ChatGPT</span> with browsing,
-                    or as a Custom GPT pointed at the OpenAPI spec
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
-                  <span>
-                    <span className="text-ink font-medium">Claude Code</span> (uses
-                    its WebFetch tool natively)
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
-                  <span>
                     <span className="text-ink font-medium">Claude Desktop</span> via
                     the{" "}
                     <span className="font-mono text-ink">roughrunway-mcp</span>{" "}
-                    server (most reliable path)
+                    server — fully autonomous, model link comes back inline
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
+                  <span>
+                    <span className="text-ink font-medium">Claude Code</span> — uses
+                    its WebFetch tool natively, also fully autonomous
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
+                  <span>
+                    <span className="text-ink font-medium">ChatGPT Custom GPT</span>{" "}
+                    pointed at <span className="font-mono text-ink">/openapi.json</span>
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
+                  <span>
+                    <span className="text-ink font-medium">Claude.ai / ChatGPT chat</span>{" "}
+                    — web tools refuse to fetch model-built URLs, so the assistant
+                    parses your inputs and hands you a one-click link that
+                    redirects into the loaded dashboard
                   </span>
                 </li>
               </ul>
