@@ -168,7 +168,7 @@ export default function HomePage() {
       </section>
 
       {/* AI agent section — same light palette as the rest of the page,
-          with dark terminal cards for the machine-readable surface. */}
+          with dark terminal cards staging the user → assistant → result flow. */}
       <section className="bg-mountain-white border-t border-knob-silver/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div className="space-y-4">
@@ -179,15 +179,56 @@ export default function HomePage() {
               </h2>
             </div>
             <h3 className="text-3xl lg:text-4xl font-bold leading-tight text-ink tracking-tight">
-              Ask your AI agent
+              Tell Claude or ChatGPT.
               <br />
-              <span className="text-swiss-red">to build the model.</span>
+              <span className="text-swiss-red">Get a shareable model.</span>
             </h3>
             <p className="text-sm sm:text-base text-ink-secondary leading-relaxed max-w-md">
-              RoughRunway exposes a machine-readable API. Give Claude or ChatGPT a
-              plain-English description of your org — it builds the model and hands
-              you back a link.
+              RoughRunway publishes{" "}
+              <span className="font-mono text-ink">/llms.txt</span> and an
+              OpenAPI spec so any AI assistant with web access reads your
+              description, calls the encode API, and hands back a working
+              model link — no forms, no copy-pasted JSON.
             </p>
+
+            <div className="pt-2 space-y-2">
+              <p className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.2em] text-ink-secondary">
+                Works in
+              </p>
+              <ul className="text-sm text-ink-secondary space-y-1.5">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
+                  <span>
+                    <span className="text-ink font-medium">Claude.ai chat</span> with
+                    web search — say "open roughrunway.com and build a model…"
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
+                  <span>
+                    <span className="text-ink font-medium">ChatGPT</span> with browsing,
+                    or as a Custom GPT pointed at the OpenAPI spec
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
+                  <span>
+                    <span className="text-ink font-medium">Claude Code</span> (uses
+                    its WebFetch tool natively)
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 bg-swiss-red rounded-full" />
+                  <span>
+                    <span className="text-ink font-medium">Claude Desktop</span> via
+                    the{" "}
+                    <span className="font-mono text-ink">roughrunway-mcp</span>{" "}
+                    server (most reliable path)
+                  </span>
+                </li>
+              </ul>
+            </div>
+
             <p className="text-[11px] sm:text-xs text-ink-secondary/70 font-mono pt-2 break-all sm:break-normal">
               Discovery:{" "}
               <span className="text-ink">/.well-known/ai-plugin.json</span>
@@ -199,34 +240,52 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-3">
+            {/* Step 1 — what the user actually types */}
+            <div className="rounded-panel border border-knob-silver/50 bg-[#0F1115] overflow-hidden shadow-sm">
+              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
+                <span className="h-2 w-2 bg-sky-blue rounded-sm flex-shrink-0" />
+                <span className="text-[11px] sm:text-xs font-mono text-white/60 truncate">
+                  You, in any LLM chat
+                </span>
+              </div>
+              <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/85 font-mono leading-relaxed">
+                Open <span className="text-sky-blue">roughrunway.com</span> and
+                build a runway model: $10M USDC, 250 ETH at $4k, 50M native
+                token at $0.10, 12 people, ~$300k/mo burn.
+              </p>
+            </div>
+
+            {/* Step 2 — what the assistant does behind the scenes */}
             <div className="rounded-panel border border-knob-silver/50 bg-[#0F1115] overflow-hidden shadow-sm">
               <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
                 <Terminal className="h-3.5 w-3.5 text-white/50 flex-shrink-0" />
                 <span className="text-[11px] sm:text-xs font-mono text-white/60 truncate">
-                  Agent fetches (instant, no extra LLM)
+                  Assistant fetches (instant, no extra LLM call)
                 </span>
               </div>
-              <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/80 font-mono leading-relaxed break-all">
+              <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/70 font-mono leading-relaxed break-all">
                 roughrunway.com/api/agent/encode
                 <span className="text-sky-blue">
-                  ?name=DeFi+Team&stable=USDC:1500000&volatile=ETH:50:3500:major,NEX:100000000:0.08:native&burn=150000&team=10
+                  ?name=DeFi+Team&stable=USDC:10000000&volatile=ETH:250:4000:major,NEX:50000000:0.10:native&burn=300000&team=12
                 </span>
               </p>
             </div>
 
+            {/* Step 3 — the link the user clicks */}
             <div className="rounded-panel border border-swiss-red/40 bg-[#0F1115] overflow-hidden shadow-sm">
               <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-swiss-red/30 bg-swiss-red/10">
                 <span className="h-2 w-2 bg-swiss-red rounded-sm flex-shrink-0" />
                 <span className="text-[11px] sm:text-xs font-mono text-white/70 truncate">
-                  Response → agent returns to user
+                  Reply → click and your model loads
                 </span>
               </div>
-              <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-1">
-                <p className="text-[11px] sm:text-xs text-white/50 font-mono">{`{ "shareUrl":`}</p>
-                <p className="text-xs sm:text-sm text-white font-mono break-all pl-3 sm:pl-4">
-                  "roughrunway.com/dashboard#model=N4Ig…"
+              <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-1.5">
+                <p className="text-[11px] sm:text-xs text-white/85 font-mono">
+                  Here's your runway model:
                 </p>
-                <p className="text-[11px] sm:text-xs text-white/50 font-mono">{`}`}</p>
+                <p className="text-xs sm:text-sm text-white font-mono break-all pl-3 sm:pl-4">
+                  roughrunway.com/dashboard#model=N4Ig…
+                </p>
               </div>
             </div>
           </div>
