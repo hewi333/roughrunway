@@ -78,18 +78,28 @@ export default function TreasuryPanel() {
         volatileAssets: nextVolatiles,
       },
     });
+
+    // Auto-fetch live prices for any newly added volatile assets (currentPrice=0
+    // is the convention for "price not yet known"). We pass the tickers explicitly
+    // because the `treasury` closure is stale at this point (updateModel has fired
+    // but React hasn't re-rendered yet).
+    const unpricedTickers = [
+      ...new Set(
+        nextVolatiles
+          .filter((v) => v.currentPrice === 0 && v.ticker)
+          .map((v) => v.ticker.toUpperCase())
+      ),
+    ];
+    if (unpricedTickers.length > 0) {
+      void fetchLivePrices(unpricedTickers);
+    }
   };
 
-  const refreshPrices = async () => {
-    const tickers = Array.from(
-      new Set(
-        treasury.volatileAssets
-          .map((a) => (a.ticker ?? "").toUpperCase())
-          .filter(Boolean)
-      )
-    );
+  // Shared price-fetch implementation. Accepts tickers explicitly so it works
+  // both from the manual "Refresh prices" button and from the auto-fetch after a
+  // voice patch — where the treasury closure may not yet reflect the latest state.
+  const fetchLivePrices = async (tickers: string[]) => {
     if (tickers.length === 0) return;
-
     setRefreshState("loading");
     setRefreshMsg("");
     try {
@@ -112,13 +122,17 @@ export default function TreasuryPanel() {
       }
 
       const lookup = new Map(validated.prices.map((p) => [p.ticker, p.price]));
-      const updatedAssets = treasury.volatileAssets.map((a) => {
+
+      // Read fresh state from the store — not the stale closure — so we apply
+      // price updates on top of whatever updateModel last wrote.
+      const freshTreasury = useRoughRunwayStore.getState().model.treasury;
+      const updatedAssets = freshTreasury.volatileAssets.map((a) => {
         const newPrice = lookup.get((a.ticker ?? "").toUpperCase());
         if (newPrice === undefined) return a;
         return { ...a, currentPrice: newPrice, priceSource: "api" as const };
       });
 
-      updateModel({ treasury: { ...treasury, volatileAssets: updatedAssets } });
+      updateModel({ treasury: { ...freshTreasury, volatileAssets: updatedAssets } });
       setRefreshMsg(`Updated ${validated.prices.length} price${validated.prices.length === 1 ? "" : "s"}.`);
       setRefreshState("done");
       setTimeout(() => setRefreshState("idle"), 3000);
@@ -126,6 +140,17 @@ export default function TreasuryPanel() {
       setRefreshMsg("Network error.");
       setRefreshState("error");
     }
+  };
+
+  const refreshPrices = async () => {
+    const tickers = Array.from(
+      new Set(
+        treasury.volatileAssets
+          .map((a) => (a.ticker ?? "").toUpperCase())
+          .filter(Boolean)
+      )
+    );
+    await fetchLivePrices(tickers);
   };
 
   const addVolatileAsset = () => {
