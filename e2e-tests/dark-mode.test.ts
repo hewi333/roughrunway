@@ -4,30 +4,34 @@ import { test, expect } from '@playwright/test';
 test('dark mode toggle works correctly', async ({ page }) => {
   // Navigate to the dashboard page
   await page.goto('/dashboard');
-  
-  // Check if we're on the setup wizard page
+
+  // The dashboard shows one of three views on first load: a setup wizard
+  // (legacy /setup), a DemoQuickstart card (fresh visitor — current default),
+  // or AppShell directly (returning visitor with persisted state).
+  // Wait for one of them to render so we don't race the first useEffect.
+  await page.waitForLoadState('networkidle');
+
   const setupWizardTitle = page.locator('text=Welcome to Rough Runway');
+  const demoQuickstart = page.locator('[data-action="load-demo-model"]');
+
   if (await setupWizardTitle.isVisible()) {
     console.log('Setup wizard detected, completing setup...');
-    // Complete the setup wizard
-    // Step 1: Project Information
     await page.fill('#project-name', 'Test Project');
     await page.click('button:has-text("Next")');
-    
-    // Step 2: Treasury Setup
     await page.fill('#stablecoin-amount', '1000000');
     await page.fill('#fiat-amount', '500000');
     await page.click('button:has-text("Next")');
-    
-    // Step 3: Burn Rate
     await page.fill('#monthly-burn', '100000');
     await page.click('button:has-text("Complete Setup")');
-    
-    // Wait for navigation to complete
     await page.waitForTimeout(2000);
     console.log('Setup wizard completed');
+  } else if (await demoQuickstart.isVisible()) {
+    console.log('Demo Quickstart detected, loading sample model...');
+    await demoQuickstart.click();
+    // Wait for AppShell to mount
+    await page.waitForLoadState('networkidle');
   } else {
-    console.log('Setup wizard not detected, already on dashboard');
+    console.log('No onboarding view detected, already on dashboard');
   }
   
   // Wait for the dark mode toggle to be visible with a more specific selector
