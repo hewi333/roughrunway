@@ -11,8 +11,8 @@ export default function HomePage() {
       <div className="h-1 w-full bg-swiss-red" />
 
       {/* Nav */}
-      <nav className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5 max-w-6xl mx-auto">
-        <Link href="/" className="flex items-center gap-2.5 min-w-0">
+      <nav className="px-4 sm:px-6 py-4 sm:py-5 max-w-6xl mx-auto">
+        <Link href="/" className="inline-flex items-center gap-2.5 min-w-0">
           <span className="relative inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-sm bg-swiss-red">
             <span className="absolute h-0.5 w-3.5 bg-white" />
             <span className="absolute h-3.5 w-0.5 bg-white" />
@@ -21,13 +21,6 @@ export default function HomePage() {
             RoughRunway
           </span>
         </Link>
-        <Button asChild size="sm" className="gap-2 flex-shrink-0">
-          <Link href="/dashboard">
-            <span className="hidden sm:inline">Build your model</span>
-            <span className="sm:hidden">Launch</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </Button>
       </nav>
 
       {/* Hero — full-bleed alpine runway photo with left-side text overlay */}
@@ -90,16 +83,16 @@ export default function HomePage() {
               </Button>
             </div>
 
-            <div className="flex flex-wrap gap-2 pt-1 sm:pt-2">
-              {["No login", "Free to use", "Shareable link"].map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-precise border border-knob-silver bg-white/85 backdrop-blur-sm text-ink-secondary"
-                >
+            <p className="pt-1 sm:pt-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-ink-secondary flex flex-wrap items-center gap-x-2 gap-y-1">
+              {["No login", "Free to use", "Shareable link"].map((tag, i) => (
+                <span key={tag} className="inline-flex items-center gap-2">
+                  {i > 0 && (
+                    <span className="h-1 w-1 bg-knob-silver rounded-full" aria-hidden />
+                  )}
                   {tag}
                 </span>
               ))}
-            </div>
+            </p>
           </div>
         </div>
       </section>
@@ -147,43 +140,46 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* AI agent section — darker contrast band like a night-flight over snow */}
-      <section className="bg-[#0F1115] text-white/90">
+      {/* AI agent section — same light palette as the rest of the page,
+          with dark terminal cards for the machine-readable surface. */}
+      <section className="bg-mountain-white border-t border-knob-silver/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div className="space-y-4">
-            <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-swiss-red">
-              <span className="inline-block h-2 w-2 mr-2 align-middle bg-swiss-red rounded-sm" />
-              Agentic
-            </p>
-            <h2 className="text-3xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">
+            <div className="flex items-baseline gap-3">
+              <span className="h-3 w-3 bg-swiss-red rounded-sm" />
+              <h2 className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-ink-secondary">
+                Agentic
+              </h2>
+            </div>
+            <h3 className="text-3xl lg:text-4xl font-bold leading-tight text-ink tracking-tight">
               Ask your AI agent
               <br />
-              <span className="text-sky-blue">to build the model.</span>
-            </h2>
-            <p className="text-sm sm:text-base text-white/60 leading-relaxed max-w-sm">
+              <span className="text-swiss-red">to build the model.</span>
+            </h3>
+            <p className="text-sm sm:text-base text-ink-secondary leading-relaxed max-w-md">
               RoughRunway exposes a machine-readable API. Give Claude or ChatGPT a
               plain-English description of your org — it builds the model and hands
               you back a link.
             </p>
-            <p className="text-[11px] sm:text-xs text-white/40 font-mono pt-2 break-all sm:break-normal">
+            <p className="text-[11px] sm:text-xs text-ink-secondary/70 font-mono pt-2 break-all sm:break-normal">
               Discovery:{" "}
-              <span className="text-white/70">/.well-known/ai-plugin.json</span>
+              <span className="text-ink">/.well-known/ai-plugin.json</span>
               {" · "}
-              <span className="text-white/70">/llms.txt</span>
+              <span className="text-ink">/llms.txt</span>
               {" · "}
-              <span className="text-white/70">/openapi.json</span>
+              <span className="text-ink">/openapi.json</span>
             </p>
           </div>
 
           <div className="space-y-3">
-            <div className="rounded-panel border border-white/10 bg-white/[0.03] overflow-hidden">
-              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/10 bg-white/[0.02]">
-                <Terminal className="h-3.5 w-3.5 text-white/40 flex-shrink-0" />
-                <span className="text-[11px] sm:text-xs font-mono text-white/50 truncate">
+            <div className="rounded-panel border border-knob-silver/50 bg-[#0F1115] overflow-hidden shadow-sm">
+              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
+                <Terminal className="h-3.5 w-3.5 text-white/50 flex-shrink-0" />
+                <span className="text-[11px] sm:text-xs font-mono text-white/60 truncate">
                   Agent fetches (instant, no extra LLM)
                 </span>
               </div>
-              <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/70 font-mono leading-relaxed break-all">
+              <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/80 font-mono leading-relaxed break-all">
                 roughrunway.com/api/agent/encode
                 <span className="text-sky-blue">
                   ?name=DeFi+Team&stable=USDC:1500000&volatile=ETH:50:3500:major,NEX:100000000:0.08:native&burn=150000&team=10
@@ -191,8 +187,8 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="rounded-panel border border-swiss-red/40 bg-swiss-red/10 overflow-hidden">
-              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-swiss-red/20">
+            <div className="rounded-panel border border-swiss-red/40 bg-[#0F1115] overflow-hidden shadow-sm">
+              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-swiss-red/30 bg-swiss-red/10">
                 <span className="h-2 w-2 bg-swiss-red rounded-sm flex-shrink-0" />
                 <span className="text-[11px] sm:text-xs font-mono text-white/70 truncate">
                   Response → agent returns to user
