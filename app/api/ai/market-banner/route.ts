@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { perplexity } from "@/lib/perplexity-client";
+import { rateLimit, rateLimitResponse } from "@/lib/ai-guards";
 
 export const revalidate = 300; // 5-minute edge cache
 
@@ -39,6 +40,9 @@ export async function GET(req: NextRequest) {
   if (!process.env.PERPLEXITY_API_KEY) {
     return Response.json({ error: "AI features not configured" }, { status: 503 });
   }
+
+  const rl = rateLimit(req);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
   const tokens = req.nextUrl.searchParams.get("tokens")?.split(",") ?? ["BTC", "ETH", "SOL"];
   // Sanitize: only allow alphanumeric tickers, max 10 tokens
