@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Terminal, Zap } from "lucide-react";
+import { ArrowRight, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 
@@ -88,38 +88,42 @@ export default function HomePage() {
             <p className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-ink-secondary">
               4 clicks → sample model + sensitivity scenario
             </p>
-          </div>
-        </div>
-      </section>
 
-      {/* Sponsor strip — sits right after the hero. Text wordmarks for now;
-          drop logos into /public/sponsors/ and swap to <Image> when ready. */}
-      <section className="bg-mountain-white border-b border-knob-silver/40">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-7 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10">
-          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-ink-secondary flex-shrink-0">
-            Hackathon partners
-          </span>
-          <div className="flex items-center gap-8 sm:gap-10">
-            <Link
-              href="https://theaccountantquits.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-sm sm:text-base font-semibold tracking-tight text-ink hover:text-swiss-red transition-colors"
-              aria-label="The Accountant Quits"
-            >
-              The Accountant Quits
-            </Link>
-            <span className="h-4 w-px bg-knob-silver/60" aria-hidden />
-            <Link
-              href="https://www.perplexity.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm sm:text-base font-medium text-perplexity hover:opacity-80 transition-opacity"
-              aria-label="Perplexity"
-            >
-              <Zap className="h-4 w-4" aria-hidden />
-              Perplexity
-            </Link>
+            {/* Sponsor logos below the "4 clicks" hint */}
+            <div className="flex items-center gap-5 pt-1">
+              <Link
+                href="https://www.theaccountantquits.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="The Accountant Quits"
+                className="flex items-center gap-2 opacity-75 hover:opacity-100 transition-opacity"
+              >
+                {/* TAQ icon mark */}
+                <span className="inline-flex items-center justify-center rounded bg-[#0F1623] px-1.5 py-0.5 font-mono font-bold text-white text-[13px] tracking-tight leading-none">
+                  TA1.
+                </span>
+                {/* TAQ wordmark */}
+                <span className="font-bold text-[10px] tracking-[0.18em] uppercase text-[#0F1623] leading-none">
+                  The Accountant{" "}
+                  <span className="text-[#7C5CFC]">Quits</span>
+                </span>
+              </Link>
+
+              <span className="h-4 w-px bg-ink/20" aria-hidden />
+
+              <Link
+                href="https://www.perplexity.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Perplexity"
+                className="opacity-75 hover:opacity-100 transition-opacity"
+              >
+                {/* Perplexity wordmark */}
+                <span className="font-semibold text-sm tracking-tight text-[#0F1623]">
+                  perplexity
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
