@@ -21,7 +21,6 @@ const schema = {
     },
     headlines: {
       type: "array",
-      minItems: 3,
       items: {
         type: "object",
         properties: {
@@ -76,10 +75,8 @@ HEADLINES (REQUIRED — do not return an empty array):
 Return the data as JSON matching the provided schema.`;
 
   try {
-    // sonar-pro has stronger real-time web fetching and citation behaviour
-    // than sonar — needed because we want fresh prices AND verifiable URLs.
     const completion = await perplexity.chat.completions.create({
-      model: "sonar-pro",
+      model: "sonar",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_schema", json_schema: { name: "market_banner", schema } } as Parameters<typeof perplexity.chat.completions.create>[0]["response_format"],
       temperature: 0.1,
