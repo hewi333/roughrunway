@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import {
-  ResponsiveContainer,
   Line,
   XAxis,
   YAxis,
@@ -11,6 +10,8 @@ import {
   Area,
   ComposedChart,
 } from "recharts";
+import { ChartContainer } from "@/components/ui/chart";
+import type { ChartConfig } from "@/components/ui/chart";
 import { useProjection } from "@/lib/hooks/useProjection";
 import { useRoughRunwayStore } from "@/lib/store";
 import { computeScenarioProjection } from "@/lib/projection-engine";
@@ -167,6 +168,13 @@ function CompositionLegend({ stablecoinsColor, fiatColor, assets }: CompositionL
 
 // ─── Main chart ───────────────────────────────────────────────────────────────
 
+const projectionChartConfig = {
+  hard: { label: "Hard Runway", color: "var(--chart-hard-runway)", indicator: "line" },
+  extended: { label: "Extended Runway", color: "var(--chart-extended-runway)", indicator: "dashed" },
+  stablecoins: { label: "Stablecoins", color: "var(--chart-stables)" },
+  fiat: { label: "Fiat", color: "var(--chart-fiat)" },
+} satisfies ChartConfig;
+
 interface ProjectionChartProps {
   compact?: boolean;
   onToggleCompact?: () => void;
@@ -309,8 +317,7 @@ export default function ProjectionChart({ compact = false, onToggleCompact }: Pr
       </div>
 
       {/* Chart */}
-      <div className={compact ? "h-40" : "h-80"}>
-        <ResponsiveContainer width="100%" height="100%">
+      <ChartContainer config={projectionChartConfig} className={compact ? "h-40" : "h-80"}>
           <ComposedChart
             data={chartData}
             margin={{ top: 8, right: 24, left: 16, bottom: 8 }}
@@ -442,8 +449,7 @@ export default function ProjectionChart({ compact = false, onToggleCompact }: Pr
               isAnimationActive={false}
             />
           </ComposedChart>
-        </ResponsiveContainer>
-      </div>
+      </ChartContainer>
 
       {/* Runway line legend */}
       <div className={cn(
