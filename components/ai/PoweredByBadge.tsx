@@ -23,7 +23,7 @@ export default function PoweredByBadge({ className, size = "sm" }: PoweredByBadg
       <PerplexityLogo
         className={cn(size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5")}
       />
-      Perplexity
+      Powered by Perplexity
     </span>
   );
 }

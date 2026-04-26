@@ -199,7 +199,7 @@ export default function AIScenarioBuilder({ onCreated, onCancel }: AIScenarioBui
           ) : (
             <>
               <Sparkles className="h-4 w-4" />
-              Build with Perplexity
+              Powered by Perplexity
             </>
           )}
         </Button>

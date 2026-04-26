@@ -187,7 +187,7 @@ export default function AISetupAssistant({ onApplied }: AISetupAssistantProps) {
           ) : (
             <>
               <Sparkles className="h-4 w-4" />
-              Set up with Perplexity
+              Powered by Perplexity
             </>
           )}
         </Button>

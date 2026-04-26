@@ -264,7 +264,7 @@ export default function TreasuryPanel() {
                   disabled={refreshState === "loading"}
                   className="flex items-center gap-1"
                   data-action="refresh-prices"
-                  title="Fetch current prices from Perplexity"
+                  title="Powered by Perplexity"
                 >
                   {refreshState === "loading" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

@@ -27,11 +27,10 @@ export default function FooterBrand() {
             href="https://perplexity.ai"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-knob bg-knob-gold/20 px-3 py-1 text-caption font-medium text-ink hover:bg-knob-gold/30 dark:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-knob bg-knob-gold/20 px-3 py-1 hover:bg-knob-gold/30"
           >
-            <PerplexityLogo className="h-3.5 w-3.5" />
-            Perplexity
-            <ExternalLink className="h-3 w-3" />
+            <PerplexityLogo className="h-4 w-24" />
+            <ExternalLink className="h-3 w-3 text-ink dark:text-foreground" />
           </a>
         </div>
       </div>

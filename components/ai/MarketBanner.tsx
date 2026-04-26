@@ -193,7 +193,7 @@ export default function MarketBanner() {
         />
         <PerplexityLogo className="h-3.5 w-3.5" />
         <span className="text-xs font-semibold uppercase tracking-wide text-perplexity-teal">
-          Perplexity Market Pulse
+          Powered by Perplexity
         </span>
       </div>
     </div>
