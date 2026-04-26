@@ -21,11 +21,12 @@ const schema = {
     },
     headlines: {
       type: "array",
+      minItems: 3,
       items: {
         type: "object",
         properties: {
           title: { type: "string" },
-          url: { type: "string" },
+          url: { type: "string", description: "Full https URL to the article" },
           source: { type: "string" },
           publishedAt: { type: "string" },
         },
@@ -64,16 +65,21 @@ For each listed ticker symbol:
   - Do NOT return 0 or a placeholder. If you cannot find a reliable up-to-date price for a ticker, OMIT it entirely from the prices array — do not guess and do not fabricate.
   - Never return prices below $0.000001. For majors like BTC and ETH, sanity-check that the price is in the expected order of magnitude.
 
-HEADLINES: Return exactly 3 crypto news headlines published within the last 24 hours.
+HEADLINES (REQUIRED — do not return an empty array):
+  - Return exactly 3 crypto-related news headlines published within the last 48 hours.
   - Prefer major outlets: CoinDesk, The Block, Decrypt, CoinTelegraph, Bloomberg, Reuters.
-  - Each headline must be a REAL, verifiable article with a working URL — no fabrication.
-  - Always populate the headlines array; if reputable news is sparse, include the most recent ones available.
+  - Each headline MUST include the full article URL (https://...) that you actually retrieved — not a homepage, not a search query, not a placeholder. The URL must resolve to the specific article.
+  - "source" should be the publication name (e.g. "CoinDesk").
+  - "publishedAt" should be an ISO 8601 timestamp if known, otherwise an empty string.
+  - If reputable real-time news is sparse, include the most recent verifiable articles you can find — but the array must contain at least 3 items.
 
 Return the data as JSON matching the provided schema.`;
 
   try {
+    // sonar-pro has stronger real-time web fetching and citation behaviour
+    // than sonar — needed because we want fresh prices AND verifiable URLs.
     const completion = await perplexity.chat.completions.create({
-      model: "sonar",
+      model: "sonar-pro",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_schema", json_schema: { name: "market_banner", schema } } as Parameters<typeof perplexity.chat.completions.create>[0]["response_format"],
       temperature: 0.1,
@@ -84,18 +90,68 @@ Return the data as JSON matching the provided schema.`;
 
     const parsed = JSON.parse(content);
 
-    // Server-side sanitisation: drop any price that's zero/negative/non-finite.
-    // The model occasionally returns 0 for tickers it couldn't price — we'd
-    // rather show fewer entries than display "$0.00" next to a real ticker.
-    const prices = Array.isArray(parsed.prices)
-      ? parsed.prices.filter(
-          (p: { price?: number }) =>
-            typeof p?.price === "number" &&
-            Number.isFinite(p.price) &&
-            p.price > 0
-        )
+    // Perplexity attaches a `citations: string[]` array of real source URLs
+    // alongside the message. We use it as a fallback for headline links so
+    // they actually resolve even if the model fabricated the URL field.
+    const citations: string[] = Array.isArray(
+      (completion as unknown as { citations?: unknown }).citations
+    )
+      ? ((completion as unknown as { citations: string[] }).citations.filter(
+          (u) => typeof u === "string" && /^https?:\/\//.test(u)
+        ))
       : [];
-    const headlines = Array.isArray(parsed.headlines) ? parsed.headlines : [];
+
+    // Server-side sanitisation:
+    //  - drop prices that are zero / negative / non-finite (avoids "$0.00")
+    //  - dedupe by uppercase ticker (avoids visible doubles in the marquee)
+    const seenT = new Set<string>();
+    const prices: { ticker: string; price: number; change24h: number }[] = [];
+    if (Array.isArray(parsed.prices)) {
+      for (const p of parsed.prices as Array<{
+        ticker?: string;
+        price?: number;
+        change24h?: number;
+      }>) {
+        if (typeof p?.price !== "number" || !Number.isFinite(p.price) || p.price <= 0) continue;
+        const t = String(p.ticker ?? "").toUpperCase();
+        if (!t || seenT.has(t)) continue;
+        seenT.add(t);
+        prices.push({
+          ticker: t,
+          price: p.price,
+          change24h: typeof p.change24h === "number" && Number.isFinite(p.change24h) ? p.change24h : 0,
+        });
+      }
+    }
+
+    // Headlines: keep entries with a valid http(s) URL; if URL is bad/missing,
+    // try to substitute a citation URL so at least the link works. Drop any
+    // entry that we still can't make resolvable.
+    const isHttp = (u: unknown): u is string =>
+      typeof u === "string" && /^https?:\/\//.test(u);
+    const headlines = Array.isArray(parsed.headlines)
+      ? (parsed.headlines as Array<{
+          title?: string;
+          url?: string;
+          source?: string;
+          publishedAt?: string;
+        }>)
+          .map((h, i) => {
+            const url = isHttp(h.url) ? h.url : citations[i];
+            if (!isHttp(url)) return null;
+            return {
+              title: String(h.title ?? "").slice(0, 200),
+              url,
+              source: String(h.source ?? new URL(url).hostname),
+              publishedAt: String(h.publishedAt ?? ""),
+            };
+          })
+          .filter((h): h is NonNullable<typeof h> => h !== null && h.title.length > 0)
+      : [];
+
+    if (headlines.length === 0) {
+      console.warn("[market-banner] no usable headlines returned by Perplexity");
+    }
 
     return Response.json({ prices, headlines, fetchedAt: new Date().toISOString() });
   } catch (err) {

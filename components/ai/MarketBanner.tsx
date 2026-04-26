@@ -99,8 +99,10 @@ export default function MarketBanner() {
   const [data, setData] = useState<BannerData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // De-duplicate user tickers against the defaults (BTC/ETH) using uppercase comparison
-  const seen = new Set(["BTC", "ETH"]);
+  // Always show BTC, ETH, SOL; append user-held tickers, deduped (uppercase),
+  // capped at 6. The defaults guarantee enough scrolling content that the
+  // marquee seam isn't visible when the user hasn't added many assets.
+  const seen = new Set(["BTC", "ETH", "SOL"]);
   const userTickers: string[] = [];
   for (const a of model.treasury.volatileAssets) {
     if (!a.ticker) continue;
@@ -109,17 +111,25 @@ export default function MarketBanner() {
     seen.add(t);
     userTickers.push(t);
   }
-  const tickers = ["BTC", "ETH", ...userTickers].slice(0, 6);
+  const tickers = ["BTC", "ETH", "SOL", ...userTickers].slice(0, 6);
 
   const fetchData = async () => {
     try {
       const res = await fetch(`/api/ai/market-banner?tokens=${tickers.join(",")}`);
       if (!res.ok) return;
       const json: BannerData = await res.json();
-      // Filter out clearly-broken price entries (zero, negative, or unrealistic)
-      const cleanPrices = (json.prices ?? []).filter(
-        (p) => p && typeof p.price === "number" && p.price > 0 && Number.isFinite(p.price)
-      );
+      // Filter out clearly-broken price entries (zero, negative, non-finite)
+      // and dedupe by ticker so a model that returns the same ticker twice
+      // can't produce a doubled-up tile in the marquee.
+      const seenTickers = new Set<string>();
+      const cleanPrices: PriceEntry[] = [];
+      for (const p of json.prices ?? []) {
+        if (!p || typeof p.price !== "number" || !Number.isFinite(p.price) || p.price <= 0) continue;
+        const t = (p.ticker ?? "").toUpperCase();
+        if (!t || seenTickers.has(t)) continue;
+        seenTickers.add(t);
+        cleanPrices.push({ ...p, ticker: t });
+      }
       setData({ ...json, prices: cleanPrices });
     } catch {
       // network error — keep last data
