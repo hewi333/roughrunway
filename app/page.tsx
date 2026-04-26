@@ -42,10 +42,7 @@ export default function HomePage() {
         <nav className="absolute top-0 left-0 right-0 z-10 px-4 sm:px-6 py-4 sm:py-5">
           <div className="max-w-6xl mx-auto">
             <Link href="/" className="inline-flex items-center gap-2.5 min-w-0">
-              <span className="relative inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-sm bg-swiss-red">
-                <span className="absolute h-0.5 w-3.5 bg-white" />
-                <span className="absolute h-3.5 w-0.5 bg-white" />
-              </span>
+              <Image src="/RR-logo.png" alt="RoughRunway logo" width={28} height={28} className="flex-shrink-0 rounded-sm" />
               <span className="font-mono font-bold text-base sm:text-lg tracking-tight text-ink truncate">
                 RoughRunway
               </span>
@@ -114,17 +111,7 @@ export default function HomePage() {
                 aria-label="Perplexity"
                 className="flex items-center gap-1.5 opacity-75 hover:opacity-100 transition-opacity"
               >
-                {/* Perplexity icon mark */}
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  {/* Outer diamond */}
-                  <polygon points="9,1 17,9 9,17 1,9" stroke="#1a1a1a" strokeWidth="1.5" fill="none"/>
-                  {/* Inner diamond */}
-                  <polygon points="9,5 13,9 9,13 5,9" stroke="#1a1a1a" strokeWidth="1.5" fill="none"/>
-                  {/* Vertical spine */}
-                  <line x1="9" y1="1" x2="9" y2="17" stroke="#1a1a1a" strokeWidth="1.5"/>
-                  {/* Horizontal bar */}
-                  <line x1="1" y1="9" x2="17" y2="9" stroke="#1a1a1a" strokeWidth="1.5"/>
-                </svg>
+                <Image src="/330px-Perplexity_AI_logo.svg.png" alt="" width={18} height={18} className="flex-shrink-0" />
                 {/* Perplexity wordmark */}
                 <span className="font-semibold text-sm tracking-tight text-[#1a1a1a]">
                   perplexity
@@ -309,10 +296,7 @@ export default function HomePage() {
       <footer className="bg-mountain-white border-t border-knob-silver/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="flex items-center gap-3">
-            <span className="relative inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-sm bg-swiss-red">
-              <span className="absolute h-0.5 w-2.5 bg-white" />
-              <span className="absolute h-2.5 w-0.5 bg-white" />
-            </span>
+            <Image src="/RR-logo.png" alt="RoughRunway logo" width={20} height={20} className="flex-shrink-0 rounded-sm" />
             <span className="font-mono text-xs sm:text-sm text-ink-secondary">
               Built for{" "}
               <span className="text-ink">The Accountant Quits Hackathon</span>
