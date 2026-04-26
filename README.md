@@ -1,104 +1,81 @@
 # RoughRunway
 
-**Know your runway. Before you run out.**
+Treasury runway forecasting for crypto organizations. Two runway numbers, AI-assisted setup, and scenario stress-testing — no login, no backend, no spreadsheet.
 
-🔗 **[roughrunway.com](https://roughrunway.com)** · Built for the [Accountant Quits Web3 Hackathon](https://lu.ma/accountantquits) · April 2026
-
----
-
-<!--
-  ADD SCREENSHOT: replace this comment with:
-  ![RoughRunway dashboard](./docs/screenshot.png)
-  Best shot: dark mode, chart visible, at least one scenario active, funding gap callout showing.
--->
+**[roughrunway.com](https://roughrunway.com)** &nbsp;·&nbsp; Built for the [Accountant Quits Web3 Hackathon](https://lu.ma/accountantquits), April 2026
 
 ---
 
-## The problem
-
-Every DAO and crypto org has the same meeting:
-
-> *"How long do we have?"*
-> *"Depends on ETH."*
-> *"Okay but… roughly?"*
-> *"Hard to say."*
-
-Your treasury isn't just USDC. It's ETH that swings 40% in a month, native tokens you can't dump without crashing your own price, and a burn rate split across payroll, legal, infra, and grants. Modeling that in a spreadsheet is a full-time job — and it's wrong the moment prices move.
-
-**RoughRunway solves this in under a minute.**
+<!-- Screenshot: replace this comment with ![RoughRunway dashboard](./docs/screenshot.png) -->
+<!-- Best capture: dark mode, projection chart visible, one scenario active, funding gap callout showing -->
 
 ---
 
-## What it does
+## The problem it solves
 
-Input your treasury. Set your burn. Get two numbers instantly:
+A crypto treasury isn't a single number. It's stablecoins, ETH that dropped 40% last month, a native token you can't sell without moving your own price, and a burn rate split across payroll, grants, and infrastructure. Modeling this accurately in a spreadsheet is a recurring full-time job — and it's wrong the moment prices move.
 
-- **Hard runway** — how long your stables and fiat last at current burn. The guaranteed floor.
-- **Extended runway** — how much longer if you liquidate volatile assets in priority order, with per-asset haircuts and monthly sell limits. Simulated month-by-month, not a snapshot.
-
-Then stress-test it:
-
-> *"What if ETH drops 60%?"*
-> *"What if we hire 3 engineers?"*
-> *"What if our grant cliff hits in month 4?"*
-
-Run scenarios side-by-side. See exactly how each one moves your runway date.
-
-Share the link. Anyone who clicks it sees your exact model — no login, no account, no setup.
+RoughRunway replaces that spreadsheet. Input your treasury and burn rate; get two runway numbers instantly, with a month-by-month simulation underneath.
 
 ---
 
-## Five-second demo
+## Core output
 
-1. Go to **[roughrunway.com](https://roughrunway.com)**
-2. Describe your treasury in plain English — AI fills in the model
-3. See your runway chart and summary cards
-4. Open Scenarios — type a stress test in plain English
-5. Click **Share** — copy a link with your full model encoded in the URL
+**Hard runway** — how long your stablecoins and fiat last at current burn. No volatile assets included. This is your guaranteed floor.
+
+**Extended runway** — a month-by-month simulation of liquidating volatile assets (ETH, BTC, SOL, native tokens) in user-configured priority order, applying per-asset haircuts and monthly sell limits. When liquidity can't cover the deficit, the engine tracks a **funding gap** — the dollar amount you'd need to raise or cut that month.
 
 ---
 
-## What makes it different
+## Projection model
 
-**It actually models crypto treasuries**
+Each volatile asset has its own liquidation profile:
 
-Most tools treat your treasury as a single number. RoughRunway models each asset separately — stablecoins, fiat, BTC/ETH, and native tokens — with realistic sell constraints:
+| Asset type | Default haircut | Sell limit |
+|---|---|---|
+| Major crypto (BTC, ETH) | 2% | User-configured monthly cap |
+| Alt tokens | 10% | User-configured monthly cap |
+| Native / protocol token | 15% | Raw cap or % of 24h volume |
 
-| Asset tier | Haircut | Behavior |
-|------------|---------|----------|
-| Major (BTC, ETH) | 2% | Liquid, sell up to your monthly limit |
-| Alt tokens | 10% | Sell constrained by your set limit |
-| Native/protocol token | 15% | High illiquidity, last to liquidate |
+Liquidation order is user-configurable via drag-to-reorder. The engine runs forward month by month: burn from hard assets first, then draw down volatile assets in priority order until the deficit is covered or liquidity runs out. Vesting unlocks, inflow cliffs, and per-category growth rates are all modeled.
 
-**Scenario analysis without the spreadsheet**
+---
 
-Type a scenario in plain English. The AI parses it into overrides and runs a parallel projection. Compare multiple scenarios against baseline in a single table — runway delta, funding gap, average net burn.
+## Scenario analysis
 
-**Shareable links with no backend**
+Up to five named scenarios, each a parallel projection against your baseline. Scenarios never mutate the base model — they apply overrides to a deep clone and run a separate simulation.
 
-The entire model compresses into the URL hash using lz-string. Send it to your board, your accountant, or a co-founder. They click it, they see it. Nothing stored on a server.
+Preset templates included: Bear Market, Token Crash, Aggressive Hiring, Emergency Cuts, Fundraising Win. Or describe a scenario in plain English and the AI builds the override set.
 
 ---
 
 ## AI features
 
-- **Setup assistant** — describe your treasury in plain English, AI builds the full model
-- **Scenario parser** — type "bear market, ETH down 70%, cut marketing 30%" and it creates the override set
-- **Live market banner** — real-time crypto prices and news headlines for your assets, powered by Perplexity Sonar
+Powered by [Perplexity](https://www.perplexity.ai/) Sonar:
+
+- **Natural language setup** — describe your treasury; AI fills in the full model for review
+- **Natural language scenarios** — type "ETH down 70%, cut marketing 30%" and the overrides are created
+- **Live market banner** — current prices and headlines for your assets, pulled fresh from Perplexity
 
 ---
 
-## Quickstart
+## Sharing
+
+The entire model compresses into the URL hash (lz-string). Share a link; the recipient sees your exact model with no server round-trip, no account, no setup. Export and import as JSON also supported.
+
+---
+
+## Getting started
 
 ```bash
 git clone https://github.com/hewi333/roughrunway
 cd roughrunway
-cp .env.example .env.local   # add your PERPLEXITY_API_KEY
+cp .env.local.example .env.local   # add your PERPLEXITY_API_KEY
 npm install
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000). AI features require a [Perplexity API key](https://www.perplexity.ai/) — everything else works without one.
+Open [localhost:3000](http://localhost:3000). AI features require a [Perplexity API key](https://www.perplexity.ai/). Everything else — projection engine, scenarios, sharing — runs without one. A demo org (Nexus Labs) loads on first visit.
 
 ---
 
@@ -106,14 +83,14 @@ Open [localhost:3000](http://localhost:3000). AI features require a [Perplexity 
 
 | | |
 |---|---|
-| Framework | Next.js 14 (App Router, TypeScript strict) |
-| State | Zustand + localStorage (no backend, no database) |
-| Charts | Recharts — stacked treasury areas + scenario overlay lines |
-| AI | Perplexity Sonar / Sonar Pro with structured JSON output |
+| Framework | Next.js 14, App Router, TypeScript strict |
+| State | Zustand + localStorage — no backend, no database |
+| Charts | Recharts |
+| AI | Perplexity Sonar / Sonar Pro, structured JSON output |
 | Styling | Tailwind CSS + shadcn/ui |
-| Sharing | lz-string URL compression — full model in the hash |
+| Sharing | lz-string URL compression |
 | Hosting | Vercel |
 
 ---
 
-*Built for the Accountant Quits Web3 Hackathon, April 2026.*
+*Built for the Accountant Quits Web3 Hackathon, April 2026. MIT licensed.*
