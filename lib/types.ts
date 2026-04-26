@@ -59,7 +59,7 @@ export interface VolatileAsset {
   vestingSchedule?: VestingEvent[];
 }
 
-export type PriceAssumption = "constant" | "monthly_decline" | "custom_schedule";
+export type PriceAssumption = "constant" | "monthly_decline" | "monthly_increase";
 export type MaxSellUnit = "tokens" | "percent_of_volume";
 
 export interface LiquidityProfile {
@@ -70,7 +70,7 @@ export interface LiquidityProfile {
   haircutPercent: number;
   priceAssumption: PriceAssumption;
   monthlyDeclineRate?: number;
-  customPriceSchedule?: { month: number; price: number }[];
+  monthlyIncreaseRate?: number;
 }
 
 export interface VestingEvent {
@@ -98,6 +98,8 @@ export interface BurnCategory {
   isActive: boolean;
 }
 
+export type InflowDenomination = "fiat" | "token_yield";
+
 export interface InflowCategory {
   id: string;
   name: string;
@@ -107,6 +109,13 @@ export interface InflowCategory {
   growthRate: number;
   adjustments: MonthlyAdjustment[];
   isActive: boolean;
+  // Optional — defaults to "fiat" when undefined.
+  // "token_yield" computes inflows as a % annual yield on the live USD value
+  // of `tokenAssetId` (price-aware, scales with quantity changes from
+  // vesting and liquidation).
+  denomination?: InflowDenomination;
+  tokenAssetId?: string;
+  annualYieldPercent?: number;
 }
 
 export interface MonthlyAdjustment {

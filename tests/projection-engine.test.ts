@@ -845,10 +845,10 @@ describe("Fixture 21: headcountChange with matching category adds baseline_chang
 });
 
 // ----------------------------------------------------------------------------
-// Fixture 22: Custom price schedule with fallback to currentPrice
+// Fixture 22: Monthly increase price assumption (compound growth)
 // ----------------------------------------------------------------------------
 
-describe("Fixture 22: custom_schedule price assumption", () => {
+describe("Fixture 22: monthly_increase price assumption", () => {
   const asset: VolatileAsset = {
     id: "tok",
     name: "TOK",
@@ -862,28 +862,22 @@ describe("Fixture 22: custom_schedule price assumption", () => {
       maxSellUnit: "tokens",
       maxSellPerMonth: 50_000,
       haircutPercent: 10,
-      priceAssumption: "custom_schedule",
-      customPriceSchedule: [
-        { month: 3, price: 0.5 },
-        { month: 6, price: 0.25 },
-      ],
+      priceAssumption: "monthly_increase",
+      monthlyIncreaseRate: 0.05,
     },
   };
 
-  it("month 1 uses currentPrice (not in schedule)", () => {
-    expect(computeAssetPrice(asset, 1)).toBe(1.0);
+  it("month 1 uses currentPrice (no growth applied)", () => {
+    expect(computeAssetPrice(asset, 1)).toBeCloseTo(1.0, 6);
   });
-  it("month 3 uses scheduled price $0.50", () => {
-    expect(computeAssetPrice(asset, 3)).toBe(0.5);
+  it("month 2 = currentPrice * 1.05", () => {
+    expect(computeAssetPrice(asset, 2)).toBeCloseTo(1.05, 6);
   });
-  it("month 5 falls back to currentPrice (not in schedule)", () => {
-    expect(computeAssetPrice(asset, 5)).toBe(1.0);
+  it("month 6 compounds 5 times: 1.05^5 ≈ 1.2763", () => {
+    expect(computeAssetPrice(asset, 6)).toBeCloseTo(Math.pow(1.05, 5), 6);
   });
-  it("month 6 uses scheduled price $0.25", () => {
-    expect(computeAssetPrice(asset, 6)).toBe(0.25);
-  });
-  it("month 18 falls back to currentPrice", () => {
-    expect(computeAssetPrice(asset, 18)).toBe(1.0);
+  it("month 18 compounds 17 times", () => {
+    expect(computeAssetPrice(asset, 18)).toBeCloseTo(Math.pow(1.05, 17), 6);
   });
 });
 
@@ -954,6 +948,66 @@ describe("Fixture 24: scenario disables a burn category", () => {
   it("runway extends significantly (2M / 50K = 40 > 18 months)", () => {
     const { summary } = computeProjection(modified);
     expect(summary.hardRunwayMonths).toBeNull();
+  });
+});
+
+// ----------------------------------------------------------------------------
+// Fixture 24b: Token-yield inflow scales with native token holdings + price
+// ----------------------------------------------------------------------------
+
+describe("Fixture 24b: token_yield denomination computes monthly inflow from asset value", () => {
+  // 1M tokens @ $1.00 = $1M, 12% APY → $10K/mo
+  const stakingAsset: VolatileAsset = {
+    id: "stake-asset",
+    name: "STAKE",
+    ticker: "STK",
+    tier: "native",
+    quantity: 1_000_000,
+    currentPrice: 1.0,
+    priceSource: "manual",
+    liquidationPriority: 50,
+    liquidity: {
+      maxSellUnit: "tokens",
+      maxSellPerMonth: 0,
+      haircutPercent: 10,
+      priceAssumption: "constant",
+    },
+  };
+
+  const model = makeModel({
+    stablecoins: 500_000,
+    burnCategories: [makeBurnCategory("burn", 50_000)],
+    inflowCategories: [
+      makeInflowCategory("staking", 0, {
+        denomination: "token_yield",
+        tokenAssetId: "stake-asset",
+        annualYieldPercent: 12,
+      }),
+    ],
+    volatileAssets: [stakingAsset],
+  });
+  const { projections } = computeProjection(model);
+
+  it("month 1 inflow = $10K (1M * $1.00 * 12% / 12)", () => {
+    expect(projections[0]!.totalInflows).toBeCloseTo(10_000, 0);
+  });
+  it("net burn drops accordingly (50K - 10K = 40K)", () => {
+    expect(projections[0]!.netBurn).toBeCloseTo(40_000, 0);
+  });
+  it("returns zero when tokenAssetId points to a missing asset", () => {
+    const broken = makeModel({
+      stablecoins: 100_000,
+      burnCategories: [makeBurnCategory("burn", 10_000)],
+      inflowCategories: [
+        makeInflowCategory("ghost", 0, {
+          denomination: "token_yield",
+          tokenAssetId: "does-not-exist",
+          annualYieldPercent: 50,
+        }),
+      ],
+    });
+    const { projections: p } = computeProjection(broken);
+    expect(p[0]!.totalInflows).toBe(0);
   });
 });
 

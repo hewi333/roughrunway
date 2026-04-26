@@ -52,9 +52,19 @@ export function computeProjection(model: RoughRunwayModel): {
       0
     );
 
-    // Step 4: Inflows
+    // Step 4: Inflows. Token-yield categories need live asset state for the
+    // current month (post-vesting, pre-liquidation), so we pass a lookup.
+    const inflowContext: InflowContext = {
+      getAssetValueUSD: (assetId: string) => {
+        const a = assets.find((asset) => asset.id === assetId);
+        if (!a || a.quantity <= 0) return 0;
+        const price = computeAssetPrice(a, M);
+        if (price <= 0) return 0;
+        return a.quantity * price;
+      },
+    };
     const totalInflows = model.inflowCategories.reduce(
-      (s, c) => s + getMonthlyInflow(c, M),
+      (s, c) => s + getMonthlyInflow(c, M, inflowContext),
       0
     );
 
@@ -228,8 +238,33 @@ export function getMonthlyBurn(category: BurnCategory, month: number): number {
   return amount;
 }
 
-export function getMonthlyInflow(category: InflowCategory, month: number): number {
+export interface InflowContext {
+  getAssetValueUSD: (assetId: string) => number;
+}
+
+export function getMonthlyInflow(
+  category: InflowCategory,
+  month: number,
+  context?: InflowContext
+): number {
   if (!category.isActive) return 0;
+
+  // Token-yield: % annual yield on the live USD value of the linked asset.
+  // The base amount is recomputed each month so it tracks the asset's
+  // changing quantity (vesting/liquidation) and price.
+  if (category.denomination === "token_yield") {
+    if (!category.tokenAssetId || !context) return 0;
+    const assetValueUSD = context.getAssetValueUSD(category.tokenAssetId);
+    if (!Number.isFinite(assetValueUSD) || assetValueUSD <= 0) return 0;
+    const annualYield = category.annualYieldPercent ?? 0;
+    let amount = (assetValueUSD * annualYield) / 100 / 12;
+
+    const oneOffs = category.adjustments.filter(
+      (a) => a.type === "one_off" && a.month === month
+    );
+    amount += oneOffs.reduce((s, a) => s + a.amount, 0);
+    return amount;
+  }
 
   const baselineChanges = category.adjustments
     .filter((a) => a.type === "baseline_change" && a.month <= month)
@@ -265,9 +300,9 @@ export function computeAssetPrice(asset: VolatileAsset, month: number): number {
       const rate = asset.liquidity.monthlyDeclineRate ?? 0;
       return asset.currentPrice * Math.pow(1 - rate, month - 1);
     }
-    case "custom_schedule": {
-      const scheduled = asset.liquidity.customPriceSchedule?.find((s) => s.month === month);
-      return scheduled?.price ?? asset.currentPrice;
+    case "monthly_increase": {
+      const rate = asset.liquidity.monthlyIncreaseRate ?? 0;
+      return asset.currentPrice * Math.pow(1 + rate, month - 1);
     }
   }
 }

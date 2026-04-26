@@ -34,11 +34,10 @@ export default function BurnCategoryRow({ category }: BurnCategoryRowProps) {
   const addAdjustment = () => {
     const newAdjustment = {
       id: uuidv4(),
-      name: "New Adjustment",
       type: "one_off" as const,
       amount: 0,
       month: 1,
-      description: "New adjustment",
+      description: "",
     };
 
     updateCategory({
