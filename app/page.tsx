@@ -98,11 +98,7 @@ export default function HomePage() {
                 aria-label="The Accountant Quits"
                 className="flex items-center gap-2 opacity-75 hover:opacity-100 transition-opacity"
               >
-                {/* TAQ icon mark */}
-                <span className="inline-flex items-center justify-center rounded bg-[#0F1623] px-1.5 py-0.5 font-mono font-bold text-white text-[13px] tracking-tight leading-none">
-                  TA1.
-                </span>
-                {/* TAQ wordmark */}
+                {/* TAQ wordmark only */}
                 <span className="font-bold text-[10px] tracking-[0.18em] uppercase text-[#0F1623] leading-none">
                   The Accountant{" "}
                   <span className="text-[#7C5CFC]">Quits</span>
@@ -116,10 +112,21 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Perplexity"
-                className="opacity-75 hover:opacity-100 transition-opacity"
+                className="flex items-center gap-1.5 opacity-75 hover:opacity-100 transition-opacity"
               >
+                {/* Perplexity icon mark */}
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  {/* Outer diamond */}
+                  <polygon points="9,1 17,9 9,17 1,9" stroke="#1a1a1a" strokeWidth="1.5" fill="none"/>
+                  {/* Inner diamond */}
+                  <polygon points="9,5 13,9 9,13 5,9" stroke="#1a1a1a" strokeWidth="1.5" fill="none"/>
+                  {/* Vertical spine */}
+                  <line x1="9" y1="1" x2="9" y2="17" stroke="#1a1a1a" strokeWidth="1.5"/>
+                  {/* Horizontal bar */}
+                  <line x1="1" y1="9" x2="17" y2="9" stroke="#1a1a1a" strokeWidth="1.5"/>
+                </svg>
                 {/* Perplexity wordmark */}
-                <span className="font-semibold text-sm tracking-tight text-[#0F1623]">
+                <span className="font-semibold text-sm tracking-tight text-[#1a1a1a]">
                   perplexity
                 </span>
               </Link>
