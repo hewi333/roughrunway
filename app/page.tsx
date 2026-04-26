@@ -110,13 +110,9 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Perplexity"
-                className="flex items-center gap-1.5 opacity-75 hover:opacity-100 transition-opacity"
+                className="opacity-75 hover:opacity-100 transition-opacity"
               >
-                <Image src="/330px-Perplexity_AI_logo.svg.png" alt="" width={18} height={18} className="flex-shrink-0" />
-                {/* Perplexity wordmark */}
-                <span className="font-semibold text-sm tracking-tight text-[#1a1a1a]">
-                  perplexity
-                </span>
+                <Image src="/330px-Perplexity_AI_logo.svg.png" alt="Perplexity" width={110} height={22} className="flex-shrink-0" />
               </Link>
             </div>
           </div>
