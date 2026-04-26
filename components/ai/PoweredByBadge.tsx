@@ -13,7 +13,7 @@ export default function PoweredByBadge({ className, size = "sm" }: PoweredByBadg
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 font-medium text-perplexity",
+        "inline-flex items-center gap-1.5 font-medium text-perplexity-teal",
         size === "sm" && "text-placard",
         size === "md" && "text-caption",
         className

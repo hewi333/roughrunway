@@ -73,7 +73,7 @@ function HeadlineItem({ headline }: { headline: Headline }) {
       href={headline.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 shrink-0 cursor-pointer text-mountain-white/90 dark:text-foreground/90 hover:text-mountain-white dark:hover:text-foreground hover:underline underline-offset-4 decoration-perplexity/60 transition-colors"
+      className="flex items-center gap-2 shrink-0 cursor-pointer text-foreground/90 hover:text-foreground hover:underline underline-offset-4 decoration-perplexity/60 transition-colors"
       data-action="market-headline"
     >
       <span className="text-sm">{headline.title}</span>
@@ -86,7 +86,7 @@ function HeadlineItem({ headline }: { headline: Headline }) {
 function Separator() {
   return (
     <span
-      className="h-4 w-px bg-knob-silver/30 shrink-0"
+      className="h-4 w-px bg-knob-silver/40 dark:bg-knob-silver-dark/30 shrink-0"
       aria-hidden="true"
     />
   );
@@ -152,7 +152,7 @@ export default function MarketBanner() {
 
   return (
     <div
-      className="relative flex items-stretch bg-ink dark:bg-panel-dark border-b border-knob-silver/20 text-mountain-white dark:text-foreground shrink-0 overflow-hidden"
+      className="relative flex items-stretch bg-card text-foreground border-b border-knob-silver/40 dark:border-knob-silver-dark/30 shrink-0 overflow-hidden"
       role="complementary"
       aria-label="Live market data"
       data-action="market-banner"
@@ -174,14 +174,15 @@ export default function MarketBanner() {
         </div>
       </div>
 
-      {/* Pinned "Perplexity Market Pulse" badge — sits above the scroll with a gradient fade */}
-      <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-ink via-ink to-transparent dark:from-panel-dark dark:via-panel-dark dark:to-transparent">
+      {/* Pinned "Perplexity Market Pulse" badge — gradient fades into bg-card so it
+          reads cleanly in light or dark mode without manually flipping colors. */}
+      <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-card via-card to-transparent">
         <span
-          className="h-1.5 w-1.5 rounded-full bg-perplexity animate-pulse shrink-0"
+          className="h-1.5 w-1.5 rounded-full bg-perplexity-teal animate-pulse shrink-0"
           aria-hidden="true"
         />
         <PerplexityLogo className="h-3.5 w-3.5" />
-        <span className="text-xs font-semibold uppercase tracking-wide text-perplexity">
+        <span className="text-xs font-semibold uppercase tracking-wide text-perplexity-teal">
           Perplexity Market Pulse
         </span>
       </div>

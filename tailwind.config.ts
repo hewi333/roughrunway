@@ -68,6 +68,9 @@ const config: Config = {
         // chart components pick up the new colors without a rename.
         // Phase 3 may rename these to swiss-red / sky-blue / etc. directly.
         perplexity: "#D4A574",
+        // Brand teal used for the Perplexity logo + "Market Pulse" wordmark.
+        // Kept separate from the gold chart token so charts don't shift.
+        "perplexity-teal": "#20B8CD",
         "hard-runway": "#DC2626",
         "extended-runway": "#6FA3D4",
         "stables-area": "#2E7D32",
