@@ -131,9 +131,9 @@ export default function LiquidityProfileEditor({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="constant">Constant</SelectItem>
-              <SelectItem value="monthly_decline">Monthly Decline</SelectItem>
-              <SelectItem value="custom_schedule">Custom Schedule</SelectItem>
+              <SelectItem value="constant">Staying Same</SelectItem>
+              <SelectItem value="monthly_decline">Declining</SelectItem>
+              <SelectItem value="monthly_increase">Increasing</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -152,6 +152,26 @@ export default function LiquidityProfileEditor({
               value={profile.monthlyDeclineRate || 0}
               onChange={(e) =>
                 updateProfile({ monthlyDeclineRate: Number(e.target.value) })
+              }
+              className="mt-1"
+            />
+          </div>
+        )}
+
+        {profile.priceAssumption === "monthly_increase" && (
+          <div>
+            <Label htmlFor="monthlyIncreaseRate" className="text-caption">
+              Monthly Increase Rate (%)
+            </Label>
+            <Input
+              id="monthlyIncreaseRate"
+              type="number"
+              min="0"
+              max="100"
+              step="0.1"
+              value={profile.monthlyIncreaseRate || 0}
+              onChange={(e) =>
+                updateProfile({ monthlyIncreaseRate: Number(e.target.value) })
               }
               className="mt-1"
             />

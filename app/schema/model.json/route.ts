@@ -133,20 +133,10 @@ const SCHEMA = {
             haircutPercent: { type: "number", minimum: 0, maximum: 100 },
             priceAssumption: {
               type: "string",
-              enum: ["constant", "monthly_decline", "custom_schedule"],
+              enum: ["constant", "monthly_decline", "monthly_increase"],
             },
             monthlyDeclineRate: { type: "number" },
-            customPriceSchedule: {
-              type: "array",
-              items: {
-                type: "object",
-                required: ["month", "price"],
-                properties: {
-                  month: { type: "integer", minimum: 1 },
-                  price: { type: "number", minimum: 0 },
-                },
-              },
-            },
+            monthlyIncreaseRate: { type: "number" },
           },
         },
         vestingSchedule: {
@@ -218,6 +208,14 @@ const SCHEMA = {
           items: { $ref: "#/definitions/MonthlyAdjustment" },
         },
         isActive: { type: "boolean" },
+        denomination: {
+          type: "string",
+          enum: ["fiat", "token_yield"],
+          description:
+            'Defaults to "fiat". "token_yield" applies annualYieldPercent to the live USD value of tokenAssetId each month.',
+        },
+        tokenAssetId: { type: "string" },
+        annualYieldPercent: { type: "number", minimum: 0 },
       },
     },
     MonthlyAdjustment: {

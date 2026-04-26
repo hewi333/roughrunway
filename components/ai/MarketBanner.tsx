@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { TrendingUp, TrendingDown, ExternalLink, Zap } from "lucide-react";
+import { TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
+import PerplexityLogo from "@/components/ai/PerplexityLogo";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -72,7 +73,7 @@ function HeadlineItem({ headline }: { headline: Headline }) {
       href={headline.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 shrink-0 cursor-pointer text-white/90 hover:text-white hover:underline underline-offset-4 decoration-perplexity/60 transition-colors"
+      className="flex items-center gap-2 shrink-0 cursor-pointer text-mountain-white/90 dark:text-foreground/90 hover:text-mountain-white dark:hover:text-foreground hover:underline underline-offset-4 decoration-perplexity/60 transition-colors"
       data-action="market-headline"
     >
       <span className="text-sm">{headline.title}</span>
@@ -98,23 +99,28 @@ export default function MarketBanner() {
   const [data, setData] = useState<BannerData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const tickers = [
-    "BTC",
-    "ETH",
-    ...model.treasury.volatileAssets
-      .filter(
-        (a: { ticker?: string }) =>
-          a.ticker && !["BTC", "ETH"].includes(a.ticker.toUpperCase())
-      )
-      .map((a: { ticker: string }) => a.ticker.toUpperCase()),
-  ].slice(0, 6);
+  // De-duplicate user tickers against the defaults (BTC/ETH) using uppercase comparison
+  const seen = new Set(["BTC", "ETH"]);
+  const userTickers: string[] = [];
+  for (const a of model.treasury.volatileAssets) {
+    if (!a.ticker) continue;
+    const t = a.ticker.toUpperCase();
+    if (seen.has(t)) continue;
+    seen.add(t);
+    userTickers.push(t);
+  }
+  const tickers = ["BTC", "ETH", ...userTickers].slice(0, 6);
 
   const fetchData = async () => {
     try {
       const res = await fetch(`/api/ai/market-banner?tokens=${tickers.join(",")}`);
       if (!res.ok) return;
       const json: BannerData = await res.json();
-      setData(json);
+      // Filter out clearly-broken price entries (zero, negative, or unrealistic)
+      const cleanPrices = (json.prices ?? []).filter(
+        (p) => p && typeof p.price === "number" && p.price > 0 && Number.isFinite(p.price)
+      );
+      setData({ ...json, prices: cleanPrices });
     } catch {
       // network error — keep last data
     } finally {
@@ -168,18 +174,15 @@ export default function MarketBanner() {
         </div>
       </div>
 
-      {/* Pinned "Market Pulse" badge — sits above the scroll with a gradient fade */}
+      {/* Pinned "Perplexity Market Pulse" badge — sits above the scroll with a gradient fade */}
       <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-ink via-ink to-transparent dark:from-panel-dark dark:via-panel-dark dark:to-transparent">
         <span
           className="h-1.5 w-1.5 rounded-full bg-perplexity animate-pulse shrink-0"
           aria-hidden="true"
         />
-        <Zap
-          className="h-3.5 w-3.5 text-perplexity shrink-0"
-          aria-hidden="true"
-        />
+        <PerplexityLogo className="h-3.5 w-3.5" />
         <span className="text-xs font-semibold uppercase tracking-wide text-perplexity">
-          Market Pulse
+          Perplexity Market Pulse
         </span>
       </div>
     </div>

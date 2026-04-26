@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ExternalLink } from "lucide-react";
+import PerplexityLogo from "@/components/ai/PerplexityLogo";
 
 export default function FooterBrand() {
   return (
@@ -26,8 +27,9 @@ export default function FooterBrand() {
             href="https://perplexity.ai"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-knob bg-knob-gold/20 px-3 py-1 text-caption font-medium text-ink hover:bg-knob-gold/30 dark:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-knob bg-knob-gold/20 px-3 py-1 text-caption font-medium text-ink hover:bg-knob-gold/30 dark:text-foreground"
           >
+            <PerplexityLogo className="h-3.5 w-3.5" />
             Perplexity
             <ExternalLink className="h-3 w-3" />
           </a>

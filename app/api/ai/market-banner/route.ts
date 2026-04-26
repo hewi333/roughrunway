@@ -45,18 +45,29 @@ export async function GET(req: NextRequest) {
   if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
   const tokens = req.nextUrl.searchParams.get("tokens")?.split(",") ?? ["BTC", "ETH", "SOL"];
-  // Sanitize: only allow alphanumeric tickers, max 10 tokens
-  const safe = tokens.slice(0, 10).map((t: string) => t.replace(/[^A-Za-z0-9]/g, "")).filter(Boolean);
+  // Sanitize: only allow alphanumeric tickers, max 10 tokens, dedupe (uppercase)
+  const seen = new Set<string>();
+  const safe: string[] = [];
+  for (const t of tokens.slice(0, 10)) {
+    const clean = t.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+    if (!clean || seen.has(clean)) continue;
+    seen.add(clean);
+    safe.push(clean);
+  }
 
-  const prompt = `Return current cryptocurrency prices and recent crypto news headlines.
+  const prompt = `Return CURRENT live cryptocurrency spot prices and the latest crypto news headlines.
 
-PRICES NEEDED: ${safe.join(", ")}
-For each ticker symbol, return the current USD spot price and 24-hour percentage change as a number (e.g. 2.1 means +2.1%, -0.8 means -0.8%).
-If a ticker is too obscure to find a reliable price, omit it from the prices array — do not guess.
+PRICES NEEDED (uppercase tickers): ${safe.join(", ")}
+For each listed ticker symbol:
+  - Use the most recent USD spot price from a reputable exchange or aggregator (CoinGecko, CoinMarketCap, Binance, Coinbase). The price MUST reflect current market value as of today, not a stale cached value.
+  - Provide the 24-hour percentage change as a signed number (e.g. 2.1 means +2.1%, -0.8 means -0.8%).
+  - Do NOT return 0 or a placeholder. If you cannot find a reliable up-to-date price for a ticker, OMIT it entirely from the prices array — do not guess and do not fabricate.
+  - Never return prices below $0.000001. For majors like BTC and ETH, sanity-check that the price is in the expected order of magnitude.
 
-HEADLINES: Return exactly 3 crypto news headlines published in the last 12 hours.
-Prefer major outlets: CoinDesk, The Block, Decrypt, CoinTelegraph, Bloomberg, Reuters.
-Headlines must be real, verifiable articles — no fabrication.
+HEADLINES: Return exactly 3 crypto news headlines published within the last 24 hours.
+  - Prefer major outlets: CoinDesk, The Block, Decrypt, CoinTelegraph, Bloomberg, Reuters.
+  - Each headline must be a REAL, verifiable article with a working URL — no fabrication.
+  - Always populate the headlines array; if reputable news is sparse, include the most recent ones available.
 
 Return the data as JSON matching the provided schema.`;
 
@@ -72,7 +83,21 @@ Return the data as JSON matching the provided schema.`;
     if (!content) throw new Error("Empty response from Perplexity");
 
     const parsed = JSON.parse(content);
-    return Response.json({ ...parsed, fetchedAt: new Date().toISOString() });
+
+    // Server-side sanitisation: drop any price that's zero/negative/non-finite.
+    // The model occasionally returns 0 for tickers it couldn't price — we'd
+    // rather show fewer entries than display "$0.00" next to a real ticker.
+    const prices = Array.isArray(parsed.prices)
+      ? parsed.prices.filter(
+          (p: { price?: number }) =>
+            typeof p?.price === "number" &&
+            Number.isFinite(p.price) &&
+            p.price > 0
+        )
+      : [];
+    const headlines = Array.isArray(parsed.headlines) ? parsed.headlines : [];
+
+    return Response.json({ prices, headlines, fetchedAt: new Date().toISOString() });
   } catch (err) {
     console.error("[market-banner]", err instanceof Error ? err.message : err);
     return Response.json({ error: "Perplexity unavailable" }, { status: 503 });
