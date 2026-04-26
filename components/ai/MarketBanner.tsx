@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
 import PerplexityLogo from "@/components/ai/PerplexityLogo";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -192,9 +193,13 @@ export default function MarketBanner() {
           aria-hidden="true"
         />
         <PerplexityLogo className="h-3.5 w-3.5" />
-        <span className="text-xs font-semibold uppercase tracking-wide text-perplexity-teal">
+        <AnimatedShinyText
+          className="text-xs font-semibold uppercase tracking-wide"
+          baseColor="#20B8CD"
+          shimmerColor="rgba(255,255,255,0.88)"
+        >
           Perplexity Market Pulse
-        </span>
+        </AnimatedShinyText>
       </div>
     </div>
   );
