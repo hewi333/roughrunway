@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Terminal } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LandingAgentTerminal } from "@/components/LandingAgentTerminal";
 
 
 export default function HomePage() {
@@ -109,54 +110,50 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Perplexity"
-                className="flex items-center gap-1.5 opacity-75 hover:opacity-100 transition-opacity"
+                className="opacity-75 hover:opacity-100 transition-opacity"
               >
-                <Image src="/330px-Perplexity_AI_logo.svg.png" alt="" width={18} height={18} className="flex-shrink-0" />
-                {/* Perplexity wordmark */}
-                <span className="font-semibold text-sm tracking-tight text-[#1a1a1a]">
-                  perplexity
-                </span>
+                <Image src="/330px-Perplexity_AI_logo.svg.png" alt="Perplexity" width={110} height={22} className="flex-shrink-0" />
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features — snow-white strip with mountain silhouette accents */}
+      {/* Features — clean numbered editorial rows */}
       <section className="relative bg-white border-b border-knob-silver/40">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-          <div className="flex items-baseline gap-3 mb-8 sm:mb-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+          <div className="flex items-baseline gap-3 mb-10 sm:mb-14">
             <span className="h-3 w-3 bg-swiss-red rounded-sm" />
             <h2 className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-ink-secondary">
               The Platform
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8">
+          <div className="divide-y divide-knob-silver/30">
             {[
               {
+                num: "01",
                 label: "Treasury modeling",
                 desc: "Stablecoins, fiat, BTC/ETH, native tokens — each with tier-based liquidity haircuts and sell limits.",
               },
               {
+                num: "02",
                 label: "Scenario analysis",
                 desc: "Model bear markets, hiring surges, grant cliffs, and one-off events side-by-side against your baseline.",
               },
               {
+                num: "03",
                 label: "Shareable links",
                 desc: "Your entire model encodes into a URL. Send it to your accountant, board, or co-founder — no account needed.",
               },
-            ].map(({ label, desc }) => (
+            ].map(({ num, label, desc }) => (
               <div
                 key={label}
-                className="rounded-panel border border-knob-silver/50 bg-mountain-white p-5 sm:p-6 space-y-3 hover:border-swiss-red/40 transition-colors"
+                className="py-7 sm:py-9 grid grid-cols-[36px_1fr] sm:grid-cols-[56px_220px_1fr] gap-x-5 sm:gap-x-10 gap-y-1.5 items-baseline"
               >
-                <div className="flex items-center gap-2">
-                  <span className="h-0.5 w-6 bg-swiss-red" />
-                  <span className="h-0.5 w-2 bg-ink" />
-                </div>
-                <h3 className="font-semibold text-ink text-base sm:text-lg">{label}</h3>
-                <p className="text-sm text-ink-secondary leading-relaxed">
+                <span className="font-mono text-[10px] tracking-widest text-swiss-red pt-0.5">{num}</span>
+                <h3 className="font-semibold text-ink text-base sm:text-lg leading-snug">{label}</h3>
+                <p className="col-start-2 sm:col-start-3 text-sm text-ink-secondary leading-relaxed">
                   {desc}
                 </p>
               </div>
@@ -239,56 +236,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="space-y-3">
-            {/* Step 1 — what the user actually types */}
-            <div className="rounded-panel border border-knob-silver/50 bg-[#0F1115] overflow-hidden shadow-sm">
-              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
-                <span className="h-2 w-2 bg-sky-blue rounded-sm flex-shrink-0" />
-                <span className="text-[11px] sm:text-xs font-mono text-white/60 truncate">
-                  You, in any LLM chat
-                </span>
-              </div>
-              <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/85 font-mono leading-relaxed">
-                Open <span className="text-sky-blue">roughrunway.com</span> and
-                build a runway model: $10M USDC, 250 ETH at $4k, 50M native
-                token at $0.10, 12 people, ~$300k/mo burn.
-              </p>
-            </div>
-
-            {/* Step 2 — what the assistant does behind the scenes */}
-            <div className="rounded-panel border border-knob-silver/50 bg-[#0F1115] overflow-hidden shadow-sm">
-              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
-                <Terminal className="h-3.5 w-3.5 text-white/50 flex-shrink-0" />
-                <span className="text-[11px] sm:text-xs font-mono text-white/60 truncate">
-                  Assistant fetches (instant, no extra LLM call)
-                </span>
-              </div>
-              <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/70 font-mono leading-relaxed break-all">
-                roughrunway.com/api/agent/encode
-                <span className="text-sky-blue">
-                  ?name=DeFi+Team&stable=USDC:10000000&volatile=ETH:250:4000:major,NEX:50000000:0.10:native&burn=300000&team=12
-                </span>
-              </p>
-            </div>
-
-            {/* Step 3 — the link the user clicks */}
-            <div className="rounded-panel border border-swiss-red/40 bg-[#0F1115] overflow-hidden shadow-sm">
-              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-swiss-red/30 bg-swiss-red/10">
-                <span className="h-2 w-2 bg-swiss-red rounded-sm flex-shrink-0" />
-                <span className="text-[11px] sm:text-xs font-mono text-white/70 truncate">
-                  Reply → click and your model loads
-                </span>
-              </div>
-              <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-1.5">
-                <p className="text-[11px] sm:text-xs text-white/85 font-mono">
-                  Here's your runway model:
-                </p>
-                <p className="text-xs sm:text-sm text-white font-mono break-all pl-3 sm:pl-4">
-                  roughrunway.com/dashboard#model=N4Ig…
-                </p>
-              </div>
-            </div>
-          </div>
+          <LandingAgentTerminal />
         </div>
       </section>
 
