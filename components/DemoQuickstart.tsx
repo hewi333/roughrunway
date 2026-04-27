@@ -54,7 +54,7 @@ export default function DemoQuickstart({ onLoaded }: DemoQuickstartProps) {
             <div className="flex-1 min-w-0 space-y-2">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-lg font-semibold text-foreground">
-                  Mid-stage Web3 Protocol — $7M raise
+                  TAQ Labs — $7M raise
                 </h2>
                 <ArrowRight className="h-5 w-5 text-swiss-red flex-shrink-0 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -62,7 +62,7 @@ export default function DemoQuickstart({ onLoaded }: DemoQuickstartProps) {
                 <Row label="Team size" value="15 people" />
                 <Row label="Stable + fiat" value="$5.0M" />
                 <Row label="ETH treasury" value="300 ETH" />
-                <Row label="Native token" value="100M TAQ @ $0.08" />
+                <Row label="Native token" value="50M TAQ @ $0.20" />
                 <Row label="Monthly burn" value="$450K" />
                 <Row label="Net inflow" value="$34K/mo" />
               </dl>

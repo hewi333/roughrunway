@@ -133,7 +133,7 @@ export default function HomePage() {
             {[
               {
                 num: "01",
-                label: "Treasury modeling",
+                label: "Runway modeling",
                 desc: "Stablecoins, fiat, BTC/ETH, native tokens — each with tier-based liquidity haircuts and sell limits.",
               },
               {

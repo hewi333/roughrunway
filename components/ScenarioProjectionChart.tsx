@@ -105,9 +105,6 @@ export default function ScenarioProjectionChart({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-placard uppercase text-muted-foreground">
-            Instrument
-          </div>
           <h2 className="text-h3 text-foreground">
             {isComparison ? "Scenario Comparison" : "Runway Projection"}
           </h2>

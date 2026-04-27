@@ -116,15 +116,15 @@ export default function DocumentationPage() {
         <header className="max-w-3xl mb-12 sm:mb-16">
           <p className="text-placard uppercase tracking-[0.2em] text-swiss-red dark:text-aviation-red-dark">
             <span className="inline-block h-2 w-2 mr-2 align-middle bg-swiss-red dark:bg-aviation-red-dark rounded-sm" />
-            Flight Manual
+            Documentation
           </p>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mt-3 leading-[1.05]">
-            Model your runway like a pilot reads the dash.
+            Model your runway.
           </h1>
           <p className="text-body-lg text-muted-foreground mt-4 max-w-2xl">
-            Everything you need to set up a treasury, stress-test scenarios, and read the
-            projection chart. No backend, no signup — your model lives in your browser and
-            travels via shareable URL.
+            Set up a treasury, run scenarios, and read the projection chart. No
+            backend, no signup — your model lives in the browser and travels by
+            shareable URL.
           </p>
         </header>
 
@@ -155,25 +155,26 @@ export default function DocumentationPage() {
                 id="overview"
                 eyebrow="Overview"
                 title="What RoughRunway models"
-                description="A deterministic projection engine that simulates monthly cash, liquidations, and unmet deficits across a 12–18 month horizon."
+                description="A deterministic projection engine over a 12, 15, or 18-month horizon."
               />
               <div className="space-y-4 text-body text-muted-foreground">
                 <p>
                   RoughRunway answers two questions:{" "}
-                  <span className="font-medium text-foreground">how long does the money last</span>{" "}
+                  <span className="font-medium text-foreground">how long the money lasts</span>{" "}
                   on liquid reserves alone (hard runway), and{" "}
-                  <span className="font-medium text-foreground">how much further can you go</span>{" "}
-                  if you start liquidating volatile assets at a haircut (extended runway).
+                  <span className="font-medium text-foreground">how much further it goes</span>{" "}
+                  if you liquidate volatile assets at a haircut (extended runway).
                 </p>
                 <p>
-                  The math is pure — no AI, no random sampling. Every dollar of burn, every token sold,
-                  every haircut applied is reproducible from the inputs. The AI assistant only helps
-                  you set up the inputs faster; it never touches the projection itself.
+                  The projection is pure math — no AI in the engine, no random
+                  sampling. Every dollar of burn, every token sold, and every
+                  haircut is reproducible from the inputs. AI assists only with
+                  drafting and editing inputs.
                 </p>
               </div>
               <Callout variant="info" className="mt-6">
-                Your model never leaves your browser. We don&apos;t have a database. Sharing is done
-                by encoding the entire model into the URL hash with{" "}
+                Models never leave the browser. There is no database. Sharing
+                encodes the entire model into the URL hash with{" "}
                 <code className="font-mono">lz-string</code>.
               </Callout>
             </section>
@@ -181,14 +182,14 @@ export default function DocumentationPage() {
             <section>
               <SectionHeading
                 id="quickstart"
-                eyebrow="Quick Start"
-                title="From zero to runway in five steps"
+                eyebrow="Quick start"
+                title="From zero to runway"
               />
               <ol className="space-y-4">
                 {[
-                  ["Open the dashboard.", "The default model has placeholder values you can wipe or adapt."],
+                  ["Open the dashboard.", "Either load the demo model or jump in with a clean slate."],
                   ["Add your treasury.", "Stablecoins, fiat, and any volatile assets you hold."],
-                  ["Define burn.", "Headcount, infra, marketing, anything that costs money each month."],
+                  ["Define burn.", "Headcount, infrastructure, marketing — anything that costs money each month."],
                   ["Add expected inflows.", "Revenue, grants, scheduled token unlocks."],
                   ["Read the chart.", "Hard runway is the solid line. Extended runway is the dashed line."],
                 ].map(([step, desc], i) => (
@@ -204,9 +205,11 @@ export default function DocumentationPage() {
                 ))}
               </ol>
               <Callout variant="tip" className="mt-6">
-                Don&apos;t want to fill in fields? Click <span className="font-medium">AI Setup</span>{" "}
-                on the dashboard, paste a one-line description of your org, and the assistant will
-                draft a complete model you can edit.
+                Prefer to describe your org in words? Use the AI setup wizard at{" "}
+                <code className="font-mono">/setup</code> to draft a model from a
+                short description, or use the{" "}
+                <span className="font-medium">Edit in words</span> box inside any
+                panel to patch fields with natural language.
               </Callout>
             </section>
 
@@ -215,24 +218,28 @@ export default function DocumentationPage() {
                 id="treasury"
                 eyebrow="Treasury"
                 title="What you hold today"
-                description="Three asset classes. Stablecoins and fiat are spent directly; volatile assets get liquidated only when reserves run dry."
+                description="Three asset classes. Stablecoins and fiat fund burn first; volatile assets are liquidated only when reserves run out."
               />
               <div className="rounded-panel border border-knob-silver dark:border-knob-silver-dark bg-card p-5">
                 <FieldRow name="stablecoins" type="USD">
-                  USDC, USDT, DAI, etc. Spent first to cover monthly burn. No haircut applied.
+                  USDC, USDT, DAI, and similar. Treated as cash equivalents — no
+                  haircut.
                 </FieldRow>
                 <FieldRow name="fiat" type="USD">
-                  Cash in a bank account. Spent alongside stablecoins.
+                  Cash held in a bank account. Spent alongside stablecoins.
                 </FieldRow>
                 <FieldRow name="volatileAssets[]" type="tokens × price">
-                  ETH, BTC, native tokens, alts. Each has a haircut, liquidity profile, and
-                  liquidation priority that determines the order they get sold.
+                  ETH, BTC, native tokens, and alts. Each carries a haircut, a
+                  liquidity profile, and a liquidation priority that determines
+                  the order assets are sold.
                 </FieldRow>
               </div>
               <Callout variant="warning" className="mt-6" title="Liquidity matters">
-                Volatile assets with <code className="font-mono">maxSellUnit: percent_of_volume</code>{" "}
-                are capped by daily volume × percent — months where you wanted to sell more but
-                couldn&apos;t will appear in the chart as <em>liquidity-constrained</em>.
+                Volatile assets configured with{" "}
+                <code className="font-mono">maxSellUnit: percent_of_volume</code>{" "}
+                are capped by daily volume × percent. Months where the cap binds
+                are flagged as <em>liquidity-constrained</em> in the chart and
+                in the Monthly Breakdown table.
               </Callout>
             </section>
 
@@ -241,19 +248,21 @@ export default function DocumentationPage() {
                 id="burn"
                 eyebrow="Burn"
                 title="What leaves the treasury each month"
-                description="Categories like Headcount, Infrastructure, Marketing. Each is a flat monthly USD figure — model raises and cuts via scenarios, not by editing the base number."
+                description="A flat monthly USD figure per category. Use scenarios to model raises and cuts rather than editing the baseline."
               />
               <div className="space-y-4 text-body text-muted-foreground">
                 <p>
-                  Burn is the sum of all category amounts per month. The engine subtracts inflows
-                  to get <span className="font-medium text-foreground">net burn</span>, then draws
-                  from stablecoins → fiat → volatile assets in that order.
+                  Burn is the sum of all category amounts per month. The engine
+                  subtracts inflows to get{" "}
+                  <span className="font-medium text-foreground">net burn</span>,
+                  then draws from stablecoins and fiat first; volatile assets are
+                  only sold once liquid reserves are depleted.
                 </p>
               </div>
               <Callout variant="tip" className="mt-6">
-                If your burn is mostly headcount, model it as a single &ldquo;Headcount&rdquo;
-                category. Scenarios can then add a synthetic{" "}
-                <code className="font-mono">headcountChange</code> override to simulate hires or cuts.
+                Headcount-heavy teams can keep a single Headcount category and
+                model hires or cuts via a scenario&apos;s{" "}
+                <code className="font-mono">headcountChange</code> override.
               </Callout>
             </section>
 
@@ -262,13 +271,14 @@ export default function DocumentationPage() {
                 id="inflows"
                 eyebrow="Inflows"
                 title="What comes in"
-                description="Revenue, grants, scheduled raises, vested token releases. Modeled as recurring monthly amounts or one-time injections."
+                description="Revenue, grants, scheduled raises, and token releases — modeled as monthly amounts or one-time events."
               />
               <div className="space-y-4 text-body text-muted-foreground">
                 <p>
-                  Inflows reduce net burn for the month they arrive in. A one-time grant of $500K
-                  in month 4 will appear as a single positive blip; a $50K/mo recurring revenue line
-                  flattens the curve across the entire horizon.
+                  Inflows reduce net burn for the month they land in. A one-time
+                  $500K grant in month 4 produces a single positive blip; a
+                  $50K/mo recurring revenue line flattens the curve across the
+                  horizon.
                 </p>
               </div>
             </section>
@@ -277,23 +287,20 @@ export default function DocumentationPage() {
               <SectionHeading
                 id="scenarios"
                 eyebrow="Scenarios"
-                title="Stress-test without rewriting your model"
-                description="A scenario is a layer of overrides on top of the base model. The base never changes — overlays just produce alternate projection lines on the chart."
+                title="Stress-test without rewriting the base"
+                description="A scenario is a layer of overrides on top of the base model. The base never changes — overlays produce alternate projection lines on the chart."
               />
               <div className="space-y-4 text-body text-muted-foreground">
-                <p>
-                  Use scenarios for the questions that keep you up at night:
-                </p>
+                <p>Built-in templates cover the common stress cases:</p>
                 <ul className="space-y-2 pl-1">
                   {[
-                    ["Bear -50%", "Halve all volatile asset prices."],
-                    ["Bull +100%", "Double them."],
-                    ["Hire 5 engineers", "Add $75k/mo to headcount."],
-                    ["Lose biggest customer", "Remove a recurring inflow line."],
-                    ["Raise $2M seed", "Add a one-time inflow in month 3."],
+                    ["Bear Market", "Native -50%, ETH -30%, revenue -30%, native haircut +10."],
+                    ["Aggressive Hiring", "Add headcount and the corresponding monthly burn."],
+                    ["Emergency Cuts", "Trim non-essential burn categories."],
+                    ["Token Crash", "Shock the native token price downward."],
                   ].map(([name, what]) => (
                     <li key={name} className="flex gap-3">
-                      <span className="font-mono text-caption font-semibold text-foreground min-w-[140px]">
+                      <span className="font-mono text-caption font-semibold text-foreground min-w-[160px]">
                         {name}
                       </span>
                       <span>{what}</span>
@@ -302,9 +309,9 @@ export default function DocumentationPage() {
                 </ul>
               </div>
               <Callout variant="info" className="mt-6">
-                Scenarios reference base-model IDs. If you delete a category that a scenario
-                overrides, that override is silently skipped — your scenario won&apos;t break, it
-                just won&apos;t apply that one rule.
+                Scenarios reference base-model IDs. If you delete a category that
+                a scenario overrides, that override is silently skipped — the
+                scenario keeps applying its other rules.
               </Callout>
             </section>
 
@@ -312,96 +319,109 @@ export default function DocumentationPage() {
               <SectionHeading
                 id="projections"
                 eyebrow="Projections"
-                title="How to read the chart"
-                description="The dashboard&apos;s main chart shows two runway lines and an optional composition stack underneath."
+                title="Reading the chart"
+                description="Two runway lines and an optional composition stack."
               />
               <div className="rounded-panel border border-knob-silver dark:border-knob-silver-dark bg-card p-5 space-y-0">
-                <FieldRow name="Hard Runway" type="solid line">
-                  Stablecoin + fiat balance over time. The first month this hits zero is your hard
-                  runway depletion date.
+                <FieldRow name="Hard runway" type="solid line">
+                  Stablecoin + fiat balance over time. The first month it hits
+                  zero is your hard-runway depletion date.
                 </FieldRow>
-                <FieldRow name="Extended Runway" type="dashed line">
-                  Hard balance + proceeds from liquidating volatile assets at their haircut. Always
-                  ≥ hard runway.
+                <FieldRow name="Extended runway" type="dashed line">
+                  Hard balance plus proceeds from liquidating volatile assets at
+                  their haircut. Always ≥ hard runway.
                 </FieldRow>
                 <FieldRow name="Composition" type="stacked area">
-                  Toggle on to see the stables / fiat / volatile breakdown each month. Useful for
-                  spotting when liquidations kick in.
+                  Toggle on to see the stables / fiat / volatile breakdown each
+                  month. Useful for spotting when liquidations begin.
                 </FieldRow>
                 <FieldRow name="Liquidity-constrained" type="badge">
-                  A red badge appears on months where you wanted to sell more volatile assets than
-                  the daily-volume cap allowed. Surfaces as{" "}
-                  <code className="font-mono">unmetDeficit</code> in the data.
+                  A red badge marks months where the engine wanted to sell more
+                  volatile assets than the liquidity cap allowed. The shortfall
+                  carries forward as{" "}
+                  <code className="font-mono">unmetDeficit</code>.
                 </FieldRow>
               </div>
-              <Callout variant="success" className="mt-6" title="Reading runway color">
-                Green &gt; 12 months. Gold 6–12 months. Red &lt; 6 months. The summary cards at the
-                top of the dashboard mirror these thresholds.
+              <Callout variant="success" className="mt-6" title="Status thresholds">
+                Healthy &gt; 12 months. Warning 6–12 months. Critical &lt; 6
+                months. The summary cards at the top of the dashboard use the
+                same thresholds.
               </Callout>
             </section>
 
             <section>
               <SectionHeading
                 id="sharing"
-                eyebrow="Share & Export"
-                title="Move models between humans (and agents)"
-                description="No accounts, no cloud — every model serializes to a URL or a JSON file."
+                eyebrow="Share & export"
+                title="Move models between people and agents"
+                description="No accounts and no cloud — every model serializes to a URL or a JSON file."
               />
               <div className="space-y-4 text-body text-muted-foreground">
                 <p>
-                  Click <span className="font-medium text-foreground">Share</span> to copy a URL
-                  with your model encoded in the hash. Anyone who opens it loads the same model
-                  locally — nothing is uploaded. Click{" "}
-                  <span className="font-medium text-foreground">Export</span> for a JSON file you
-                  can email or commit to a repo.
+                  Click <span className="font-medium text-foreground">Share</span>{" "}
+                  to copy a URL with the model encoded in the hash. Anyone who
+                  opens it loads the same model locally; nothing is uploaded.
+                  Click <span className="font-medium text-foreground">Export</span>{" "}
+                  for a JSON file you can email or commit to a repo.
                 </p>
                 <p>The URL format looks like:</p>
               </div>
               <div className="mt-3">
-                <CodeBlock>https://roughrunway.app/dashboard#model=N4IgZg9hIFwgxgUwM4...</CodeBlock>
+                <CodeBlock>https://roughrunway.com/dashboard#model=N4IgZg9hIFwgxgUwM4...</CodeBlock>
               </div>
-              <Callout variant="warning" className="mt-6" title="Long URLs are fine">
-                Compressed model hashes routinely exceed 2KB. Email clients and Slack handle this
-                without issue, but some chat systems truncate at ~4KB — use Export → JSON if you
-                hit a wall.
+              <Callout variant="warning" className="mt-6" title="Long URLs are expected">
+                Compressed model hashes routinely exceed 2KB. Email and most
+                chat clients handle this without issue. If a tool truncates the
+                link, use Export → JSON instead.
               </Callout>
             </section>
 
             <section>
               <SectionHeading
                 id="ai"
-                eyebrow="AI Assistant"
-                title="Drafting models with Perplexity Sonar"
-                description="The assistant only writes inputs — it never runs the projection. The math stays deterministic."
+                eyebrow="AI assistant"
+                title="Drafting and editing with Perplexity Sonar"
+                description="The assistant only writes inputs. The projection itself stays deterministic."
               />
               <div className="space-y-4 text-body text-muted-foreground">
-                <p>
-                  Two AI surfaces exist:
-                </p>
+                <p>Three AI surfaces are available:</p>
                 <ul className="space-y-2 pl-1">
                   <li className="flex gap-3">
                     <span className="font-mono text-caption font-semibold text-foreground min-w-[140px]">
-                      AI Setup
+                      Setup wizard
                     </span>
                     <span>
-                      Paste a sentence (&ldquo;5-person Solana DeFi protocol with $2M USDC and 100
-                      ETH&rdquo;) and the assistant drafts a full model.
+                      At <code className="font-mono">/setup</code>, paste a
+                      description of your org and the assistant drafts a full
+                      model.
                     </span>
                   </li>
                   <li className="flex gap-3">
                     <span className="font-mono text-caption font-semibold text-foreground min-w-[140px]">
-                      AI Scenario
+                      Edit in words
                     </span>
                     <span>
-                      Describe a market condition (&ldquo;ETH crashes 60% and we lose our biggest
-                      customer&rdquo;) and it generates the override layer.
+                      Inside Treasury, Burn, and Inflows, describe a change in
+                      plain English — the assistant returns a diff you can
+                      review and apply.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="font-mono text-caption font-semibold text-foreground min-w-[140px]">
+                      Scenario builder
+                    </span>
+                    <span>
+                      Describe a market condition and the assistant generates
+                      the override layer for a new scenario.
                     </span>
                   </li>
                 </ul>
               </div>
               <Callout variant="info" className="mt-6">
-                The AI is optional. If <code className="font-mono">PERPLEXITY_API_KEY</code> isn&apos;t
-                configured, those buttons return a friendly 503 and everything else still works.
+                AI is optional. If{" "}
+                <code className="font-mono">PERPLEXITY_API_KEY</code> is not
+                configured, AI surfaces return a 503 and everything else
+                continues to work.
               </Callout>
             </section>
 
@@ -409,14 +429,14 @@ export default function DocumentationPage() {
             <section className="rounded-panel border border-knob-silver dark:border-knob-silver-dark bg-card p-8 sm:p-10 text-center">
               <p className="text-placard uppercase tracking-[0.2em] text-swiss-red dark:text-aviation-red-dark mb-3">
                 <span className="inline-block h-2 w-2 mr-2 align-middle bg-swiss-red dark:bg-aviation-red-dark rounded-sm" />
-                Cleared for takeoff
+                Ready to model
               </p>
               <h2 className="text-h1 font-bold tracking-tight text-foreground">
-                Your runway is one paste away.
+                Build a model in under a minute.
               </h2>
               <p className="text-body-lg text-muted-foreground mt-3 max-w-xl mx-auto">
-                Open the dashboard, paste a description of your org into AI Setup, and you&apos;ll
-                have a model in under a minute.
+                Open the dashboard or describe your org in the setup wizard to
+                get a runway projection you can share with one link.
               </p>
               <div className="mt-6 flex flex-wrap gap-3 justify-center">
                 <Button asChild size="lg" className="gap-2">

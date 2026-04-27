@@ -263,7 +263,6 @@ export default function ProjectionChart({ compact = false, onToggleCompact }: Pr
       {/* Header */}
       <div className={cn("flex items-start justify-between gap-4", compact ? "mb-2" : "mb-4")}>
         <div className="flex-1 min-w-0">
-          <div className="text-placard uppercase text-muted-foreground">Instrument</div>
           <h2 className="text-h3 text-foreground">Runway Projection</h2>
           {showAreas && !compact && (
             <CompositionLegend

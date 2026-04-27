@@ -3,19 +3,18 @@ import type { RoughRunwayModel } from "@/lib/types";
 
 // Showcase model used by the landing-page demo flow.
 //
-// Profile: 15-person mid-stage Web3 protocol that just closed a $7M raise
-// (Series A or treasury sale). Tuned so every scenario template has
-// something material to act on:
+// Profile: TAQ Labs — 15-person mid-stage Web3 protocol that just closed a
+// $7M raise. Tuned so every scenario template has something material to act on:
 //   - Stable+fiat treasury that produces a meaningful "hard runway" number
-//   - ETH (major, low haircut) and a deep native-token bag (high haircut,
+//   - ETH (major, low haircut) and a leaner native-token bag (high haircut,
 //     sell-rate constrained) so the extended-runway story is visible
 //   - All eight preset burn categories represented, sized realistically
 //   - Inflows on both sides of the volatility curve (staking + revenue)
 //
 // Hard treasury = $5.0M, monthly net burn ≈ $416K → ~12mo hard runway.
-// ETH (~$196K/mo) + TAQ (~$238K/mo at 3.5M tokens × $0.08 × 0.85) liquidation
-// covers the post-month-12 gap with room to spare, so extended runway pushes
-// well past the 18-month horizon — the chart shows the full lift.
+// ETH (~$196K/mo for 6mo) + TAQ (~$425K/mo at 2.5M tokens × $0.20 × 0.85)
+// liquidation extends total runway out to ~36 months — the chart shows the
+// full lift across the 18-month horizon and beyond.
 //
 // The native token is "The Accountant Quits" (TAQ) — a wink at the kind of
 // crisis that sends a CFO running for this tool in the first place.
@@ -25,7 +24,7 @@ export function buildDemoModel(): RoughRunwayModel {
 
   return {
     id: uuidv4(),
-    name: "Demo: Mid-stage Web3 Protocol",
+    name: "TAQ Labs",
     createdAt: now,
     updatedAt: now,
     projectionMonths: 18,
@@ -60,13 +59,13 @@ export function buildDemoModel(): RoughRunwayModel {
           name: "The Accountant Quits",
           ticker: "TAQ",
           tier: "native",
-          quantity: 100_000_000,
-          currentPrice: 0.08,
+          quantity: 50_000_000,
+          currentPrice: 0.20,
           priceSource: "manual",
           liquidationPriority: 50,
           liquidity: {
             maxSellUnit: "tokens",
-            maxSellPerMonth: 3_500_000,
+            maxSellPerMonth: 2_500_000,
             haircutPercent: 15,
             priceAssumption: "constant",
           },

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useProjection } from "@/lib/hooks/useProjection";
+import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 const COLUMN_HEADERS = [
@@ -18,6 +19,11 @@ const COLUMN_HEADERS = [
 export default function MonthlyBreakdownTable() {
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
   const { projections } = useProjection();
+  const volatileAssets = useRoughRunwayStore((s) => s.model.treasury.volatileAssets);
+
+  const tickerById = new Map(
+    volatileAssets.map((a) => [a.id, (a.ticker || a.name || a.id).toUpperCase()])
+  );
 
   const data = projections.map((projection) => ({
     month: projection.label,
@@ -29,14 +35,14 @@ export default function MonthlyBreakdownTable() {
     netBurn: projection.netBurn,
     assets: [
       {
-        name: "Stablecoins",
+        name: "Cash & equivalents",
         value: projection.stablecoinBalance,
         type: "stablecoin" as const,
         quantity: projection.stablecoinBalance,
         price: 1,
       },
       ...projection.volatileAssets.map((asset) => ({
-        name: asset.assetId,
+        name: tickerById.get(asset.assetId) ?? asset.assetId,
         value: asset.valueAtHaircut,
         type: "volatile" as const,
         quantity: asset.quantity,
