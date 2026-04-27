@@ -2,7 +2,7 @@
 
 Treasury runway forecasting for crypto organizations. Two runway numbers, AI-assisted setup, and scenario stress-testing — no login, no backend, no spreadsheet.
 
-**[roughrunway.com](https://roughrunway.com)** &nbsp;·&nbsp; Built for the [Accountant Quits Web3 Hackathon](https://lu.ma/accountantquits), April 2026
+**[roughrunway.com](https://roughrunway.com)** &nbsp;·&nbsp; Built for [The Accountant Quits Hackathon](https://www.theaccountantquits.com/), April 2026
 
 ---
 
