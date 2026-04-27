@@ -37,6 +37,39 @@ function formatPrice(price: number): string {
 }
 
 const REFRESH_MS = 10 * 60 * 1000; // 10 minutes
+const CACHE_KEY = "roughrunway:market-banner:v1";
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours — show last good data this long if refreshes fail
+
+// Final fallback headlines — used only when we have no API data AND no cache.
+// Linking to outlets' homepages keeps the banner alive without ever 404ing.
+const FALLBACK_HEADLINES: Headline[] = [
+  { title: "Latest crypto news", url: "https://www.coindesk.com/", source: "CoinDesk", publishedAt: "" },
+  { title: "Markets and policy", url: "https://www.theblock.co/", source: "The Block", publishedAt: "" },
+  { title: "Today in web3", url: "https://decrypt.co/news", source: "Decrypt", publishedAt: "" },
+];
+
+function loadCache(): BannerData | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, savedAt } = JSON.parse(raw) as { data: BannerData; savedAt: number };
+    if (!data || typeof savedAt !== "number") return null;
+    if (Date.now() - savedAt > CACHE_TTL_MS) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function saveCache(data: BannerData): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(CACHE_KEY, JSON.stringify({ data, savedAt: Date.now() }));
+  } catch {
+    // quota / private mode — ignore
+  }
+}
 
 // ─── sub-components ───────────────────────────────────────────────────────────
 
@@ -95,8 +128,9 @@ function Separator() {
 
 export default function MarketBanner() {
   const { model } = useRoughRunwayStore();
+  // Initial state must match the server render (null) to avoid a hydration
+  // mismatch — we read the localStorage cache in the mount effect below.
   const [data, setData] = useState<BannerData | null>(null);
-  const [loading, setLoading] = useState(true);
 
   // Always show BTC, ETH, SOL; append user-held tickers, deduped (uppercase),
   // capped at 6. The defaults guarantee enough scrolling content that the
@@ -129,32 +163,42 @@ export default function MarketBanner() {
         seenTickers.add(t);
         cleanPrices.push({ ...p, ticker: t });
       }
-      setData({ ...json, prices: cleanPrices });
+      const next: BannerData = { ...json, prices: cleanPrices };
+      // Only overwrite cache if we actually got something useful — protects
+      // a good cached payload from being clobbered by an empty response.
+      if (next.prices.length > 0 || (next.headlines?.length ?? 0) > 0) {
+        setData(next);
+        saveCache(next);
+      }
     } catch {
-      // network error — keep last data
-    } finally {
-      setLoading(false);
+      // network error — keep last data (state stays as cached/previous)
     }
   };
 
   useEffect(() => {
+    const cached = loadCache();
+    if (cached) setData(cached);
     fetchData();
     const interval = setInterval(fetchData, REFRESH_MS);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading || !data) return null;
-  if (!data.prices?.length && !data.headlines?.length) return null;
+  // Render-time fallbacks. Headlines fall back to a hardcoded set so the
+  // marquee is never empty; prices fall back to nothing (better silent than
+  // wrong). Banner shell renders even with no data so it's visually persistent.
+  const prices = data?.prices ?? [];
+  const headlines =
+    data?.headlines && data.headlines.length > 0 ? data.headlines : FALLBACK_HEADLINES;
 
   // Build a single flat array of ticker items, alternating prices and headlines
   // with separators so the scroll reads like a real news crawl.
   const items: React.ReactNode[] = [];
-  data.prices.forEach((p, i) => {
+  prices.forEach((p, i) => {
     items.push(<PriceTicker key={`p-${p.ticker}-${i}`} entry={p} />);
     items.push(<Separator key={`ps-${i}`} />);
   });
-  data.headlines.forEach((h, i) => {
+  headlines.forEach((h, i) => {
     items.push(<HeadlineItem key={`h-${i}`} headline={h} />);
     items.push(<Separator key={`hs-${i}`} />);
   });

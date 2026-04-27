@@ -146,6 +146,24 @@ Return the data as JSON matching the provided schema.`;
           .filter((h): h is NonNullable<typeof h> => h !== null && h.title.length > 0)
       : [];
 
+    // Last-ditch: if the model returned no headlines but we have citation URLs,
+    // build minimal headlines from them so the banner still has news content.
+    if (headlines.length === 0 && citations.length > 0) {
+      for (const url of citations.slice(0, 3)) {
+        try {
+          const host = new URL(url).hostname.replace(/^www\./, "");
+          headlines.push({
+            title: `Latest from ${host}`,
+            url,
+            source: host,
+            publishedAt: "",
+          });
+        } catch {
+          // skip malformed URLs
+        }
+      }
+    }
+
     if (headlines.length === 0) {
       console.warn("[market-banner] no usable headlines returned by Perplexity");
     }

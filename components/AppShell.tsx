@@ -32,62 +32,67 @@ export default function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-background">
-      {/* Sidebar */}
-      <div
-        className={`bg-white dark:bg-panel-dark border-r border-gray-200 dark:border-border transition-all duration-300 ease-in-out ${
-          isSidebarCollapsed ? "w-16" : "w-56"
-        }`}
-      >
-        <Sidebar
-          activePanel={activePanel}
-          setActivePanel={setActivePanel}
-          isCollapsed={isSidebarCollapsed}
-          setIsCollapsed={setIsSidebarCollapsed}
-        />
-      </div>
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-background">
+      {/* Top-pinned market banner — spans full width above the sidebar so it
+          stays put when the sidebar collapses/expands. */}
+      <MarketBanner />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <MarketBanner />
-        <DemoCoachmark
-          activePanel={activePanel}
-          onGoToScenarios={() => setActivePanel("scenarios")}
-        />
-        <Header />
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <div
+          className={`bg-white dark:bg-panel-dark border-r border-gray-200 dark:border-border transition-all duration-300 ease-in-out ${
+            isSidebarCollapsed ? "w-16" : "w-56"
+          }`}
+        >
+          <Sidebar
+            activePanel={activePanel}
+            setActivePanel={setActivePanel}
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+          />
+        </div>
 
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto space-y-8">
-            {/* Runway top deck — always visible across every panel */}
-            <section aria-label="Runway overview" className="space-y-4">
-              <RunwaySummaryCards />
-              <ProjectionChart
-                compact={isChartCompact}
-                onToggleCompact={() => setIsChartCompact((v) => !v)}
-              />
-            </section>
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <DemoCoachmark
+            activePanel={activePanel}
+            onGoToScenarios={() => setActivePanel("scenarios")}
+          />
+          <Header />
 
-            {/* Active editor panel (AI-first, manual below) */}
-            <section aria-label="Editor">
-              {activePanel === "treasury" && <TreasuryPanel />}
-              {activePanel === "burn" && <BurnPanel />}
-              {activePanel === "inflow" && <InflowPanel />}
-              {activePanel === "scenarios" && <ScenarioPanel />}
-            </section>
+          <main className="flex-1 overflow-y-auto p-6">
+            <div className="max-w-7xl mx-auto space-y-8">
+              {/* Runway top deck — always visible across every panel */}
+              <section aria-label="Runway overview" className="space-y-4">
+                <RunwaySummaryCards />
+                <ProjectionChart
+                  compact={isChartCompact}
+                  onToggleCompact={() => setIsChartCompact((v) => !v)}
+                />
+              </section>
 
-            {/* Breakdowns */}
-            <section aria-label="Breakdowns" className="space-y-8">
-              <ScenarioComparison />
-              <MonthlyBreakdownTable />
-            </section>
-          </div>
-        </main>
+              {/* Active editor panel (AI-first, manual below) */}
+              <section aria-label="Editor">
+                {activePanel === "treasury" && <TreasuryPanel />}
+                {activePanel === "burn" && <BurnPanel />}
+                {activePanel === "inflow" && <InflowPanel />}
+                {activePanel === "scenarios" && <ScenarioPanel />}
+              </section>
 
-        <footer className="border-t border-gray-200 dark:border-border bg-white dark:bg-panel-dark">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <FooterBrand />
-          </div>
-        </footer>
+              {/* Breakdowns */}
+              <section aria-label="Breakdowns" className="space-y-8">
+                <ScenarioComparison />
+                <MonthlyBreakdownTable />
+              </section>
+            </div>
+          </main>
+
+          <footer className="border-t border-gray-200 dark:border-border bg-white dark:bg-panel-dark">
+            <div className="max-w-7xl mx-auto px-6 py-4">
+              <FooterBrand />
+            </div>
+          </footer>
+        </div>
       </div>
     </div>
   );
