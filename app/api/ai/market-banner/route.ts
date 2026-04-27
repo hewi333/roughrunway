@@ -55,7 +55,13 @@ export async function GET(req: NextRequest) {
     safe.push(clean);
   }
 
-  const prompt = `Return CURRENT live cryptocurrency spot prices and the latest crypto news headlines.
+  const today = new Date();
+  const todayIso = today.toISOString().slice(0, 10); // YYYY-MM-DD
+  const yesterdayIso = new Date(today.getTime() - 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  const prompt = `Today's date is ${todayIso}. Return CURRENT live cryptocurrency spot prices and the latest crypto news headlines published TODAY (${todayIso}) or YESTERDAY (${yesterdayIso}).
 
 PRICES NEEDED (uppercase tickers): ${safe.join(", ")}
 For each listed ticker symbol:
@@ -64,13 +70,14 @@ For each listed ticker symbol:
   - Do NOT return 0 or a placeholder. If you cannot find a reliable up-to-date price for a ticker, OMIT it entirely from the prices array — do not guess and do not fabricate.
   - Never return prices below $0.000001. For majors like BTC and ETH, sanity-check that the price is in the expected order of magnitude.
 
-HEADLINES (REQUIRED — do not return an empty array):
-  - Return exactly 3 crypto-related news headlines published within the last 48 hours.
+HEADLINES:
+  - Return up to 3 crypto-related news headlines published on ${todayIso} or ${yesterdayIso}. Articles older than ${yesterdayIso} are NOT acceptable — omit them.
   - Prefer major outlets: CoinDesk, The Block, Decrypt, CoinTelegraph, Bloomberg, Reuters.
   - Each headline MUST include the full article URL (https://...) that you actually retrieved — not a homepage, not a search query, not a placeholder. The URL must resolve to the specific article.
-  - "source" should be the publication name (e.g. "CoinDesk").
-  - "publishedAt" should be an ISO 8601 timestamp if known, otherwise an empty string.
-  - If reputable real-time news is sparse, include the most recent verifiable articles you can find — but the array must contain at least 3 items.
+  - "title" must be the actual article headline as published — do NOT invent or paraphrase.
+  - "source" must be the publication name (e.g. "CoinDesk").
+  - "publishedAt" MUST be an ISO 8601 timestamp (e.g. "${todayIso}T14:30:00Z") for the article's actual publish time. If you don't know the exact time, omit the headline rather than guess.
+  - If you can't find any qualifying article, return an empty headlines array. An empty array is better than stale or fabricated content.
 
 Return the data as JSON matching the provided schema.`;
 
@@ -145,24 +152,6 @@ Return the data as JSON matching the provided schema.`;
           })
           .filter((h): h is NonNullable<typeof h> => h !== null && h.title.length > 0)
       : [];
-
-    // Last-ditch: if the model returned no headlines but we have citation URLs,
-    // build minimal headlines from them so the banner still has news content.
-    if (headlines.length === 0 && citations.length > 0) {
-      for (const url of citations.slice(0, 3)) {
-        try {
-          const host = new URL(url).hostname.replace(/^www\./, "");
-          headlines.push({
-            title: `Latest from ${host}`,
-            url,
-            source: host,
-            publishedAt: "",
-          });
-        } catch {
-          // skip malformed URLs
-        }
-      }
-    }
 
     if (headlines.length === 0) {
       console.warn("[market-banner] no usable headlines returned by Perplexity");

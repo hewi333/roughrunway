@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
+import PerplexityLogo from "@/components/ai/PerplexityLogo";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -38,15 +39,24 @@ function formatPrice(price: number): string {
 
 const REFRESH_MS = 10 * 60 * 1000; // 10 minutes
 const CACHE_KEY = "roughrunway:market-banner:v1";
-const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours — show last good data this long if refreshes fail
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour — short enough that headlines stay current
 
-// Final fallback headlines — used only when we have no API data AND no cache.
-// Linking to outlets' homepages keeps the banner alive without ever 404ing.
-const FALLBACK_HEADLINES: Headline[] = [
-  { title: "Latest crypto news", url: "https://www.coindesk.com/", source: "CoinDesk", publishedAt: "" },
-  { title: "Markets and policy", url: "https://www.theblock.co/", source: "The Block", publishedAt: "" },
-  { title: "Today in web3", url: "https://decrypt.co/news", source: "Decrypt", publishedAt: "" },
-];
+// Format an ISO 8601 publishedAt as a friendly relative label like "2h ago" or
+// "Apr 27" so users can see at a glance whether headlines are actually fresh.
+function formatRelative(iso: string): string {
+  if (!iso) return "";
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return "";
+  const diffMs = Date.now() - t;
+  if (diffMs < 0) return "now";
+  const mins = Math.round(diffMs / 60_000);
+  if (mins < 60) return `${Math.max(1, mins)}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
 
 function loadCache(): BannerData | null {
   if (typeof window === "undefined") return null;
@@ -100,6 +110,7 @@ function PriceTicker({ entry }: { entry: PriceEntry }) {
 }
 
 function HeadlineItem({ headline }: { headline: Headline }) {
+  const when = formatRelative(headline.publishedAt);
   return (
     <a
       href={headline.url}
@@ -110,6 +121,11 @@ function HeadlineItem({ headline }: { headline: Headline }) {
     >
       <span className="text-sm">{headline.title}</span>
       <span className="text-sm opacity-60">— {headline.source}</span>
+      {when && (
+        <span className="text-xs opacity-60 font-mono" aria-label={`published ${when}`}>
+          · {when}
+        </span>
+      )}
       <ExternalLink className="h-3 w-3 opacity-60" aria-hidden="true" />
     </a>
   );
@@ -184,12 +200,10 @@ export default function MarketBanner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Render-time fallbacks. Headlines fall back to a hardcoded set so the
-  // marquee is never empty; prices fall back to nothing (better silent than
-  // wrong). Banner shell renders even with no data so it's visually persistent.
+  // No fake fallbacks — if headlines aren't real, show nothing in their slot.
+  // Prices alone are still useful and keep the banner alive.
   const prices = data?.prices ?? [];
-  const headlines =
-    data?.headlines && data.headlines.length > 0 ? data.headlines : FALLBACK_HEADLINES;
+  const headlines = data?.headlines ?? [];
 
   // Build a single flat array of ticker items, alternating prices and headlines
   // with separators so the scroll reads like a real news crawl.
@@ -227,20 +241,17 @@ export default function MarketBanner() {
         </div>
       </div>
 
-      {/* Pinned badge — gradient fades into bg-card so it reads cleanly in light or dark mode */}
+      {/* Pinned "Market updates by Perplexity" badge — gradient fades into
+          bg-card so it reads cleanly in light or dark mode. */}
       <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-card via-card to-transparent">
-        <a
-          href="https://www.theaccountantquits.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <span
-            className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shrink-0"
-            aria-hidden="true"
-          />
-          Built for The Accountant Quits Hackathon
-        </a>
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-perplexity-teal animate-pulse shrink-0"
+          aria-hidden="true"
+        />
+        <PerplexityLogo className="h-3.5 w-3.5" />
+        <span className="text-xs font-semibold uppercase tracking-wide text-perplexity-teal">
+          Market updates by Perplexity
+        </span>
       </div>
     </div>
   );
