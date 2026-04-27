@@ -121,7 +121,10 @@ export default function RunwaySummaryCards() {
       data-action="runway-summary"
     >
       {/* Hard Runway */}
-      <div className="flex flex-col gap-2 px-5 py-4">
+      <div
+        className="flex flex-col gap-2 px-5 py-4 motion-safe:animate-fade-in-up"
+        style={{ animationDelay: "0ms" }}
+      >
         <div className="flex items-center justify-between gap-2">
           <CardPlacard>Hard Runway</CardPlacard>
           <StatusBadge months={hardRunway} />
@@ -144,7 +147,10 @@ export default function RunwaySummaryCards() {
       </div>
 
       {/* Extended Runway */}
-      <div className="flex flex-col gap-2 px-5 py-4">
+      <div
+        className="flex flex-col gap-2 px-5 py-4 motion-safe:animate-fade-in-up"
+        style={{ animationDelay: "80ms" }}
+      >
         <div className="flex items-center justify-between gap-2">
           <CardPlacard>Extended Runway</CardPlacard>
           <StatusBadge months={extendedRunway} />
@@ -167,7 +173,10 @@ export default function RunwaySummaryCards() {
       </div>
 
       {/* Funding Gap */}
-      <div className="flex flex-col gap-2 px-5 py-4">
+      <div
+        className="flex flex-col gap-2 px-5 py-4 motion-safe:animate-fade-in-up"
+        style={{ animationDelay: "160ms" }}
+      >
         <div className="flex items-center justify-between gap-2">
           <CardPlacard>Funding Gap</CardPlacard>
           <div className="flex items-center gap-1.5">
