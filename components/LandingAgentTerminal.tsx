@@ -10,7 +10,7 @@ const COPY_PROMPT = `Please build a crypto treasury runway model on RoughRunway 
 3. Return the shareable roughrunway.com/dashboard#model=... link
 
 Treasury (mid-stage Web3 protocol, 15-person team, just closed a $7M raise):
-- $3.5M USDC and $500K USDT in stablecoins
+- $3M USDC and $500K USDT in stablecoins
 - $1M USD in fiat operating accounts
 - 300 ETH (major volatile — leave price blank, Perplexity fills it in)
 - 10M TAQ native tokens at $0.10 each (sell-rate constrained, 15% haircut)
@@ -66,7 +66,7 @@ export function LandingAgentTerminal() {
         <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/85 font-mono leading-relaxed line-clamp-4">
           Build a runway model on{" "}
           <span className="text-swiss-red">roughrunway.com</span> for our
-          15-person Web3 protocol post-$7M raise: $3.5M USDC + $500K USDT,
+          15-person Web3 protocol post-$7M raise: $3M USDC + $500K USDT,
           $1M USD fiat, 300 ETH (Perplexity fills the price), 10M TAQ
           native tokens at $0.10 (15% haircut), $450K/mo burn across all eight categories
           (headcount $300K, infra $30K, legal $15K, marketing $35K, token
@@ -87,7 +87,7 @@ export function LandingAgentTerminal() {
         <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/70 font-mono leading-relaxed break-all">
           roughrunway.com/api/agent/encode
           <span className="text-swiss-red">
-            ?name=TAQ+Labs&stable=USDC:3500000,USDT:500000&fiat=USD:1000000&volatile=ETH:300:0:major,TAQ:10000000:0.10:native&burn=450000&team=15&months=18
+            ?name=TAQ+Labs&stable=USDC:3000000,USDT:500000&fiat=USD:1000000&volatile=ETH:300:0:major,TAQ:10000000:0.10:native&burn=450000&team=15&months=18
           </span>
         </p>
       </div>

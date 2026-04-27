@@ -11,11 +11,13 @@ import type { RoughRunwayModel } from "@/lib/types";
 //   - All eight preset burn categories represented, sized realistically
 //   - Inflows on both sides of the volatility curve (staking + revenue)
 //
-// Hard treasury = $5.0M, monthly net burn ≈ $416K → ~12mo hard runway.
-// ETH (~$1.18M at haircut) + TAQ (~$0.85M at haircut) keeps the baseline
-// extended runway inside the 18-month projection horizon (~17mo), so each
-// scenario template — bear market, hiring, cuts, token crash — visibly
-// shifts the runway line up or down on the chart.
+// Hard treasury = $4.5M, monthly net burn ≈ $416K → 11mo hard runway —
+// just inside the "warning" band so any stress scenario flips the top
+// summary cards from gold to red. ETH (~$1.18M at haircut) + TAQ (~$0.85M
+// at haircut) keeps the baseline extended runway inside the 18-month
+// projection horizon (~16mo), giving every scenario template — bear
+// market, hiring, cuts, token crash — room to visibly shift the runway
+// line up or down on the chart.
 //
 // The native token is "The Accountant Quits" (TAQ) — a wink at the kind of
 // crisis that sends a CFO running for this tool in the first place.
@@ -34,7 +36,7 @@ export function buildDemoModel(): RoughRunwayModel {
     extendedRunwayEnabled: true,
     treasury: {
       stablecoins: [
-        { id: uuidv4(), name: "USDC", amount: 3_500_000 },
+        { id: uuidv4(), name: "USDC", amount: 3_000_000 },
         { id: uuidv4(), name: "USDT", amount: 500_000 },
       ],
       fiat: [{ id: uuidv4(), currency: "USD", amount: 1_000_000 }],

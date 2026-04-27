@@ -27,10 +27,10 @@ describe("demo model — landing-page showcase", () => {
     );
   });
 
-  it("has $5.0M of hard treasury (stables + fiat)", () => {
+  it("has $4.5M of hard treasury (stables + fiat)", () => {
     const stables = model.treasury.stablecoins.reduce((a, s) => a + s.amount, 0);
     const fiat = model.treasury.fiat.reduce((a, f) => a + f.amount, 0);
-    expect(stables).toBe(4_000_000);
+    expect(stables).toBe(3_500_000);
     expect(fiat).toBe(1_000_000);
   });
 
@@ -42,12 +42,12 @@ describe("demo model — landing-page showcase", () => {
     expect(native?.ticker).toBe("TAQ");
   });
 
-  it("baseline hard runway sits around 12 months (shorter than horizon)", () => {
+  it("baseline hard runway lands at 11 months — inside the warning band", () => {
     const { summary, projections } = computeProjection(model);
     expect(projections).toHaveLength(18);
-    // Hard runway: $5M / ~$416K net burn ≈ 12 months
-    expect(summary.hardRunwayMonths).toBeGreaterThanOrEqual(11);
-    expect(summary.hardRunwayMonths).toBeLessThanOrEqual(13);
+    // Hard runway: $4.5M / ~$416K net burn ≈ 11 months. Tight enough that
+    // any stress scenario tips the top summary card from warning into critical.
+    expect(summary.hardRunwayMonths).toBe(11);
   });
 
   it("baseline extended runway sits inside the 18-month horizon so scenarios visibly move it", () => {

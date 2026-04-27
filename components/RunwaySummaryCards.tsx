@@ -7,7 +7,20 @@ import { NumberTicker } from "@/components/ui/number-ticker";
 import { Sparkline } from "@/components/ui/sparkline";
 import { useProjection } from "@/lib/hooks/useProjection";
 import { useRoughRunwayStore } from "@/lib/store";
+import { computeScenarioProjection } from "@/lib/projection-engine";
+import type {
+  MonthlyProjection,
+  RunwaySummary,
+  Scenario,
+} from "@/lib/types";
 import { cn } from "@/lib/utils";
+
+// Treat null (runway exceeds horizon) as "infinite" so lowest-runway picking
+// works correctly: a scenario where runway depletes mid-horizon is "worse"
+// than a scenario where it never depletes.
+function runwayKey(months: number | null): number {
+  return months === null ? Number.POSITIVE_INFINITY : months;
+}
 
 function formatCompactDollars(value: number): string {
   if (!value) return "$0";
@@ -80,40 +93,103 @@ function RunwayGauge({ months, max }: { months: number | null; max: number }) {
 }
 
 export default function RunwaySummaryCards() {
-  const { summary, projections } = useProjection();
+  const { summary: baselineSummary, projections: baselineProjections } =
+    useProjection();
   const { model } = useRoughRunwayStore();
 
-  const hardRunway = summary.hardRunwayMonths;
-  const extendedRunway = summary.extendedRunwayMonths;
-  const fundingGap = summary.fundingGapUSD;
-  const constrainedMonths = summary.liquidityConstrainedMonths;
-  const avgBurn = summary.averageMonthlyNetBurn;
-  const totalUSD = summary.currentTotalUSD;
-  const atHaircut = summary.currentTotalAtHaircut;
+  // Pick the worst-case projection across baseline + active scenarios so the
+  // top cards (and their status colors) respond when a user toggles a
+  // scenario. With nothing active, this is just the baseline.
+  const activeScenarios = model.scenarios.filter((s: Scenario) => s.isActive);
+  const scenarioRuns = React.useMemo(
+    () =>
+      activeScenarios.map((scenario) => {
+        const { summary, projections } = computeScenarioProjection(
+          model,
+          scenario,
+        );
+        return { scenario, summary, projections };
+      }),
+    [model, activeScenarios],
+  );
+
+  const baselineRun = {
+    scenario: null as Scenario | null,
+    summary: baselineSummary,
+    projections: baselineProjections,
+  };
+
+  const candidates: {
+    scenario: Scenario | null;
+    summary: RunwaySummary;
+    projections: MonthlyProjection[];
+  }[] = [baselineRun, ...scenarioRuns];
+
+  // Worst-case selectors: lowest hard / extended runway and largest funding
+  // gap can come from different scenarios. Each card colors itself based on
+  // its own worst case so the user sees which dimension is most stressed.
+  const worstHard = candidates.reduce((acc, c) =>
+    runwayKey(c.summary.hardRunwayMonths) <
+    runwayKey(acc.summary.hardRunwayMonths)
+      ? c
+      : acc,
+  );
+  const worstExtended = candidates.reduce((acc, c) =>
+    runwayKey(c.summary.extendedRunwayMonths) <
+    runwayKey(acc.summary.extendedRunwayMonths)
+      ? c
+      : acc,
+  );
+  const worstGap = candidates.reduce((acc, c) =>
+    c.summary.fundingGapUSD > acc.summary.fundingGapUSD ? c : acc,
+  );
+
+  const hardRunway = worstHard.summary.hardRunwayMonths;
+  const extendedRunway = worstExtended.summary.extendedRunwayMonths;
+  const fundingGap = worstGap.summary.fundingGapUSD;
+  const constrainedMonths = worstGap.summary.liquidityConstrainedMonths;
+  const avgBurn = worstHard.summary.averageMonthlyNetBurn;
+  const totalUSD = baselineSummary.currentTotalUSD;
+  const atHaircut = baselineSummary.currentTotalAtHaircut;
   const projectionMax = model.projectionMonths;
   const hasGap = fundingGap > 0;
+  const hasActiveScenarios = activeScenarios.length > 0;
 
-  const hardSeries = React.useMemo(
-    () => [totalUSD, ...projections.map((p) => Math.max(p.hardBalance, 0))],
-    [projections, totalUSD]
-  );
-  const extendedSeries = React.useMemo(
-    () => [atHaircut || totalUSD, ...projections.map((p) => Math.max(p.extendedBalance, 0))],
-    [projections, atHaircut, totalUSD]
-  );
-  const gapSeries = React.useMemo(() => {
-    if (hasGap) {
-      return [0, ...projections.map((p) => p.cumulativeUnmetDeficit)];
-    }
-    return [totalUSD, ...projections.map((p) => Math.max(p.hardBalance, 0))];
-  }, [projections, hasGap, totalUSD]);
-
-  const gapHelper =
-    hasGap && constrainedMonths > 0
+  const hardCaption =
+    worstHard.scenario?.name ??
+    (hasActiveScenarios ? "Baseline (least stressed)" : "Stablecoins + fiat only");
+  const extendedCaption =
+    worstExtended.scenario?.name ??
+    (hasActiveScenarios ? "Baseline (least stressed)" : "Includes volatile assets");
+  const gapCaption = worstGap.scenario
+    ? `Under ${worstGap.scenario.name}`
+    : hasGap && constrainedMonths > 0
       ? `Liquidity-constrained ${constrainedMonths} ${constrainedMonths === 1 ? "mo" : "mos"}`
       : hasGap
         ? "Raise or cut to cover"
         : "No funding gap in horizon";
+
+  const hardProjections = worstHard.projections;
+  const extendedProjections = worstExtended.projections;
+  const gapProjections = worstGap.projections;
+
+  const hardSeries = React.useMemo(
+    () => [totalUSD, ...hardProjections.map((p) => Math.max(p.hardBalance, 0))],
+    [hardProjections, totalUSD],
+  );
+  const extendedSeries = React.useMemo(
+    () => [
+      atHaircut || totalUSD,
+      ...extendedProjections.map((p) => Math.max(p.extendedBalance, 0)),
+    ],
+    [extendedProjections, atHaircut, totalUSD],
+  );
+  const gapSeries = React.useMemo(() => {
+    if (hasGap) {
+      return [0, ...gapProjections.map((p) => p.cumulativeUnmetDeficit)];
+    }
+    return [totalUSD, ...gapProjections.map((p) => Math.max(p.hardBalance, 0))];
+  }, [gapProjections, hasGap, totalUSD]);
 
   return (
     <Card
@@ -137,7 +213,7 @@ export default function RunwaySummaryCards() {
         <Sparkline data={hardSeries} color={sparkColor(hardRunway)} />
         <RunwayGauge months={hardRunway} max={projectionMax} />
         <div className="flex items-baseline justify-between gap-2">
-          <span className="text-caption text-muted-foreground">Stablecoins + fiat only</span>
+          <span className="text-caption text-muted-foreground truncate">{hardCaption}</span>
           {avgBurn > 0 && (
             <span className="font-mono text-caption text-muted-foreground tabular-nums">
               {formatCompactDollars(avgBurn)}/mo burn
@@ -163,7 +239,7 @@ export default function RunwaySummaryCards() {
         <Sparkline data={extendedSeries} color={sparkColor(extendedRunway)} />
         <RunwayGauge months={extendedRunway} max={projectionMax} />
         <div className="flex items-baseline justify-between gap-2">
-          <span className="text-caption text-muted-foreground">Includes volatile assets</span>
+          <span className="text-caption text-muted-foreground truncate">{extendedCaption}</span>
           {atHaircut > 0 && (
             <span className="font-mono text-caption text-muted-foreground tabular-nums">
               {formatCompactDollars(atHaircut)} at haircut
@@ -215,7 +291,7 @@ export default function RunwaySummaryCards() {
         {/* spacer keeps vertical rhythm consistent with gauge cells */}
         <div className="h-1" />
         <div className="flex items-baseline justify-between gap-2">
-          <span className="text-caption text-muted-foreground">{gapHelper}</span>
+          <span className="text-caption text-muted-foreground truncate">{gapCaption}</span>
           {totalUSD > 0 && (
             <span className="font-mono text-caption text-muted-foreground tabular-nums">
               {formatCompactDollars(totalUSD)} treasury
