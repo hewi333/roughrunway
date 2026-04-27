@@ -2,36 +2,21 @@
 
 import React from "react";
 import { ExternalLink } from "lucide-react";
-import PerplexityLogo from "@/components/ai/PerplexityLogo";
 
 export default function FooterBrand() {
   return (
     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
-          <span className="text-placard uppercase text-muted-foreground">Built at</span>
+          <span className="text-placard uppercase text-muted-foreground">Built for</span>
           <a
-            href="https://accountantquits.com"
+            href="https://www.theaccountantquits.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center text-body font-medium text-foreground hover:text-primary hover:underline"
           >
-            Accountant Quits Web3 Hackathon
+            The Accountant Quits Hackathon
             <ExternalLink className="ml-1 h-3 w-3" />
-          </a>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-placard uppercase text-muted-foreground">Powered by</span>
-          <a
-            href="https://perplexity.ai"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-knob bg-knob-gold/20 px-3 py-1 text-caption font-medium text-ink hover:bg-knob-gold/30 dark:text-foreground"
-          >
-            <PerplexityLogo className="h-3.5 w-3.5" />
-            Perplexity
-            <ExternalLink className="h-3 w-3" />
           </a>
         </div>
       </div>

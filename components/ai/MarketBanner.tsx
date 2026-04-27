@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
-import PerplexityLogo from "@/components/ai/PerplexityLogo";
-import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -185,21 +183,20 @@ export default function MarketBanner() {
         </div>
       </div>
 
-      {/* Pinned "Perplexity Market Pulse" badge — gradient fades into bg-card so it
-          reads cleanly in light or dark mode without manually flipping colors. */}
+      {/* Pinned badge — gradient fades into bg-card so it reads cleanly in light or dark mode */}
       <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-card via-card to-transparent">
-        <span
-          className="h-1.5 w-1.5 rounded-full bg-perplexity-teal animate-pulse shrink-0"
-          aria-hidden="true"
-        />
-        <PerplexityLogo className="h-3.5 w-3.5" />
-        <AnimatedShinyText
-          className="text-xs font-semibold uppercase tracking-wide"
-          baseColor="#20B8CD"
-          shimmerColor="rgba(255,255,255,0.88)"
+        <a
+          href="https://www.theaccountantquits.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors"
         >
-          Perplexity Market Pulse
-        </AnimatedShinyText>
+          <span
+            className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shrink-0"
+            aria-hidden="true"
+          />
+          Built for The Accountant Quits Hackathon
+        </a>
       </div>
     </div>
   );

@@ -356,7 +356,7 @@ export default function DescribeEdit<TPatch = unknown>({
             ) : (
               <>
                 <Sparkles className="h-3.5 w-3.5" />
-                Apply with Perplexity
+                Powered by Perplexity
               </>
             )}
           </Button>
