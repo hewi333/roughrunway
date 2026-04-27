@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
     .toISOString()
     .slice(0, 10);
 
-  const prompt = `Today's date is ${todayIso}. Return CURRENT live cryptocurrency spot prices and recent crypto news headlines.
+  const prompt = `Today's date is ${todayIso}. Return CURRENT live cryptocurrency spot prices AND recent crypto news headlines. Both fields are required — never return an empty headlines array.
 
 PRICES NEEDED (uppercase tickers): ${safe.join(", ")}
 For each listed ticker symbol:
@@ -70,14 +70,15 @@ For each listed ticker symbol:
   - Do NOT return 0 or a placeholder. If you cannot find a reliable up-to-date price for a ticker, OMIT it entirely from the prices array — do not guess and do not fabricate.
   - Never return prices below $0.000001. For majors like BTC and ETH, sanity-check that the price is in the expected order of magnitude.
 
-HEADLINES:
-  - Return 3 crypto-related news headlines published in the last 7 days (since ${cutoffIso}). Pick the most recent and most relevant.
+HEADLINES (return exactly 3):
+  - Return 3 crypto-related news headlines, prioritising articles published since ${cutoffIso}. Pick the most recent and most relevant.
+  - If you can't find 3 articles from the last 7 days, broaden the window to the last 14 days rather than returning fewer than 3.
   - Prefer major outlets: CoinDesk, The Block, Decrypt, CoinTelegraph, Bloomberg, Reuters.
   - Each headline MUST include a full article URL (https://...). Prefer the canonical article URL; if you only have the source's homepage, return that — never return a search query or placeholder.
   - "title" must be the actual article headline — do NOT invent or paraphrase.
   - "source" must be the publication name (e.g. "CoinDesk").
-  - "publishedAt" should be an ISO 8601 date or datetime (e.g. "${todayIso}" or "${todayIso}T14:30:00Z"). An approximate date is acceptable; only omit the headline if you have no plausible publish date at all.
-  - Always return at least one headline if any qualifying article exists. Empty arrays are a last resort.
+  - "publishedAt" should be an ISO 8601 date or datetime (e.g. "${todayIso}" or "${todayIso}T14:30:00Z"). An approximate date is acceptable.
+  - Returning an empty headlines array is NOT acceptable. Always include 3 headlines.
 
 Return the data as JSON matching the provided schema.`;
 

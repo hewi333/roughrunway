@@ -148,11 +148,10 @@ export default function MarketBanner() {
   // mismatch — we read the localStorage cache in the mount effect below.
   const [data, setData] = useState<BannerData | null>(null);
 
-  // Always show a wide default set of majors; append user-held tickers,
-  // deduped (uppercase). A longer marquee track means the duplicate copy
-  // (rendered for seamless scroll) sits offscreen most of the time, so the
-  // banner reads as a continuous crawl rather than "BTC ETH SOL BTC ETH SOL".
-  const DEFAULT_TICKERS = ["BTC", "ETH", "SOL", "BNB", "XRP", "ARB"];
+  // Always show BTC, ETH, SOL; append user-held tickers, deduped (uppercase),
+  // capped at 6. Headlines do the heavy lifting for marquee width — if they
+  // come back empty we still render the three majors plus any user tickers.
+  const DEFAULT_TICKERS = ["BTC", "ETH", "SOL"];
   const seen = new Set(DEFAULT_TICKERS);
   const userTickers: string[] = [];
   for (const a of model.treasury.volatileAssets) {
@@ -162,7 +161,7 @@ export default function MarketBanner() {
     seen.add(t);
     userTickers.push(t);
   }
-  const tickers = [...DEFAULT_TICKERS, ...userTickers].slice(0, 8);
+  const tickers = [...DEFAULT_TICKERS, ...userTickers].slice(0, 6);
 
   const fetchData = async () => {
     try {
@@ -181,13 +180,18 @@ export default function MarketBanner() {
         seenTickers.add(t);
         cleanPrices.push({ ...p, ticker: t });
       }
-      const next: BannerData = { ...json, prices: cleanPrices };
-      // Only overwrite cache if we actually got something useful — protects
-      // a good cached payload from being clobbered by an empty response.
-      if (next.prices.length > 0 || (next.headlines?.length ?? 0) > 0) {
-        setData(next);
-        saveCache(next);
-      }
+      const newHeadlines = Array.isArray(json.headlines) ? json.headlines : [];
+      // Preserve the last good headlines if this fetch came back empty —
+      // Perplexity occasionally returns prices but no articles, and we'd
+      // rather keep a slightly stale headline than blank the news slot.
+      setData((prev) => {
+        const headlines = newHeadlines.length > 0 ? newHeadlines : (prev?.headlines ?? []);
+        const merged: BannerData = { ...json, prices: cleanPrices, headlines };
+        if (merged.prices.length > 0 || merged.headlines.length > 0) {
+          saveCache(merged);
+        }
+        return merged;
+      });
     } catch {
       // network error — keep last data (state stays as cached/previous)
     }
