@@ -50,14 +50,15 @@ describe("demo model — landing-page showcase", () => {
     expect(summary.hardRunwayMonths).toBeLessThanOrEqual(13);
   });
 
-  it("baseline extended runway pushes past the 18-month horizon", () => {
-    // ETH (~$196K/mo) + TAQ (~$238K/mo) liquidation more than covers the
-    // ~$416K monthly net burn after stables run out, so extended runway is
-    // not depleted within the projection window. The engine signals this
-    // with `extendedRunwayMonths: null`.
-    const { summary, projections } = computeProjection(model);
-    expect(summary.extendedRunwayMonths).toBeNull();
-    expect(projections.at(-1)!.extendedBalance).toBeGreaterThan(0);
+  it("baseline extended runway sits inside the 18-month horizon so scenarios visibly move it", () => {
+    // Hard treasury ($5M) + ETH-at-haircut ($1.18M) + TAQ-at-haircut ($0.85M)
+    // ≈ $7M; with ~$416K monthly net burn the extended runway depletes around
+    // month 17 — visible inside the chart, with enough headroom for the
+    // emergency-cuts scenario to extend past the horizon.
+    const { summary } = computeProjection(model);
+    expect(summary.extendedRunwayMonths).not.toBeNull();
+    expect(summary.extendedRunwayMonths!).toBeGreaterThanOrEqual(15);
+    expect(summary.extendedRunwayMonths!).toBeLessThanOrEqual(18);
   });
 
   it("bear market scenario shifts extended runway downward", () => {

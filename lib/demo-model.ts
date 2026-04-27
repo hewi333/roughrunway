@@ -6,15 +6,16 @@ import type { RoughRunwayModel } from "@/lib/types";
 // Profile: TAQ Labs — 15-person mid-stage Web3 protocol that just closed a
 // $7M raise. Tuned so every scenario template has something material to act on:
 //   - Stable+fiat treasury that produces a meaningful "hard runway" number
-//   - ETH (major, low haircut) and a leaner native-token bag (high haircut,
+//   - ETH (major, low haircut) and a lean native-token bag (high haircut,
 //     sell-rate constrained) so the extended-runway story is visible
 //   - All eight preset burn categories represented, sized realistically
 //   - Inflows on both sides of the volatility curve (staking + revenue)
 //
 // Hard treasury = $5.0M, monthly net burn ≈ $416K → ~12mo hard runway.
-// ETH (~$196K/mo for 6mo) + TAQ (~$425K/mo at 2.5M tokens × $0.20 × 0.85)
-// liquidation extends total runway out to ~36 months — the chart shows the
-// full lift across the 18-month horizon and beyond.
+// ETH (~$1.18M at haircut) + TAQ (~$0.85M at haircut) keeps the baseline
+// extended runway inside the 18-month projection horizon (~17mo), so each
+// scenario template — bear market, hiring, cuts, token crash — visibly
+// shifts the runway line up or down on the chart.
 //
 // The native token is "The Accountant Quits" (TAQ) — a wink at the kind of
 // crisis that sends a CFO running for this tool in the first place.
@@ -59,13 +60,13 @@ export function buildDemoModel(): RoughRunwayModel {
           name: "The Accountant Quits",
           ticker: "TAQ",
           tier: "native",
-          quantity: 50_000_000,
-          currentPrice: 0.20,
+          quantity: 10_000_000,
+          currentPrice: 0.10,
           priceSource: "manual",
           liquidationPriority: 50,
           liquidity: {
             maxSellUnit: "tokens",
-            maxSellPerMonth: 2_500_000,
+            maxSellPerMonth: 2_000_000,
             haircutPercent: 15,
             priceAssumption: "constant",
           },
