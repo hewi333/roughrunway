@@ -62,7 +62,7 @@ export default function DemoQuickstart({ onLoaded }: DemoQuickstartProps) {
                 <Row label="Team size" value="15 people" />
                 <Row label="Stable + fiat" value="$5.0M" />
                 <Row label="ETH treasury" value="300 ETH" />
-                <Row label="Native token" value="50M TAQ @ $0.20" />
+                <Row label="Native token" value="10M TAQ @ $0.10" />
                 <Row label="Monthly burn" value="$450K" />
                 <Row label="Net inflow" value="$34K/mo" />
               </dl>

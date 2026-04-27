@@ -13,7 +13,7 @@ Treasury (mid-stage Web3 protocol, 15-person team, just closed a $7M raise):
 - $3.5M USDC and $500K USDT in stablecoins
 - $1M USD in fiat operating accounts
 - 300 ETH (major volatile — leave price blank, Perplexity fills it in)
-- 50M TAQ native tokens at $0.20 each (sell-rate constrained, 15% haircut)
+- 10M TAQ native tokens at $0.10 each (sell-rate constrained, 15% haircut)
 
 Monthly burn (~$450K total, all eight standard categories):
 - Headcount & payroll $300K, employee token grants $22K
@@ -67,8 +67,8 @@ export function LandingAgentTerminal() {
           Build a runway model on{" "}
           <span className="text-swiss-red">roughrunway.com</span> for our
           15-person Web3 protocol post-$7M raise: $3.5M USDC + $500K USDT,
-          $1M USD fiat, 300 ETH (Perplexity fills the price), 50M TAQ
-          native tokens at $0.20 (15% haircut), $450K/mo burn across all eight categories
+          $1M USD fiat, 300 ETH (Perplexity fills the price), 10M TAQ
+          native tokens at $0.10 (15% haircut), $450K/mo burn across all eight categories
           (headcount $300K, infra $30K, legal $15K, marketing $35K, token
           incentives $25K, grants out $15K, office $8K, employee token
           grants $22K), $4K staking + $30K protocol revenue inflow. Project
@@ -87,7 +87,7 @@ export function LandingAgentTerminal() {
         <p className="px-3 sm:px-4 py-3 sm:py-4 text-[11px] sm:text-xs text-white/70 font-mono leading-relaxed break-all">
           roughrunway.com/api/agent/encode
           <span className="text-swiss-red">
-            ?name=TAQ+Labs&stable=USDC:3500000,USDT:500000&fiat=USD:1000000&volatile=ETH:300:0:major,TAQ:50000000:0.20:native&burn=450000&team=15&months=18
+            ?name=TAQ+Labs&stable=USDC:3500000,USDT:500000&fiat=USD:1000000&volatile=ETH:300:0:major,TAQ:10000000:0.10:native&burn=450000&team=15&months=18
           </span>
         </p>
       </div>

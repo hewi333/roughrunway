@@ -148,10 +148,12 @@ export default function MarketBanner() {
   // mismatch — we read the localStorage cache in the mount effect below.
   const [data, setData] = useState<BannerData | null>(null);
 
-  // Always show BTC, ETH, SOL; append user-held tickers, deduped (uppercase),
-  // capped at 6. The defaults guarantee enough scrolling content that the
-  // marquee seam isn't visible when the user hasn't added many assets.
-  const seen = new Set(["BTC", "ETH", "SOL"]);
+  // Always show a wide default set of majors; append user-held tickers,
+  // deduped (uppercase). A longer marquee track means the duplicate copy
+  // (rendered for seamless scroll) sits offscreen most of the time, so the
+  // banner reads as a continuous crawl rather than "BTC ETH SOL BTC ETH SOL".
+  const DEFAULT_TICKERS = ["BTC", "ETH", "SOL", "BNB", "XRP", "ARB"];
+  const seen = new Set(DEFAULT_TICKERS);
   const userTickers: string[] = [];
   for (const a of model.treasury.volatileAssets) {
     if (!a.ticker) continue;
@@ -160,7 +162,7 @@ export default function MarketBanner() {
     seen.add(t);
     userTickers.push(t);
   }
-  const tickers = ["BTC", "ETH", "SOL", ...userTickers].slice(0, 6);
+  const tickers = [...DEFAULT_TICKERS, ...userTickers].slice(0, 8);
 
   const fetchData = async () => {
     try {
