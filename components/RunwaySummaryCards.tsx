@@ -3,6 +3,7 @@
 import React from "react";
 import { AlertTriangle } from "lucide-react";
 import { Card, CardPlacard } from "@/components/ui/card";
+import { NumberTicker } from "@/components/ui/number-ticker";
 import { useProjection } from "@/lib/hooks/useProjection";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -95,7 +96,9 @@ export default function RunwaySummaryCards() {
           <StatusBadge months={hardRunway} />
         </div>
         <div className={cn("text-h2 font-mono font-bold", runwayColorClass(hardRunway))}>
-          {hardRunway !== null ? `${hardRunway} mo` : "18+ mo"}
+          {hardRunway !== null ? (
+            <><NumberTicker value={hardRunway} /> mo</>
+          ) : "18+ mo"}
         </div>
         <RunwayGauge months={hardRunway} max={projectionMax} />
         <div className="flex items-baseline justify-between gap-2">
@@ -115,7 +118,9 @@ export default function RunwaySummaryCards() {
           <StatusBadge months={extendedRunway} />
         </div>
         <div className={cn("text-h2 font-mono font-bold", runwayColorClass(extendedRunway))}>
-          {extendedRunway !== null ? `${extendedRunway} mo` : "18+ mo"}
+          {extendedRunway !== null ? (
+            <><NumberTicker value={extendedRunway} /> mo</>
+          ) : "18+ mo"}
         </div>
         <RunwayGauge months={extendedRunway} max={projectionMax} />
         <div className="flex items-baseline justify-between gap-2">
