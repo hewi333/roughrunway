@@ -60,7 +60,7 @@ export default function DemoQuickstart({ onLoaded }: DemoQuickstartProps) {
               </div>
               <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                 <Row label="Team size" value="15 people" />
-                <Row label="Stable + fiat" value="$5.0M" />
+                <Row label="Stable + fiat" value="$4.5M" />
                 <Row label="ETH treasury" value="300 ETH" />
                 <Row label="Native token" value="10M TAQ @ $0.10" />
                 <Row label="Monthly burn" value="$450K" />
