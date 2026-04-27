@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
+import PerplexityLogo from "@/components/ai/PerplexityLogo";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +38,48 @@ function formatPrice(price: number): string {
 }
 
 const REFRESH_MS = 10 * 60 * 1000; // 10 minutes
+const CACHE_KEY = "roughrunway:market-banner:v1";
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour — short enough that headlines stay current
+
+// Format an ISO 8601 publishedAt as a friendly relative label like "2h ago" or
+// "Apr 27" so users can see at a glance whether headlines are actually fresh.
+function formatRelative(iso: string): string {
+  if (!iso) return "";
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return "";
+  const diffMs = Date.now() - t;
+  if (diffMs < 0) return "now";
+  const mins = Math.round(diffMs / 60_000);
+  if (mins < 60) return `${Math.max(1, mins)}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function loadCache(): BannerData | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, savedAt } = JSON.parse(raw) as { data: BannerData; savedAt: number };
+    if (!data || typeof savedAt !== "number") return null;
+    if (Date.now() - savedAt > CACHE_TTL_MS) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function saveCache(data: BannerData): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(CACHE_KEY, JSON.stringify({ data, savedAt: Date.now() }));
+  } catch {
+    // quota / private mode — ignore
+  }
+}
 
 // ─── sub-components ───────────────────────────────────────────────────────────
 
@@ -67,6 +110,7 @@ function PriceTicker({ entry }: { entry: PriceEntry }) {
 }
 
 function HeadlineItem({ headline }: { headline: Headline }) {
+  const when = formatRelative(headline.publishedAt);
   return (
     <a
       href={headline.url}
@@ -77,6 +121,11 @@ function HeadlineItem({ headline }: { headline: Headline }) {
     >
       <span className="text-sm">{headline.title}</span>
       <span className="text-sm opacity-60">— {headline.source}</span>
+      {when && (
+        <span className="text-xs opacity-60 font-mono" aria-label={`published ${when}`}>
+          · {when}
+        </span>
+      )}
       <ExternalLink className="h-3 w-3 opacity-60" aria-hidden="true" />
     </a>
   );
@@ -95,8 +144,9 @@ function Separator() {
 
 export default function MarketBanner() {
   const { model } = useRoughRunwayStore();
+  // Initial state must match the server render (null) to avoid a hydration
+  // mismatch — we read the localStorage cache in the mount effect below.
   const [data, setData] = useState<BannerData | null>(null);
-  const [loading, setLoading] = useState(true);
 
   // Always show BTC, ETH, SOL; append user-held tickers, deduped (uppercase),
   // capped at 6. The defaults guarantee enough scrolling content that the
@@ -129,32 +179,40 @@ export default function MarketBanner() {
         seenTickers.add(t);
         cleanPrices.push({ ...p, ticker: t });
       }
-      setData({ ...json, prices: cleanPrices });
+      const next: BannerData = { ...json, prices: cleanPrices };
+      // Only overwrite cache if we actually got something useful — protects
+      // a good cached payload from being clobbered by an empty response.
+      if (next.prices.length > 0 || (next.headlines?.length ?? 0) > 0) {
+        setData(next);
+        saveCache(next);
+      }
     } catch {
-      // network error — keep last data
-    } finally {
-      setLoading(false);
+      // network error — keep last data (state stays as cached/previous)
     }
   };
 
   useEffect(() => {
+    const cached = loadCache();
+    if (cached) setData(cached);
     fetchData();
     const interval = setInterval(fetchData, REFRESH_MS);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading || !data) return null;
-  if (!data.prices?.length && !data.headlines?.length) return null;
+  // No fake fallbacks — if headlines aren't real, show nothing in their slot.
+  // Prices alone are still useful and keep the banner alive.
+  const prices = data?.prices ?? [];
+  const headlines = data?.headlines ?? [];
 
   // Build a single flat array of ticker items, alternating prices and headlines
   // with separators so the scroll reads like a real news crawl.
   const items: React.ReactNode[] = [];
-  data.prices.forEach((p, i) => {
+  prices.forEach((p, i) => {
     items.push(<PriceTicker key={`p-${p.ticker}-${i}`} entry={p} />);
     items.push(<Separator key={`ps-${i}`} />);
   });
-  data.headlines.forEach((h, i) => {
+  headlines.forEach((h, i) => {
     items.push(<HeadlineItem key={`h-${i}`} headline={h} />);
     items.push(<Separator key={`hs-${i}`} />);
   });
@@ -183,20 +241,17 @@ export default function MarketBanner() {
         </div>
       </div>
 
-      {/* Pinned badge — gradient fades into bg-card so it reads cleanly in light or dark mode */}
+      {/* Pinned "Market updates by Perplexity" badge — gradient fades into
+          bg-card so it reads cleanly in light or dark mode. */}
       <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-card via-card to-transparent">
-        <a
-          href="https://www.theaccountantquits.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <span
-            className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shrink-0"
-            aria-hidden="true"
-          />
-          Built for The Accountant Quits Hackathon
-        </a>
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-perplexity-teal animate-pulse shrink-0"
+          aria-hidden="true"
+        />
+        <PerplexityLogo className="h-3.5 w-3.5" />
+        <span className="text-xs font-semibold uppercase tracking-wide text-perplexity-teal">
+          Market updates by Perplexity
+        </span>
       </div>
     </div>
   );
