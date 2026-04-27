@@ -4,6 +4,7 @@ import React from "react";
 import { AlertTriangle } from "lucide-react";
 import { Card, CardPlacard } from "@/components/ui/card";
 import { NumberTicker } from "@/components/ui/number-ticker";
+import { Sparkline } from "@/components/ui/sparkline";
 import { useProjection } from "@/lib/hooks/useProjection";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -15,18 +16,33 @@ function formatCompactDollars(value: number): string {
   return `$${Math.round(value).toLocaleString()}`;
 }
 
+type RunwayHealth = "healthy" | "warning" | "critical";
+
+function runwayHealth(months: number | null): RunwayHealth {
+  if (months === null || months > 12) return "healthy";
+  if (months >= 6) return "warning";
+  return "critical";
+}
+
 function runwayColorClass(months: number | null): string {
-  if (months === null) return "text-aviation-green dark:text-aviation-green-dark";
-  if (months > 12) return "text-aviation-green dark:text-aviation-green-dark";
-  if (months >= 6) return "text-knob-gold dark:text-knob-gold-dark";
+  const h = runwayHealth(months);
+  if (h === "healthy") return "text-aviation-green dark:text-aviation-green-dark";
+  if (h === "warning") return "text-knob-gold dark:text-knob-gold-dark";
   return "text-swiss-red dark:text-aviation-red-dark";
 }
 
 function gaugeColorClass(months: number | null): string {
-  if (months === null) return "bg-aviation-green dark:bg-aviation-green-dark";
-  if (months > 12) return "bg-aviation-green dark:bg-aviation-green-dark";
-  if (months >= 6) return "bg-knob-gold dark:bg-knob-gold-dark";
+  const h = runwayHealth(months);
+  if (h === "healthy") return "bg-aviation-green dark:bg-aviation-green-dark";
+  if (h === "warning") return "bg-knob-gold dark:bg-knob-gold-dark";
   return "bg-swiss-red dark:bg-aviation-red-dark";
+}
+
+function sparkColor(months: number | null): string {
+  const h = runwayHealth(months);
+  if (h === "healthy") return "var(--chart-stables)";
+  if (h === "warning") return "var(--chart-volatile-major)";
+  return "var(--chart-hard-runway)";
 }
 
 function StatusBadge({ months }: { months: number | null }) {
@@ -64,7 +80,7 @@ function RunwayGauge({ months, max }: { months: number | null; max: number }) {
 }
 
 export default function RunwaySummaryCards() {
-  const { summary } = useProjection();
+  const { summary, projections } = useProjection();
   const { model } = useRoughRunwayStore();
 
   const hardRunway = summary.hardRunwayMonths;
@@ -76,6 +92,21 @@ export default function RunwaySummaryCards() {
   const atHaircut = summary.currentTotalAtHaircut;
   const projectionMax = model.projectionMonths;
   const hasGap = fundingGap > 0;
+
+  const hardSeries = React.useMemo(
+    () => [totalUSD, ...projections.map((p) => Math.max(p.hardBalance, 0))],
+    [projections, totalUSD]
+  );
+  const extendedSeries = React.useMemo(
+    () => [atHaircut || totalUSD, ...projections.map((p) => Math.max(p.extendedBalance, 0))],
+    [projections, atHaircut, totalUSD]
+  );
+  const gapSeries = React.useMemo(() => {
+    if (hasGap) {
+      return [0, ...projections.map((p) => p.cumulativeUnmetDeficit)];
+    }
+    return [totalUSD, ...projections.map((p) => Math.max(p.hardBalance, 0))];
+  }, [projections, hasGap, totalUSD]);
 
   const gapHelper =
     hasGap && constrainedMonths > 0
@@ -100,6 +131,7 @@ export default function RunwaySummaryCards() {
             <><NumberTicker value={hardRunway} /> mo</>
           ) : "18+ mo"}
         </div>
+        <Sparkline data={hardSeries} color={sparkColor(hardRunway)} />
         <RunwayGauge months={hardRunway} max={projectionMax} />
         <div className="flex items-baseline justify-between gap-2">
           <span className="text-caption text-muted-foreground">Stablecoins + fiat only</span>
@@ -122,6 +154,7 @@ export default function RunwaySummaryCards() {
             <><NumberTicker value={extendedRunway} /> mo</>
           ) : "18+ mo"}
         </div>
+        <Sparkline data={extendedSeries} color={sparkColor(extendedRunway)} />
         <RunwayGauge months={extendedRunway} max={projectionMax} />
         <div className="flex items-baseline justify-between gap-2">
           <span className="text-caption text-muted-foreground">Includes volatile assets</span>
@@ -166,6 +199,10 @@ export default function RunwaySummaryCards() {
         >
           {hasGap ? `−${formatCompactDollars(fundingGap)}` : "$0"}
         </div>
+        <Sparkline
+          data={gapSeries}
+          color={hasGap ? "var(--chart-funding-gap)" : "var(--chart-stables)"}
+        />
         {/* spacer keeps vertical rhythm consistent with gauge cells */}
         <div className="h-1" />
         <div className="flex items-baseline justify-between gap-2">
