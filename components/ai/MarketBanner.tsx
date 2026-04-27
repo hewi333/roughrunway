@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
-import PerplexityLogo from "@/components/ai/PerplexityLogo";
 import { useRoughRunwayStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -241,17 +241,24 @@ export default function MarketBanner() {
         </div>
       </div>
 
-      {/* Pinned "Market updates by Perplexity" badge — gradient fades into
-          bg-card so it reads cleanly in light or dark mode. */}
-      <div className="shrink-0 flex items-center gap-1.5 pl-6 pr-4 bg-gradient-to-l from-card via-card to-transparent">
+      {/* Pinned "Market updates by [Perplexity]" badge. The Perplexity asset
+          already includes the wordmark, so the text reads "Market updates by"
+          plus the logo+wordmark image. */}
+      <div className="shrink-0 flex items-center gap-2 pl-6 pr-4 bg-gradient-to-l from-card via-card to-transparent">
         <span
-          className="h-1.5 w-1.5 rounded-full bg-perplexity-teal animate-pulse shrink-0"
+          className="h-1.5 w-1.5 rounded-full bg-swiss-red animate-pulse shrink-0"
           aria-hidden="true"
         />
-        <PerplexityLogo className="h-3.5 w-3.5" />
-        <span className="text-xs font-semibold uppercase tracking-wide text-perplexity-teal">
-          Market updates by Perplexity
+        <span className="text-xs font-semibold uppercase tracking-wide text-swiss-red">
+          Market updates by
         </span>
+        <Image
+          src="/330px-Perplexity_AI_logo.svg.png"
+          alt="Perplexity"
+          width={88}
+          height={18}
+          className="shrink-0 object-contain h-4 w-auto"
+        />
       </div>
     </div>
   );

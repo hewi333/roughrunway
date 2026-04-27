@@ -5,7 +5,6 @@ import { Loader2, Sparkles, Check, RefreshCw, X, Plus, Minus, ArrowRight } from 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import VoiceInput from "@/components/ai/VoiceInput";
-import PoweredByBadge from "@/components/ai/PoweredByBadge";
 
 type State = "idle" | "loading" | "done" | "error";
 
@@ -307,12 +306,9 @@ export default function DescribeEdit<TPatch = unknown>({
       className="rounded-panel border border-perplexity/40 bg-perplexity/5 p-4 space-y-3"
       data-action={`describe-edit-${scope}`}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-perplexity" />
-          <span className="text-body font-medium text-foreground">{label}</span>
-        </div>
-        <PoweredByBadge size="sm" />
+      <div className="flex items-center gap-2">
+        <Sparkles className="h-4 w-4 text-perplexity" />
+        <span className="text-body font-medium text-foreground">{label}</span>
       </div>
 
       <div className="relative">

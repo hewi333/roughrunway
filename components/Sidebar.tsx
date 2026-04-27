@@ -45,9 +45,6 @@ export default function Sidebar({
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold leading-none">
               Rough Runway
             </div>
-            <div className="text-[10px] text-muted-foreground/80 mt-0.5 leading-none">
-              Flight instruments
-            </div>
           </div>
         )}
         <Button
