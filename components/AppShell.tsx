@@ -65,10 +65,15 @@ export default function AppShell({ children }: AppShellProps) {
               {/* Runway top deck — always visible across every panel */}
               <section aria-label="Runway overview" className="space-y-4">
                 <RunwaySummaryCards />
-                <ProjectionChart
-                  compact={isChartCompact}
-                  onToggleCompact={() => setIsChartCompact((v) => !v)}
-                />
+                <div
+                  className="motion-safe:animate-fade-in-up"
+                  style={{ animationDelay: "240ms" }}
+                >
+                  <ProjectionChart
+                    compact={isChartCompact}
+                    onToggleCompact={() => setIsChartCompact((v) => !v)}
+                  />
+                </div>
               </section>
 
               {/* Active editor panel (AI-first, manual below) */}
