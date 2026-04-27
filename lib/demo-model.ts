@@ -7,13 +7,18 @@ import type { RoughRunwayModel } from "@/lib/types";
 // (Series A or treasury sale). Tuned so every scenario template has
 // something material to act on:
 //   - Stable+fiat treasury that produces a meaningful "hard runway" number
-//   - ETH (major, low haircut) and a native token (high haircut, sell-rate
-//     constrained) so liquidation logic is visible
+//   - ETH (major, low haircut) and a deep native-token bag (high haircut,
+//     sell-rate constrained) so the extended-runway story is visible
 //   - All eight preset burn categories represented, sized realistically
 //   - Inflows on both sides of the volatility curve (staking + revenue)
 //
-// Hard treasury ≈ $6.0M, monthly net burn ≈ $416K → ~14mo hard runway,
-// ~18mo extended once liquidation is folded in.
+// Hard treasury = $5.0M, monthly net burn ≈ $416K → ~12mo hard runway.
+// ETH (~$196K/mo) + TAQ (~$238K/mo at 3.5M tokens × $0.08 × 0.85) liquidation
+// covers the post-month-12 gap with room to spare, so extended runway pushes
+// well past the 18-month horizon — the chart shows the full lift.
+//
+// The native token is "The Accountant Quits" (TAQ) — a wink at the kind of
+// crisis that sends a CFO running for this tool in the first place.
 export function buildDemoModel(): RoughRunwayModel {
   const now = new Date().toISOString();
   const startDate = now.slice(0, 7);
@@ -29,7 +34,7 @@ export function buildDemoModel(): RoughRunwayModel {
     extendedRunwayEnabled: true,
     treasury: {
       stablecoins: [
-        { id: uuidv4(), name: "USDC", amount: 4_500_000 },
+        { id: uuidv4(), name: "USDC", amount: 3_500_000 },
         { id: uuidv4(), name: "USDT", amount: 500_000 },
       ],
       fiat: [{ id: uuidv4(), currency: "USD", amount: 1_000_000 }],
@@ -52,16 +57,16 @@ export function buildDemoModel(): RoughRunwayModel {
         },
         {
           id: uuidv4(),
-          name: "Nexus Token",
-          ticker: "NEX",
+          name: "The Accountant Quits",
+          ticker: "TAQ",
           tier: "native",
-          quantity: 75_000_000,
+          quantity: 100_000_000,
           currentPrice: 0.08,
           priceSource: "manual",
           liquidationPriority: 50,
           liquidity: {
             maxSellUnit: "tokens",
-            maxSellPerMonth: 2_000_000,
+            maxSellPerMonth: 3_500_000,
             haircutPercent: 15,
             priceAssumption: "constant",
           },

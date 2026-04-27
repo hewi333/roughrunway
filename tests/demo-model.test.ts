@@ -27,25 +27,37 @@ describe("demo model — landing-page showcase", () => {
     );
   });
 
-  it("has $6.0M of hard treasury (stables + fiat)", () => {
+  it("has $5.0M of hard treasury (stables + fiat)", () => {
     const stables = model.treasury.stablecoins.reduce((a, s) => a + s.amount, 0);
     const fiat = model.treasury.fiat.reduce((a, f) => a + f.amount, 0);
-    expect(stables).toBe(5_000_000);
+    expect(stables).toBe(4_000_000);
     expect(fiat).toBe(1_000_000);
   });
 
-  it("includes both a major (ETH) and a native asset", () => {
+  it("includes both a major (ETH) and a native asset (TAQ)", () => {
     const tiers = model.treasury.volatileAssets.map((a) => a.tier);
     expect(tiers).toContain("major");
     expect(tiers).toContain("native");
+    const native = model.treasury.volatileAssets.find((a) => a.tier === "native");
+    expect(native?.ticker).toBe("TAQ");
   });
 
-  it("baseline produces multi-month hard runway shorter than horizon", () => {
+  it("baseline hard runway sits around 12 months (shorter than horizon)", () => {
     const { summary, projections } = computeProjection(model);
     expect(projections).toHaveLength(18);
-    // Hard runway: $6M / ~$416K net burn ≈ 14 months
-    expect(summary.hardRunwayMonths).toBeGreaterThanOrEqual(13);
-    expect(summary.hardRunwayMonths).toBeLessThanOrEqual(16);
+    // Hard runway: $5M / ~$416K net burn ≈ 12 months
+    expect(summary.hardRunwayMonths).toBeGreaterThanOrEqual(11);
+    expect(summary.hardRunwayMonths).toBeLessThanOrEqual(13);
+  });
+
+  it("baseline extended runway pushes past the 18-month horizon", () => {
+    // ETH (~$196K/mo) + TAQ (~$238K/mo) liquidation more than covers the
+    // ~$416K monthly net burn after stables run out, so extended runway is
+    // not depleted within the projection window. The engine signals this
+    // with `extendedRunwayMonths: null`.
+    const { summary, projections } = computeProjection(model);
+    expect(summary.extendedRunwayMonths).toBeNull();
+    expect(projections.at(-1)!.extendedBalance).toBeGreaterThan(0);
   });
 
   it("bear market scenario shifts extended runway downward", () => {
