@@ -1,0 +1,52 @@
+name: Report a Problem
+about: Something not working right? Tell us and we'll fix it.
+title: "[Bug] "
+labels: ["bug", "user-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. No need to be technical — just tell us what you noticed and we'll look into it.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What did you notice?
+      description: For example — "the chart looks weird", "a number doesn't match my wallet", or "I got confused on step 3".
+      placeholder: I expected X but saw Y instead...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Can you describe what you did before it happened?
+      description: The more detail the better, but don't worry if you can't remember exact steps.
+      placeholder: 1. I opened the page... 2. I clicked...
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: What browser are you using?
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+        - Brave
+        - Arc
+        - Edge
+        - Other / not sure
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else you'd like us to know?
+      description: Screenshots, wallet addresses (if relevant), or any other context is welcome.
+
+  - type: checkboxes
+    id: contact
+    attributes:
+      label: Would you like a reply when this is fixed?
+      options:
+        - label: Yes, I'd like to be notified
+          required: false
